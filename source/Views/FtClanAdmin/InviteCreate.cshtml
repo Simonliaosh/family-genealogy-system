@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "邀请创建新家族";
+    var code = ViewBag.InviteCode as string ?? "";
+    var expire = ViewBag.ExpireAt as DateTime?;
+    var pageUrl = ViewBag.PageUrl as string ?? "";
+    var wxUrl = ViewBag.WxUrl as string ?? "";
+}
+<div class="card mx-auto" style="max-width:36rem;">
+    <div class="card-header"><h5 class="mb-0">邀请创建新家族</h5></div>
+    <div class="card-body">
+        <p class="text-muted small">把二维码发给想建立自己的家族族谱的人。对方可以新建一个新的独立家族链，并成为该族族谱管理员。一码一次，7 天内有效。</p>
+        <p>邀请码：<code class="fs-5">@code</code>
+            @if (expire.HasValue)
+            {
+                <span class="text-muted small ms-2">有效期至 @expire.Value.ToString("yyyy-MM-dd HH:mm")</span>
+            }
+        </p>
+        <div class="row g-4 text-center">
+            <div class="col-sm-6">
+                <h6>创建新家族</h6>
+                <img src="@Url.Action("InviteCreateQr", new { c = code, kind = "page" })" alt="创建新家族" class="border rounded mb-2" style="width:180px;height:180px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="pageUrl" value="@pageUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('pageUrl').value)">复制</button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h6>微信入口</h6>
+                <img src="@Url.Action("InviteCreateQr", new { c = code, kind = "wx" })" alt="微信创建" class="border rounded mb-2" style="width:180px;height:180px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="wxUrl" value="@wxUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('wxUrl').value)">复制</button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+            <form method="post" asp-action="InviteCreate">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-primary">再发一个邀请码</button>
+            </form>
+            <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Index")'">返回上一页</a>
+            <a class="btn btn-outline-secondary" asp-action="Index">返回家族管理</a>
+            <a class="btn btn-outline-secondary" asp-controller="Member" asp-action="Home">我的任务</a>
+        </div>
+    </div>
+</div>

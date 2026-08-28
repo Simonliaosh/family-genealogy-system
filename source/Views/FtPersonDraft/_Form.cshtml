@@ -1,0 +1,55 @@
+@model FamilyTree.Models.ViewModels.FtDraftFormVm
+@{ var rel = ViewBag.RelationOptions as List<(string Value, string Text)> ?? FtPersonDraftService.RelationOptions(); }
+@using FamilyTree.Services
+<div class="ft-form-row">
+    <label class="ft-form-label">关系</label>
+    <div class="ft-form-field">
+        <select asp-for="RelationType" class="form-select" id="ft-draft-rel">
+            @foreach (var o in rel) { if (o.Value == Model.RelationType) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> } }
+        </select>
+        <div class="form-text" id="ft-draft-rel-hint"></div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">姓名</label>
+    <div class="ft-form-field"><input asp-for="FullName" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">父亲姓名</label>
+    <div class="ft-form-field"><input asp-for="FatherName" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">母亲姓名</label>
+    <div class="ft-form-field"><input asp-for="MotherName" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">出生年月</label>
+    <div class="ft-form-field"><input asp-for="BirthDate" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">世代号</label>
+    <div class="ft-form-field"><input asp-for="GenerationNo" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">字辈</label>
+    <div class="ft-form-field"><input asp-for="WordOfGeneration" class="form-control" /></div>
+</div>
+<script>
+(function () {
+  var sel = document.getElementById('ft-draft-rel');
+  var hint = document.getElementById('ft-draft-rel-hint');
+  if (!sel || !hint) return;
+  function sync() {
+    var v = (sel.value || '').toUpperCase();
+    if (v === 'FATHER_SIB' || v === 'MOTHER_SIB')
+      hint.textContent = '父母的兄弟姐妹：姓名填伯叔姑/舅姨本人；父母姓名填祖父母（与父亲或母亲的父母一致），便于堂亲匹配链入。须已认证。';
+    else if (v === 'GRANDFATHER' || v === 'GRANDMOTHER')
+      hint.textContent = '祖父母：须已录入父亲并入档。系统将挂到父亲档案的上一辈，便于各支族谱匹配汇合。';
+    else
+      hint.textContent = '';
+    hint.style.display = hint.textContent ? '' : 'none';
+  }
+  sel.addEventListener('change', sync);
+  sync();
+})();
+</script>

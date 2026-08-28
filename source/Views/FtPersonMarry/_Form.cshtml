@@ -1,0 +1,64 @@
+@model FamilyTree.Models.ViewModels.FtMarryFormVm
+@{
+    var types = ViewBag.MarryTypes as List<(string Value, string Text)> ?? new();
+    var persons = ViewBag.PersonOptions as List<(int Id, string Name)> ?? new();
+    var lockPerson = ViewBag.LockPerson == true;
+}
+@if (lockPerson)
+{
+    <input type="hidden" asp-for="PersonId" />
+    <div class="ft-form-row">
+        <label class="ft-form-label">人物</label>
+        <div class="ft-form-field"><input class="form-control" value="@(Model.PersonName ?? ("#" + Model.PersonId))" readonly /></div>
+    </div>
+}
+else
+{
+    <div class="ft-form-row">
+        <label class="ft-form-label">人物</label>
+        <div class="ft-form-field">
+            <select asp-for="PersonId" class="form-select">
+                @if (Model.PersonId <= 0) { <option value="0" selected>请选择</option> } else { <option value="0">请选择</option> }
+                @foreach (var o in persons)
+                { if (o.Id == Model.PersonId) { <option value="@o.Id" selected>@o.Name</option> } else { <option value="@o.Id">@o.Name</option> } }
+            </select>
+            <span asp-validation-for="PersonId" class="text-danger"></span>
+        </div>
+    </div>
+}
+<div class="ft-form-row">
+    <label class="ft-form-label">配偶姓名</label>
+    <div class="ft-form-field">
+        <input asp-for="SpouseName" class="form-control" maxlength="64" />
+        <span asp-validation-for="SpouseName" class="text-danger"></span>
+        <div class="form-text">只记姓名，不会因此自动建档。</div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">出生年月</label>
+    <div class="ft-form-field"><input asp-for="SpouseBirth" class="form-control" maxlength="32" placeholder="如 1960 或 1960-05" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">类型</label>
+    <div class="ft-form-field">
+        <select asp-for="MarryType" class="form-select">
+            @foreach (var t in types)
+            { if (t.Value == Model.MarryType) { <option value="@t.Value" selected>@t.Text</option> } else { <option value="@t.Value">@t.Text</option> } }
+        </select>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">房序</label>
+    <div class="ft-form-field"><input asp-for="HouseSeq" class="form-control" /><div class="form-text">默认 99；同人多房按此排序。</div></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">配偶编号</label>
+    <div class="ft-form-field">
+        <input asp-for="SpousePersonId" class="form-control" />
+        <div class="form-text">选填。库中已有此人时填写人物编号，仍不自动建档。</div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">备注</label>
+    <div class="ft-form-field"><textarea asp-for="Remark" class="form-control" rows="3"></textarea></div>
+</div>

@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "加入家族";
+    var clan = ViewBag.Clan as FamilyTree.Models.FtClan;
+    var code = ViewBag.ClanCode as string ?? "";
+}
+<div class="card mx-auto" style="max-width:28rem;">
+    <div class="card-header"><h5 class="mb-0">加入家族</h5></div>
+    <div class="card-body">
+        @if (clan == null)
+        {
+            <div class="alert alert-warning">家族 ID 无效或不存在。</div>
+            <form method="get" asp-action="JoinClan" class="mb-3">
+                <label class="form-label">输入家族 ID</label>
+                <div class="input-group">
+                    <input name="c" class="form-control" value="@code" maxlength="16" />
+                    <button class="btn btn-primary" type="submit">查询</button>
+                </div>
+            </form>
+            <a class="btn btn-outline-secondary" asp-action="Home">返回我的任务</a>
+        }
+        else
+        {
+            <p>即将加入：<strong>@clan.ClanName</strong></p>
+            <p class="small text-muted">家族 ID：<code>@clan.ClanCode</code>。加入后只能看到本家族信息，且不能再加入其他家族。</p>
+            <form method="post" asp-action="JoinClanConfirm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="clanCode" value="@clan.ClanCode" />
+                <button type="submit" class="btn btn-primary">确认加入</button>
+                <a class="btn btn-outline-secondary" asp-action="Home">取消</a>
+            </form>
+        }
+    </div>
+</div>

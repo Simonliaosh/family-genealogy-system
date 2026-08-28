@@ -1,0 +1,109 @@
+@model FamilyTree.Models.ViewModels.DashIndicatorFormVm
+@{
+    var editMode = ViewBag.EditMode == true;
+    var chartTypeOptions = ViewBag.ChartTypeOptions as List<(string Value, string Text)> ?? new();
+    var appCodeOptions = ViewBag.AppCodeOptions as List<(string Value, string Text)> ?? new();
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">指标编码</label>
+    <div class="col-md-8">
+        <input asp-for="IndicatorCode" class="form-control" maxlength="50" readonly="@editMode" />
+        <span asp-validation-for="IndicatorCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">指标名称</label>
+    <div class="col-md-8">
+        <input asp-for="IndicatorName" class="form-control" maxlength="100" />
+        <span asp-validation-for="IndicatorName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">所属应用</label>
+    <div class="col-md-8">
+        <select asp-for="AppCode" class="form-select">
+            @foreach (var o in appCodeOptions)
+            {
+                if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="AppCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">图表类型</label>
+    <div class="col-md-8">
+        <select asp-for="ChartType" class="form-select">
+            @foreach (var o in chartTypeOptions)
+            {
+                if (o.Value == Model.ChartType.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="ChartType" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">数据来源</label>
+    <div class="col-md-8">
+        <input asp-for="DataSource" class="form-control" maxlength="100" />
+        <span asp-validation-for="DataSource" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">CalcRule</label>
+    <div class="col-md-8">
+        <textarea asp-for="CalcRule" class="form-control font-monospace" rows="8"></textarea>
+        <span asp-validation-for="CalcRule" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">默认时间范围</label>
+    <div class="col-md-8">
+        <select asp-for="DefaultTimeScope" class="form-select">
+            @if (Model.DefaultTimeScope == 1) { <option value="1" selected>今日</option> } else { <option value="1">今日</option> }
+            @if (Model.DefaultTimeScope == 2) { <option value="2" selected>本周</option> } else { <option value="2">本周</option> }
+            @if (Model.DefaultTimeScope == 3) { <option value="3" selected>本月</option> } else { <option value="3">本月</option> }
+            @if (Model.DefaultTimeScope == 4) { <option value="4" selected>本年</option> } else { <option value="4">本年</option> }
+        </select>
+        <span asp-validation-for="DefaultTimeScope" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">锁定计算</label>
+    <div class="col-md-8">
+        <div class="form-check mt-2">
+            <input asp-for="IsLockCalc" type="checkbox" class="form-check-input" />
+            <label asp-for="IsLockCalc" class="form-check-label">锁定后用户不可修改计算规则</label>
+        </div>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">显示顺序</label>
+    <div class="col-md-8">
+        <input asp-for="DispSeq" type="number" min="0" class="form-control" />
+        <span asp-validation-for="DispSeq" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>

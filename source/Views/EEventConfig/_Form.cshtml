@@ -1,0 +1,177 @@
+@model FamilyTree.Models.ViewModels.EEventConfigFormVm
+@{
+    var editMode = ViewBag.EditMode == true;
+    var execTypeOptions = ViewBag.ExecTypeOptions as List<(string Value, string Text)> ?? new();
+    var eventTypeOptions = ViewBag.EventTypeOptions as List<(string Value, string Text)> ?? new();
+    var handleModeOptions = ViewBag.HandleModeOptions as List<(string Value, string Text)> ?? new();
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var menuGroupOptions = ViewBag.MenuGroupOptions as List<(string Value, string Text)> ?? new();
+    var appCodeOptions = ViewBag.AppCodeOptions as List<(string Value, string Text)> ?? new();
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用编码</label>
+    <div class="col-md-8">
+        @if (editMode)
+        {
+            <select asp-for="AppCode" class="form-select" disabled="disabled">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+            <input type="hidden" asp-for="AppCode" />
+        }
+        else
+        {
+            <select asp-for="AppCode" class="form-select">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+        }
+        <span asp-validation-for="AppCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">事件编码</label>
+    <div class="col-md-8">
+        <input asp-for="EventCode" class="form-control" maxlength="100" readonly="@editMode" />
+        <span asp-validation-for="EventCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">事件名称</label>
+    <div class="col-md-8">
+        <input asp-for="EventName" class="form-control" maxlength="100" />
+        <span asp-validation-for="EventName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">页面地址</label>
+    <div class="col-md-8">
+        <input asp-for="PageUrl" class="form-control" maxlength="300" />
+        <span asp-validation-for="PageUrl" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">菜单组编码</label>
+    <div class="col-md-8">
+        <select asp-for="MenuGroupCode" class="form-select">
+            <option value="">无</option>
+            @foreach (var o in menuGroupOptions)
+            {
+                if (o.Value == (Model.MenuGroupCode ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="MenuGroupCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">执行类型</label>
+    <div class="col-md-8">
+        <select asp-for="ExecType" class="form-select">
+            @foreach (var o in execTypeOptions)
+            {
+                if (o.Value == Model.ExecType) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="ExecType" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">事件分类</label>
+    <div class="col-md-8">
+        <select asp-for="EventType" class="form-select">
+            <option value="">无</option>
+            @foreach (var o in eventTypeOptions)
+            {
+                if (o.Value == (Model.EventType ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="EventType" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">生成待办</label>
+    <div class="col-md-8">
+        <div class="form-check form-check-inline mt-2">
+            <input class="form-check-input" type="radio" name="IsGenerateTodo" value="true" id="todo-y" @(Model.IsGenerateTodo ? "checked" : null) />
+            <label class="form-check-label" for="todo-y">是</label>
+        </div>
+        <div class="form-check form-check-inline mt-2">
+            <input class="form-check-input" type="radio" name="IsGenerateTodo" value="false" id="todo-n" @(!Model.IsGenerateTodo ? "checked" : null) />
+            <label class="form-check-label" for="todo-n">否</label>
+        </div>
+        <span asp-validation-for="IsGenerateTodo" class="text-danger d-block"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">待办标题</label>
+    <div class="col-md-8">
+        <input asp-for="TodoTitle" id="todo-title-input" class="form-control" maxlength="200" />
+        <span asp-validation-for="TodoTitle" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">处理模式</label>
+    <div class="col-md-8">
+        <select asp-for="HandleMode" class="form-select">
+            @foreach (var o in handleModeOptions)
+            {
+                if (string.Equals(o.Value, Model.HandleMode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="HandleMode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">默认时限(分钟)</label>
+    <div class="col-md-8">
+        <input asp-for="DefaultDueMinutes" type="number" min="0" class="form-control" placeholder="发布待办时的默认截止分钟数，可空" />
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">显示顺序</label>
+    <div class="col-md-8">
+        <input asp-for="DispSeq" type="number" min="0" class="form-control" />
+        <span asp-validation-for="DispSeq" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>
+
+<script>
+    (function(){
+        function syncTodoTitleState(){
+            var on = document.getElementById('todo-y')?.checked === true;
+            var input = document.getElementById('todo-title-input');
+            if(!input) return;
+            input.disabled = !on;
+            if(!on) input.value = '';
+        }
+        document.getElementById('todo-y')?.addEventListener('change', syncTodoTitleState);
+        document.getElementById('todo-n')?.addEventListener('change', syncTodoTitleState);
+        syncTodoTitleState();
+    })();
+</script>

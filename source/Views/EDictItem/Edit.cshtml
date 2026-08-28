@@ -1,0 +1,23 @@
+@model FamilyTree.Models.ViewModels.EDictItemFormVm
+@{ ViewData["Title"] = "字典条目详情"; }
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">字典条目详情</h5></div>
+    <div class="card-body pm-form-wrap">
+        <form asp-action="Edit" asp-route-id="@Model.DataId" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            @await Html.PartialAsync("_Form", Model)
+            <div class="row mt-2">
+                <div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2">
+                    @if (ViewBag.IsSystem != true)
+                    {
+                        <button type="submit" name="selectNo" value="0" class="btn btn-primary">保存/退出</button>
+                    }
+                    <a class="btn btn-outline-secondary" asp-action="Index" asp-route-code="@Model.DictTypeCode">返回列表</a>
+                    <button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

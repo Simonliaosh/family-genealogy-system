@@ -1,0 +1,46 @@
+@model FamilyTree.Models.ViewModels.FtProfileFormVm
+@{ ViewData["Title"] = "我的档案"; }
+<div class="card"><div class="card-header"><h5 class="mb-0">我的档案</h5></div>
+<div class="card-body pm-form-wrap">
+@if (ViewBag.NeedBind == true) {
+<p>尚未绑定本人。请先到「录入人物」创建关系为「本人」的记录并点完成。也可直接去 <a asp-controller="Member" asp-action="Cert">申请认证</a>，系统会按注册姓名生成本人档案。</p>
+<a class="btn btn-primary" asp-controller="FtPersonDraft" asp-action="Create">去录入</a>
+<a class="btn btn-outline-primary" asp-controller="Member" asp-action="Cert">申请认证</a>
+} else {
+<form method="post">@Html.AntiForgeryToken()
+<input type="hidden" asp-for="PersonId" />
+<div class="ft-form-row"><label class="ft-form-label">姓名</label><div class="ft-form-field"><input asp-for="FullName" class="form-control" readonly /></div></div>
+<div class="ft-form-row"><label class="ft-form-label">别名</label><div class="ft-form-field"><input asp-for="NickName" class="form-control" /></div></div>
+<div class="ft-form-row"><label class="ft-form-label">简介</label><div class="ft-form-field"><textarea asp-for="SelfIntro" class="form-control" rows="3"></textarea></div></div>
+<div class="ft-form-row"><label class="ft-form-label">微信号</label><div class="ft-form-field"><input asp-for="WechatId" class="form-control" /></div></div>
+<div class="ft-form-row"><label class="ft-form-label">手机</label><div class="ft-form-field"><input asp-for="Mobile" class="form-control" placeholder="选填" /></div></div>
+<div class="ft-form-row"><label class="ft-form-label">隐私</label><div class="ft-form-field"><input asp-for="PrivacyLevel" class="form-control" /></div></div>
+<div class="ft-form-row"><label class="ft-form-label">公开项</label><div class="ft-form-field py-1">
+<label class="me-3"><input asp-for="ShowPhoto" /> 公开照片</label>
+<label class="me-3"><input asp-for="ShowWechat" /> 公开微信</label>
+<label class="me-3"><input asp-for="PrintAllow" /> 允许印刷</label>
+</div></div>
+<button class="btn btn-primary">保存</button>
+</form>
+<hr />
+<h6>照片</h6>
+<p class="text-muted small">最多 12 张，单张不超过 2MB，jpg/png/gif/webp。路径写入档案，文件在 /uploads/person/@Model.PersonId/</p>
+<div class="d-flex flex-wrap gap-3 mb-3">
+@foreach (var ph in Model.Photos)
+{
+    <div class="text-center">
+        <img src="@ph" alt="" style="max-width:120px;max-height:120px;object-fit:cover;" class="border rounded d-block mb-1" />
+        <form asp-action="DeletePhoto" method="post" class="d-inline">@Html.AntiForgeryToken()
+            <input type="hidden" name="path" value="@ph" />
+            <button class="btn btn-sm btn-outline-danger" type="submit">删除</button>
+        </form>
+    </div>
+}
+</div>
+<form asp-action="UploadPhoto" method="post" enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
+    @Html.AntiForgeryToken()
+    <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.webp,image/*" class="form-control" style="max-width:20rem;" />
+    <button class="btn btn-outline-primary">上传</button>
+</form>
+}
+</div></div>

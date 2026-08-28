@@ -1,0 +1,17 @@
+<view class="card">
+  <view class="modes">
+    <text class="chip {{mode==='down'?'on':''}}" bindtap="setMode" data-m="down">下延</text>
+    <text class="chip {{mode==='up'?'on':''}}" bindtap="setMode" data-m="up">上溯</text>
+    <text class="chip {{mode==='side'?'on':''}}" bindtap="setMode" data-m="side">左右</text>
+    <text class="chip {{scope==='main'?'on':''}}" bindtap="setScope" data-s="main">主谱</text>
+    <text class="chip {{scope==='mine'?'on':''}}" bindtap="setScope" data-s="mine">我的小树</text>
+  </view>
+  <picker wx:if="{{scope==='main' && roots.length}}" range="{{rootNames}}" bindchange="onRoot">
+    <view class="row"><text>当前根</text><text>{{rootNames[rootIndex]}}</text></view>
+  </picker>
+</view>
+<view class="card" wx:if="{{!bound && scope==='mine'}}">请先完成「本人」录入。</view>
+<view class="card" wx:for="{{lines}}" wx:key="key">
+  <view style="padding-left: {{item.depth * 24}}rpx;">{{item.name}} <text class="muted" wx:if="{{item.birth}}">{{item.birth}}</text></view>
+</view>
+<view class="card muted" wx:if="{{lines.length===0}}">暂无节点。</view>

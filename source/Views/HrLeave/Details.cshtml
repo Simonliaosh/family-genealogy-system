@@ -1,0 +1,60 @@
+@model FamilyTree.Models.ViewModels.HrLeaveDetailsVm
+@{
+    ViewData["Title"] = "请假详情";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5 class="mb-0">请假详情 @Model.RequestNo</h5>
+        <span class="badge bg-secondary">@Model.StatusText</span>
+    </div>
+    <div class="card-body">
+        @if (TempData["HrLeaveMessage"] is string okMsg)
+        {
+            <div class="alert alert-success">@okMsg</div>
+        }
+        <dl class="row">
+            <dt class="col-sm-2">申请人</dt><dd class="col-sm-4">@Model.ApplicantName</dd>
+            <dt class="col-sm-2">假别</dt><dd class="col-sm-4">@Model.LeaveType</dd>
+            <dt class="col-sm-2">开始</dt><dd class="col-sm-4">@Model.StartDate.ToString("yyyy-MM-dd")</dd>
+            <dt class="col-sm-2">结束</dt><dd class="col-sm-4">@Model.EndDate.ToString("yyyy-MM-dd")</dd>
+            <dt class="col-sm-2">天数</dt><dd class="col-sm-4">@Model.Days</dd>
+            <dt class="col-sm-2">事由</dt><dd class="col-sm-10">@(Model.Reason ?? "-")</dd>
+            <dt class="col-sm-2">事件实例</dt>
+            <dd class="col-sm-4">
+                @if (Model.EventInstanceId.HasValue)
+                {
+                    <a asp-controller="EEventInstanceQuery" asp-action="Details" asp-route-id="@Model.EventInstanceId">@Model.EventInstanceId</a>
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </dd>
+            <dt class="col-sm-2">提交时间</dt><dd class="col-sm-4">@Model.CreateDate.ToString("yyyy-MM-dd HH:mm")</dd>
+            @if (Model.ApproveTime.HasValue)
+            {
+                <dt class="col-sm-2">审批人</dt><dd class="col-sm-4">@(Model.ApproveUserName ?? "-")</dd>
+                <dt class="col-sm-2">审批时间</dt><dd class="col-sm-4">@Model.ApproveTime.Value.ToString("yyyy-MM-dd HH:mm")</dd>
+                <dt class="col-sm-2">审批意见</dt><dd class="col-sm-10">@(Model.ApproveRemark ?? "-")</dd>
+            }
+        </dl>
+        @if (Model.CanApprove)
+        {
+            <hr />
+            <form asp-action="Approve" method="post" class="row g-2 align-items-end">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.DataId" />
+                <div class="col-md-6">
+                    <label class="form-label">审批意见</label>
+                    <input type="text" name="remark" class="form-control" />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" name="action" value="approve" class="btn btn-success">同意</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-outline-danger ms-1">驳回</button>
+                </div>
+            </form>
+        }
+        <a class="btn btn-secondary ms-2" asp-action="Index">返回列表</a>
+    </div>
+</div>

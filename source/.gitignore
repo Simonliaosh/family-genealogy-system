@@ -1,0 +1,20 @@
+# 本地/生产配置（含连接串，勿提交）
+appsettings.Development.json
+appsettings.Production.json
+
+# DataProtection 密钥
+Keys/
+
+# 构建输出
+bin/
+obj/
+artifacts/
+
+# 人物照片（保留目录）
+wwwroot/uploads/person/**
+!wwwroot/uploads/person/.gitkeep
+
+# IDE
+.vs/
+*.user
+*.suo

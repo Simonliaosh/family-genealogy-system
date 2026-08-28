@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "分享二维码";
+    var joinUrl = ViewBag.JoinUrl as string ?? "";
+    var wxUrl = ViewBag.WxUrl as string ?? "";
+    var goUrl = ViewBag.GoUrl as string ?? "";
+}
+<div class="card mx-auto" style="max-width:40rem;">
+    <div class="card-header"><h5 class="mb-0">分享二维码（给族人用）</h5></div>
+    <div class="card-body">
+        <p class="text-muted small">打印或发微信即可。公众号菜单建议挂「微信入口」链接。</p>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <h6>① 微信入口</h6>
+                <p class="small text-muted">公众号内一点即登录/自动注册</p>
+                <img src="@Url.Action("ShareQr", new { kind = "wx" })" alt="微信入口" class="border rounded mb-2" style="width:160px;height:160px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="wxUrl" value="@wxUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('wxUrl').value)">复制</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h6>② 登录名注册</h6>
+                <p class="small text-muted">不用微信时扫这个</p>
+                <img src="@Url.Action("ShareQr", new { kind = "join" })" alt="注册码" class="border rounded mb-2" style="width:160px;height:160px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="joinUrl" value="@joinUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('joinUrl').value)">复制</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h6>③ 录入人物</h6>
+                <p class="small text-muted">已登录族人扫这个，去录入人物</p>
+                <img src="@Url.Action("ShareQr", new { kind = "go" })" alt="录入码" class="border rounded mb-2" style="width:160px;height:160px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="goUrl" value="@goUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('goUrl').value)">复制</button>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <p class="small mb-2">已认证族人可看只读全屏主谱：</p>
+        <a class="btn btn-outline-primary btn-sm" asp-action="ClanTreeShare">族谱一览二维码</a>
+        <p class="small mb-0 mt-3">认证仍由族人在「申请认证」页生成个人二维码，发给你扫码确认。</p>
+        <a class="btn btn-outline-secondary mt-3" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Home")'">返回上一页</a>
+        <a class="btn btn-outline-primary mt-3" asp-action="Home">返回我的任务</a>
+    </div>
+</div>

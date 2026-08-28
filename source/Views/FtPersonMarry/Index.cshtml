@@ -1,0 +1,135 @@
+﻿@model IReadOnlyList<FamilyTree.Models.ViewModels.FtMarryListRowVm>
+@{
+    ViewData["Title"] = "配偶信息";
+    var canCr = ViewBag.CanCreate == true;
+    var canUp = ViewBag.CanUpdate == true;
+    var canDel = ViewBag.CanDelete == true;
+    var personId = (int)(ViewBag.PersonId ?? 0);
+    var filterPersonName = ViewBag.FilterPersonName as string;
+    var marryType1 = (string?)ViewBag.MarryType1 ?? "";
+    var marryTypes = ViewBag.MarryTypes as List<(string Value, string Text)> ?? new();
+    var searchField = (string?)ViewBag.SearchField ?? "SpouseName";
+    var searchContent = (string?)ViewBag.SearchContent ?? "";
+    var intPage = (int)(ViewBag.IntPage ?? 1);
+    var pageShowNum = (int)(ViewBag.PageShowNum ?? 16);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalRecords = (int)(ViewBag.TotalRecords ?? 0);
+    var selectField = (string?)ViewBag.SelectField ?? "HouseSeq";
+    var selectFieldArrow = (string?)ViewBag.SelectFieldArrow ?? "0";
+    string A(string f, string d) => selectField == f && selectFieldArrow == d ? "text-dark" : "text-secondary";
+    var polistPr = PolistReturnToken.Encode(new Dictionary<string, string?>
+    {
+        ["intPage"] = intPage.ToString(), ["pageShowNum"] = pageShowNum.ToString(),
+        ["selectField"] = selectField, ["selectFieldArrow"] = selectFieldArrow,
+        ["searchField"] = searchField, ["searchContent"] = searchContent,
+        ["marryType1"] = marryType1,
+        ["personId"] = personId > 0 ? personId.ToString() : ""
+    });
+}
+<div class="card polist-wrap">
+    <div class="card-header"><h5 class="mb-0">配偶信息</h5></div>
+    <div class="card-body py-2">
+        <form id="f-main" asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="selectField" id="sf" value="@selectField" />
+            <input type="hidden" name="selectFieldArrow" id="sa" value="@selectFieldArrow" />
+            @if (personId > 0) { <input type="hidden" name="personId" value="@personId" /> }
+            <div class="polist-filter pm-filter-grid mb-2">
+                <div class="d-flex align-items-center gap-1">
+                    <label class="polist-filter-lbl mb-0">类型</label>
+                    <select name="marryType1" class="form-select form-select-sm" onchange="this.form.submit()">
+                        @if (marryType1 == "") { <option value="" selected>全部</option> } else { <option value="">全部</option> }
+                        @foreach (var o in marryTypes)
+                        { if (o.Value == marryType1) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> } }
+                    </select>
+                </div>
+                @if (personId > 0)
+                {
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="text-muted small">人物：@(filterPersonName ?? ("#" + personId))</span>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">全部</a>
+                    </div>
+                }
+            </div>
+            <div class="table-responsive">
+                <table class="table table-polist table-sm align-middle">
+                    <thead>
+                    <tr>
+                        <th><span class="d-inline-flex">人物<span class="polist-sort-stack"><a class="@A("PersonName","0") text-decoration-none" href="javascript:doSort('PersonName','0');">▲</a><a class="@A("PersonName","1") text-decoration-none" href="javascript:doSort('PersonName','1');">▼</a></span></span></th>
+                        <th><span class="d-inline-flex">配偶<span class="polist-sort-stack"><a class="@A("SpouseName","0") text-decoration-none" href="javascript:doSort('SpouseName','0');">▲</a><a class="@A("SpouseName","1") text-decoration-none" href="javascript:doSort('SpouseName','1');">▼</a></span></span></th>
+                        <th>出生年月</th>
+                        <th>类型</th>
+                        <th><span class="d-inline-flex">房序<span class="polist-sort-stack"><a class="@A("HouseSeq","0") text-decoration-none" href="javascript:doSort('HouseSeq','0');">▲</a><a class="@A("HouseSeq","1") text-decoration-none" href="javascript:doSort('HouseSeq','1');">▼</a></span></span></th>
+                        <th><span class="d-inline-flex">修改<span class="polist-sort-stack"><a class="@A("AmendDate","0") text-decoration-none" href="javascript:doSort('AmendDate','0');">▲</a><a class="@A("AmendDate","1") text-decoration-none" href="javascript:doSort('AmendDate','1');">▼</a></span></span></th>
+                        @if (canUp || canCr) { <th class="text-end">@if (canCr) { <a class="btn btn-sm btn-outline-primary" asp-action="Create" asp-route-personId="@(personId > 0 ? personId : (int?)null)">添加</a> }</th> }
+                        @if (canDel) { <th></th> }
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var x in Model)
+                    {
+                        <tr>
+                            <td>@x.PersonName</td>
+                            <td>@x.SpouseName@(x.SpousePersonId.HasValue ? " #" + x.SpousePersonId : "")</td>
+                            <td>@x.SpouseBirth</td>
+                            <td>@x.MarryType</td>
+                            <td>@x.HouseSeq</td>
+                            <td>@x.AmendDate.ToString("yyyy-MM-dd")</td>
+                            @if (canUp || canCr)
+                            {
+                                <td class="text-end">
+                                    @if (canUp && x.CanEdit)
+                                    {
+                                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@x.DataId" asp-route-polistRt="@polistPr">详情</a>
+                                    }
+                                </td>
+                            }
+                            @if (canDel)
+                            {
+                                <td class="text-end">
+                                    @if (x.CanEdit)
+                                    {
+                                        <button type="submit" formaction="@Url.Action("Delete")" name="id" value="@x.DataId" class="btn btn-sm btn-outline-danger" onclick="return confirm('确定删除？');">删除</button>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-2 d-flex align-items-center justify-content-center flex-wrap pm-pager" style="column-gap:.25rem;row-gap:.35rem;font-size:.88rem;">
+                <div class="pm-pager-group">
+                    <select name="searchField" class="form-select form-select-sm" style="width:12ch;font-size:.8rem;min-height:calc(1.8125rem + 2px);">
+                        @if (searchField == "SpouseName") { <option value="SpouseName" selected>配偶</option> } else { <option value="SpouseName">配偶</option> }
+                        @if (searchField == "PersonName") { <option value="PersonName" selected>人物</option> } else { <option value="PersonName">人物</option> }
+                        @if (searchField == "Remark") { <option value="Remark" selected>备注</option> } else { <option value="Remark">备注</option> }
+                    </select>
+                    <span>包含内容</span>
+                    <input name="searchContent" value="@searchContent" class="form-control form-control-sm" style="width:12ch;font-size:.8rem;padding:0 .25rem;" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(1);">查询</button>
+                </div>
+                <div class="pm-pager-group">
+                    <span>第 @(intPage) 页/总 @(totalPages) 页 总 @(totalRecords) 条</span>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(1);" @(intPage<=1?"disabled":null)>首页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(intPage-1));" @(intPage<=1?"disabled":null)>上页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(intPage+1));" @(intPage>=totalPages?"disabled":null)>下页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(totalPages));" @(intPage>=totalPages?"disabled":null)>尾页</button>
+                </div>
+                <div class="pm-pager-group">
+                    <span>每页显示</span>
+                    <input name="pageShowNum" value="@(pageShowNum)" class="form-control form-control-sm" style="width:4ch;height:1.2rem;font-size:.8rem;padding:0 .2rem;" />
+                    <span>条</span>
+                    <span>转到第</span>
+                    <input name="intPage" id="intPageInput" value="@(intPage)" class="form-control form-control-sm" style="width:4ch;height:1.2rem;font-size:.8rem;padding:0 .2rem;" />
+                    <span>页</span>
+                    <button type="submit" class="btn btn-sm btn-primary" style="font-size:.88rem;padding:.08rem .4rem;">Go</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function setPage(p){document.getElementById('intPageInput').value=p;}
+    function doSort(f,a){document.getElementById('sf').value=f;document.getElementById('sa').value=a;document.getElementById('f-main').submit();}
+</script>

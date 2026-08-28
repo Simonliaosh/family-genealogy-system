@@ -1,0 +1,74 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtBranchAdminRowVm>
+@{
+    ViewData["Title"] = "支链管理员（超管）";
+    var canUp = ViewBag.CanUpdate == true;
+    var applies = ViewBag.Applies as List<FamilyTree.Models.ViewModels.FtBranchApplyRowVm> ?? new();
+}
+<div class="card mb-3">
+    <div class="card-header"><h5 class="mb-0">待审：申请成为支链管理员</h5></div>
+    <div class="card-body">
+        @if (applies.Count == 0)
+        {
+            <p class="text-muted mb-0">暂无待审申请。日常由各族谱管理员在「我的家族」审批；本页供超管兜底。</p>
+        }
+        else
+        {
+            <table class="table table-sm mb-0">
+                <thead><tr><th>登录名</th><th>姓名</th><th>理由</th><th>时间</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var a in applies)
+                {
+                    <tr>
+                        <td>@a.LoginId</td>
+                        <td>@a.RealName</td>
+                        <td>@a.ApplyReason</td>
+                        <td>@a.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            @if (canUp)
+                            {
+                                <form asp-action="ApproveApply" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@a.DataId" />
+                                    <input type="text" name="remark" class="form-control form-control-sm d-inline-block mb-1" style="max-width:12rem;" placeholder="审批说明（选填）" />
+                                    <button class="btn btn-sm btn-success" name="pass" value="true">通过</button>
+                                    <button class="btn btn-sm btn-outline-danger" name="pass" value="false">驳回</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">支链管理员岗（超管直授）</h5></div>
+    <div class="card-body">
+        <p class="text-muted">框架岗位/职责仅超管可配。此处可直接授予/撤销支链管理员；族谱管理员请在「我的家族」操作本族成员。</p>
+        <table class="table table-sm">
+            <thead><tr><th>登录名</th><th>姓名</th><th>已授权</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.LoginId</td>
+                    <td>@x.RealName</td>
+                    <td>@(x.IsBranchAdmin ? "是" : "否")</td>
+                    <td>
+                        @if (canUp)
+                        {
+                            <form asp-action="Set" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@x.UserId" />
+                                @if (!x.IsBranchAdmin) { <button class="btn btn-sm btn-outline-primary" name="grant" value="true">授予</button> }
+                                else { <button class="btn btn-sm btn-outline-secondary" name="grant" value="false">撤销</button> }
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

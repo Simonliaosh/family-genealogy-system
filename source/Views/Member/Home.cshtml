@@ -1,0 +1,249 @@
+@{
+    ViewData["Title"] = "我的任务";
+    var self = ViewBag.Self as FamilyTree.Models.FtPerson;
+    var certified = self?.IsCertified == true;
+    var hasSelf = ViewBag.HasSelf == true;
+    var canShare = ViewBag.CanShare == true;
+    var myClan = ViewBag.MyClan as FamilyTree.Models.FtClan;
+    var doneReg = true;
+    var doneClan = myClan != null;
+    var doneCert = certified;
+    var doneCount = (doneReg ? 1 : 0) + (doneClan ? 1 : 0) + (doneCert ? 1 : 0);
+    var progressPct = doneCount * 20; // 前三步各占 20%，录入/链入进行中再体现
+}
+<style>
+    .mh-wrap { max-width: 26rem; margin: 0 auto; }
+    .mh-card {
+        background: #fff;
+        border: 1px solid #e8ecf1;
+        border-radius: 1rem;
+        box-shadow: 0 6px 20px rgba(15, 40, 80, .06);
+        overflow: hidden;
+    }
+    .mh-head {
+        padding: 1.1rem 1.25rem .85rem;
+        background: linear-gradient(180deg, #f5f8fc 0%, #fff 100%);
+        border-bottom: 1px solid #eef1f5;
+    }
+    .mh-head h1 { font-size: 1.15rem; font-weight: 700; margin: 0 0 .25rem; color: #1a2b3c; }
+    .mh-head p { margin: 0; font-size: .8rem; color: #6b7c8f; line-height: 1.4; }
+    .mh-progress {
+        margin-top: .75rem;
+        height: .35rem;
+        background: #e8eef5;
+        border-radius: 99px;
+        overflow: hidden;
+    }
+    .mh-progress > span {
+        display: block;
+        height: 100%;
+        background: #2f6fed;
+        border-radius: 99px;
+        width: @(progressPct)%;
+    }
+    .mh-body { padding: 1rem 1.15rem 1.25rem; }
+    .mh-clan {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        padding: .7rem .85rem;
+        margin-bottom: 1rem;
+        border-radius: .75rem;
+        background: #f4f7fb;
+        border: 1px solid #e3eaf3;
+        font-size: .85rem;
+    }
+    .mh-clan.warn { background: #fff8ef; border-color: #f0dfc0; }
+    .mh-clan strong { color: #1a2b3c; }
+    .mh-clan code { font-size: .78rem; color: #c45a7a; }
+    .mh-clan a { white-space: nowrap; font-size: .82rem; text-decoration: none; }
+    .mh-steps { list-style: none; margin: 0 0 1.15rem; padding: 0; }
+    .mh-step {
+        display: flex;
+        align-items: flex-start;
+        gap: .75rem;
+        padding: .7rem 0;
+        border-bottom: 1px solid #eef1f5;
+    }
+    .mh-step:last-child { border-bottom: 0; padding-bottom: 0; }
+    .mh-step:first-child { padding-top: 0; }
+    .mh-dot {
+        width: 1.65rem;
+        height: 1.65rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .75rem;
+        font-weight: 700;
+        margin-top: .1rem;
+    }
+    .mh-dot.done { background: #e8f6ee; color: #1f8a4c; }
+    .mh-dot.todo { background: #e8eef8; color: #2f6fed; }
+    .mh-step-main { flex: 1; min-width: 0; }
+    .mh-step-title { font-size: .92rem; font-weight: 600; color: #1a2b3c; line-height: 1.3; }
+    .mh-step-desc { font-size: .75rem; color: #7a8b9c; margin-top: .15rem; line-height: 1.35; }
+    .mh-step-act { flex-shrink: 0; align-self: center; }
+    .mh-step-act .btn { font-size: .78rem; padding: .28rem .65rem; border-radius: .5rem; }
+    .mh-ok {
+        width: 1.65rem;
+        height: 1.65rem;
+        border-radius: 50%;
+        background: #1f8a4c;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .75rem;
+        font-weight: 700;
+    }
+    .mh-cta {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: #2f6fed;
+        color: #fff !important;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: .85rem 1rem;
+        border-radius: .75rem;
+        box-shadow: 0 6px 16px rgba(47, 111, 237, .28);
+        margin-bottom: 1rem;
+    }
+    .mh-cta:hover { background: #2560d4; color: #fff !important; }
+    .mh-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .55rem;
+    }
+    .mh-tile {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        color: #334155 !important;
+        background: #f7f9fc;
+        border: 1px solid #e5ebf3;
+        border-radius: .65rem;
+        padding: .65rem .4rem;
+        font-size: .8rem;
+        line-height: 1.25;
+        transition: background .15s, border-color .15s;
+    }
+    .mh-tile:hover { background: #eef4ff; border-color: #c9d8f5; color: #1e4db8 !important; }
+    .mh-tile.wide { grid-column: 1 / -1; }
+    .mh-hint { margin: .85rem 0 0; font-size: .75rem; color: #8a9aab; text-align: center; }
+</style>
+
+<div class="mh-wrap">
+    <div class="mh-card">
+        <div class="mh-head">
+            <h1>我的任务</h1>
+            <p>手机扫「录入人物」码会自动走到当前该做的一步。</p>
+            <div class="mh-progress" aria-hidden="true"><span></span></div>
+        </div>
+        <div class="mh-body">
+            @if (myClan != null)
+            {
+                <div class="mh-clan">
+                    <div>
+                        <div class="text-muted" style="font-size:.72rem;">当前家族</div>
+                        <strong>@myClan.ClanName</strong>
+                        <code class="ms-1">@myClan.ClanCode</code>
+                    </div>
+                    <a asp-action="FamilyShare">分享邀请</a>
+                </div>
+            }
+            else
+            {
+                <div class="mh-clan warn">
+                    <div>
+                        尚未加入家族。可扫「加入家族」码，或
+                        <a asp-action="CreateClan">绑定邀请码</a> 创建家族并成为管理员。
+                    </div>
+                </div>
+            }
+
+            <ol class="mh-steps">
+                <li class="mh-step">
+                    <span class="mh-dot done">1</span>
+                    <div class="mh-step-main">
+                        <div class="mh-step-title">注册账号</div>
+                        <div class="mh-step-desc">已完成</div>
+                    </div>
+                    <div class="mh-step-act"><span class="mh-ok">✓</span></div>
+                </li>
+                <li class="mh-step">
+                    <span class="mh-dot @(doneClan ? "done" : "todo")">2</span>
+                    <div class="mh-step-main">
+                        <div class="mh-step-title">加入/创建家族</div>
+                        <div class="mh-step-desc">@(doneClan ? "已加入，一人一家" : "扫码加入，或绑定邀请码创建家族")</div>
+                    </div>
+                    <div class="mh-step-act">
+                        @if (doneClan) { <span class="mh-ok">✓</span> }
+                        else { <a class="btn btn-primary btn-sm" asp-action="JoinClan">去加入</a> }
+                    </div>
+                </li>
+                <li class="mh-step">
+                    <span class="mh-dot @(doneCert ? "done" : "todo")">3</span>
+                    <div class="mh-step-main">
+                        <div class="mh-step-title">族员认证</div>
+                        <div class="mh-step-desc">@(doneCert ? "已通过，可录入并申请入谱" : "把二维码发给管理员扫一下")</div>
+                    </div>
+                    <div class="mh-step-act">
+                        @if (doneCert) { <span class="mh-ok">✓</span> }
+                        else { <a class="btn btn-primary btn-sm" asp-action="Cert">去认证</a> }
+                    </div>
+                </li>
+                <li class="mh-step">
+                    <span class="mh-dot todo">4</span>
+                    <div class="mh-step-main">
+                        <div class="mh-step-title">录入人物</div>
+                        <div class="mh-step-desc">本人 / 父母 / 兄弟 / 子女</div>
+                    </div>
+                    <div class="mh-step-act">
+                        <a class="btn btn-sm @(certified ? "btn-primary" : "btn-outline-secondary")"
+                           asp-controller="FtPersonDraft" asp-action="Index">录入</a>
+                    </div>
+                </li>
+                <li class="mh-step">
+                    <span class="mh-dot todo">5</span>
+                    <div class="mh-step-main">
+                        <div class="mh-step-title">匹配链入</div>
+                        <div class="mh-step-desc">命中主谱会引导确认；也可主动扫描</div>
+                    </div>
+                    <div class="mh-step-act">
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="FtPersonLink" asp-action="Match">扫描</a>
+                    </div>
+                </li>
+            </ol>
+
+            <a class="mh-cta" asp-controller="MemberGuide" asp-action="Index">开始填写族谱</a>
+
+            <div class="mh-grid">
+                @if (myClan == null)
+                {
+                    <a class="mh-tile" asp-action="JoinClan">输入家族 ID</a>
+                    <a class="mh-tile" asp-action="CreateClan">绑定邀请码建族</a>
+                }
+                @if (certified)
+                {
+                    <a class="mh-tile" asp-action="ClanTree">查看族谱一览</a>
+                    <a class="mh-tile" asp-action="ClanTreeShare">分享族谱二维码</a>
+                }
+                <a class="mh-tile" asp-controller="FtPersonDraft" asp-action="Create">新建人物</a>
+                <a class="mh-tile" asp-controller="FtMyProfile" asp-action="Index">我的档案</a>
+                @if (canShare)
+                {
+                    <a class="mh-tile wide" asp-action="Share">分享注册 / 录入人物码</a>
+                }
+            </div>
+
+            @if (!hasSelf && certified)
+            {
+                <p class="mh-hint">提示：可先录入「本人」并完成，便于定位自己。</p>
+            }
+        </div>
+    </div>
+</div>

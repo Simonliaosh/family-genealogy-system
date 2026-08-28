@@ -1,0 +1,132 @@
+@using FamilyTree.Models.ViewModels
+@{
+    ViewData["Title"] = "首页";
+    var mainRows = ViewBag.HomeMainRows as IReadOnlyList<HomeMainRowVm> ?? Array.Empty<HomeMainRowVm>();
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>工作台</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50">待办待处理</h6>
+                                        <h3 class="mb-0">@(ViewBag.Stats?.PendingTodoCount ?? 0)</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-users fa-3x opacity-50"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50">启用用户</h6>
+                                        <h3 class="mb-0">@(ViewBag.Stats?.TotalUsers ?? 0)</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-briefcase fa-3x opacity-50"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50">启用职责</h6>
+                                        <h3 class="mb-0">@(ViewBag.Stats?.TotalDuties ?? 0)</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-tasks fa-3x opacity-50"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white-50">启用部门</h6>
+                                        <h3 class="mb-0">@(ViewBag.Stats?.TotalDepartments ?? 0)</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-sitemap fa-3x opacity-50"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* 对应旧 asp/MainContent.asp 中间区 *@
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card home-main-content-card">
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0 home-main-content-table">
+                    @foreach (var row in mainRows)
+                    {
+                        <tr>
+                            <th class="home-main-content-th text-center" scope="col" style="width:50%">
+                                <a href="@row.Left.ListHref" class="home-main-content-title-link">@row.Left.Title</a>
+                            </th>
+                            <th class="home-main-content-th text-center" scope="col" style="width:50%">
+                                <a href="@row.Right.ListHref" class="home-main-content-title-link">@row.Right.Title</a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="home-main-content-td align-top">
+                                <ul class="list-unstyled mb-0 home-main-content-ul">
+                                    @foreach (var it in row.Left.Items)
+                                    {
+                                        <li class="home-main-content-li d-flex justify-content-between gap-2">
+                                            <a href="@it.Href" class="home-main-content-item-link text-truncate" title="@it.Text">@it.Text</a>
+                                            @if (!string.IsNullOrEmpty(it.DateHint))
+                                            {
+                                                <span class="text-muted flex-shrink-0 small">@it.DateHint</span>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </td>
+                            <td class="home-main-content-td align-top">
+                                <ul class="list-unstyled mb-0 home-main-content-ul">
+                                    @foreach (var it in row.Right.Items)
+                                    {
+                                        <li class="home-main-content-li d-flex justify-content-between gap-2">
+                                            <a href="@it.Href" class="home-main-content-item-link text-truncate" title="@it.Text">@it.Text</a>
+                                            @if (!string.IsNullOrEmpty(it.DateHint))
+                                            {
+                                                <span class="text-muted flex-shrink-0 small">@it.DateHint</span>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

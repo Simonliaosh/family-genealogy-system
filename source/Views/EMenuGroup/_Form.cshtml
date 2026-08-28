@@ -1,0 +1,72 @@
+@model FamilyTree.Models.ViewModels.EMenuGroupFormVm
+@{
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var appCodeOptions = ViewBag.AppCodeOptions as List<(string Value, string Text)> ?? new();
+    var editMode = ViewBag.EditMode == true;
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用编码</label>
+    <div class="col-md-8">
+        @if (editMode)
+        {
+            <select asp-for="AppCode" class="form-select" disabled="disabled">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+            <input type="hidden" asp-for="AppCode" />
+        }
+        else
+        {
+            <select asp-for="AppCode" class="form-select">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+        }
+        <span asp-validation-for="AppCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">菜单组编码</label>
+    <div class="col-md-8">
+        <input asp-for="MenuGroupCode" class="form-control" maxlength="50" readonly="@editMode" />
+        <span asp-validation-for="MenuGroupCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">菜单组名称</label>
+    <div class="col-md-8">
+        <input asp-for="MenuGroupName" class="form-control" maxlength="100" />
+        <span asp-validation-for="MenuGroupName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">显示顺序</label>
+    <div class="col-md-8">
+        <input asp-for="DispSeq" type="number" min="0" class="form-control" />
+        <span asp-validation-for="DispSeq" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>

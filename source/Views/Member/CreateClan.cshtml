@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "创建家族";
+    var my = ViewBag.MyClan as FamilyTree.Models.FtClan;
+    var inviteCode = ViewBag.InviteCode as string ?? "";
+    var isSuper = ViewBag.IsSuper == true;
+    var inviteOk = ViewBag.InviteOk == true;
+    var inviteHint = ViewBag.InviteHint as string;
+}
+<div class="card mx-auto" style="max-width:28rem;">
+    <div class="card-header"><h5 class="mb-0">创建新家族</h5></div>
+    <div class="card-body">
+        @if (my != null)
+        {
+            <div class="alert alert-info">您已在家族「@my.ClanName」（ID：<code>@my.ClanCode</code>）。每人只能加入一个家族。</div>
+            <a class="btn btn-primary" asp-action="FamilyShare">分享「加入家族」二维码</a>
+            <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Home")'">返回上一页</a>
+            <a class="btn btn-outline-secondary" asp-action="Home">我的任务</a>
+        }
+        else if (!isSuper && !inviteOk)
+        {
+            <p class="text-muted small">持有<strong>创建家族邀请码</strong>可新建独立家族并成为<strong>族谱管理员</strong>。若只是加入亲友已有家族，请扫对方的「加入家族」码。</p>
+            @if (!string.IsNullOrWhiteSpace(inviteHint))
+            {
+                <div class="alert alert-warning py-2 small">@inviteHint</div>
+            }
+            else if (!string.IsNullOrWhiteSpace(inviteCode))
+            {
+                <div class="alert alert-info py-2 small">已带入邀请码，验证通过后即可创建家族。</div>
+            }
+            @if (TempData["ErrorMessage"] is string err && err.Length > 0)
+            {
+                <div class="alert alert-danger py-2 small">@err</div>
+            }
+            <form method="get" class="mb-3">
+                <label class="form-label">创建家族邀请码</label>
+                <div class="input-group">
+                    <input name="c" class="form-control" value="@inviteCode" maxlength="16" placeholder="粘贴或扫码带入的邀请码" required @(string.IsNullOrWhiteSpace(inviteCode) ? null : "autofocus") />
+                    <button type="submit" class="btn btn-primary">验证</button>
+                </div>
+            </form>
+            <a class="btn btn-outline-primary" asp-action="JoinClan">加入已有家族</a>
+            <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(document.referrer&&document.referrer.indexOf(location.origin)===0)history.back();else location.href='@Url.Action("Home")'">返回上一页</a>
+            <a class="btn btn-outline-secondary" asp-action="Home">我的任务</a>
+        }
+        else
+        {
+            <p class="text-muted small">创建后您将成为本家族的<strong>族谱管理员</strong>。请先为本族谱起一个名称，便于亲友识别与加入。</p>
+            @if (TempData["ErrorMessage"] is string err2 && err2.Length > 0)
+            {
+                <div class="alert alert-danger py-2 small">@err2</div>
+            }
+            @if (inviteOk)
+            {
+                <p class="small">邀请码：<code>@inviteCode</code></p>
+            }
+            else if (isSuper)
+            {
+                <p class="small text-muted">您是超管，可不凭邀请码直接创建。</p>
+            }
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="inviteCode" value="@inviteCode" />
+                <div class="mb-3">
+                    <label class="form-label">族谱名称 <span class="text-danger">*</span></label>
+                    <input name="clanName" class="form-control" maxlength="64" placeholder="例如：廖氏宗族、张门世系" required />
+                    <div class="form-text">将显示在「我的任务」、族谱一览与分享页，创建后暂不支持自行修改。</div>
+                </div>
+                <button type="submit" class="btn btn-primary">创建家族</button>
+                <a class="btn btn-outline-secondary" asp-action="Home">取消</a>
+            </form>
+        }
+    </div>
+</div>

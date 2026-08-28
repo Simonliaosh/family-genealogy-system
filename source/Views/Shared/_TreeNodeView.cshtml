@@ -1,0 +1,29 @@
+@model FamilyTree.Models.ViewModels.FtTreeNodeVm
+@{
+    var key = string.IsNullOrEmpty(Model.NodeKey) ? ("local:" + Model.Id) : Model.NodeKey;
+    var hasKids = Model.Children.Count > 0;
+}
+<li class="ft-tree-node@(hasKids ? "" : " ft-tree-leaf")" data-node-key="@key">
+    @if (hasKids)
+    {
+        <button type="button" class="ft-tree-toggle" aria-expanded="true" title="收起" aria-label="收起下级">−</button>
+    }
+    else
+    {
+        <span class="ft-tree-toggle-spacer" aria-hidden="true"></span>
+    }
+    <strong>@Model.Name</strong>
+    @if (!string.IsNullOrWhiteSpace(Model.Birth))
+    {
+        <span class="text-muted">（@Model.Birth）</span>
+    }
+    @if (hasKids)
+    {
+        <ul class="ft-tree-children">
+            @foreach (var c in Model.Children)
+            {
+                <partial name="_TreeNodeView" model="c" />
+            }
+        </ul>
+    }
+</li>

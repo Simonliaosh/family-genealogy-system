@@ -1,0 +1,52 @@
+@model FamilyTree.Models.ViewModels.EUserHandoverFormVm
+@{
+    var userOptions = ViewBag.UserOptions as List<(int Id, string Display)> ?? new();
+    var typeOptions = ViewBag.HandoverTypeFormOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">交出方</label>
+    <div class="col-md-8">
+        <select asp-for="SourceUserId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in userOptions)
+            {
+                if (o.Id == Model.SourceUserId) { <option value="@o.Id" selected>@o.Display</option> } else { <option value="@o.Id">@o.Display</option> }
+            }
+        </select>
+        <span asp-validation-for="SourceUserId" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">接收方</label>
+    <div class="col-md-8">
+        <select asp-for="TargetUserId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in userOptions)
+            {
+                if (o.Id == Model.TargetUserId) { <option value="@o.Id" selected>@o.Display</option> } else { <option value="@o.Id">@o.Display</option> }
+            }
+        </select>
+        <span asp-validation-for="TargetUserId" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">交接类型</label>
+    <div class="col-md-8">
+        <select asp-for="HandoverType" class="form-select">
+            <option value="">请选择</option>
+            @foreach (var o in typeOptions)
+            {
+                if (o.Value == Model.HandoverType) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="HandoverType" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>

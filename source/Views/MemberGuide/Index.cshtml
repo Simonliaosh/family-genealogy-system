@@ -1,0 +1,329 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = null;
+    var siteName = Configuration["App:SiteName"] ?? "家族族谱";
+    var step = (string)(ViewBag.Step ?? "clan");
+    var stepIndex = (int)(ViewBag.StepIndex ?? 0);
+    var stepCount = (int)(ViewBag.StepCount ?? 8);
+    var clan = ViewBag.Clan as FamilyTree.Models.FtClan;
+    var self = ViewBag.Self as FamilyTree.Models.FtPerson;
+    var certUrl = ViewBag.CertUrl as string ?? "";
+    var isBa = ViewBag.IsBranchAdmin == true;
+    var pct = (int)Math.Round(100.0 * (stepIndex + 1) / stepCount);
+    string TitleOf(string s) => s switch
+    {
+        "clan" => "加入家族",
+        "self" => "填写本人信息",
+        "cert" => "申请族员认证",
+        "spouse" => "填写配偶信息",
+        "father" => "填写父亲信息",
+        "mother" => "填写母亲信息",
+        "grandfather" => "填写祖父（爷爷）信息",
+        "grandmother" => "填写祖母（奶奶）信息",
+        "child" => "填写子女信息",
+        "done" => "本轮录入完成",
+        _ => "继续填写"
+    };
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>@TitleOf(step) - @siteName</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
+    <style>
+        :root {
+            --g-bg: #f3f6f4;
+            --g-card: #fff;
+            --g-accent: #2f6b4f;
+            --g-accent-soft: #e7f2eb;
+            --g-text: #1f2a24;
+            --g-muted: #6b7c72;
+        }
+        html, body { min-height: 100%; }
+        body {
+            margin: 0;
+            background:
+                radial-gradient(1200px 500px at 10% -10%, #dceee3 0%, transparent 55%),
+                radial-gradient(900px 400px at 100% 0%, #e8f0ea 0%, transparent 50%),
+                var(--g-bg);
+            color: var(--g-text);
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        .g-wrap { max-width: 28rem; margin: 0 auto; padding: 1rem 1rem 3.5rem; }
+        .g-brand { font-size: .9rem; color: var(--g-muted); margin-bottom: .35rem; }
+        .g-title { font-size: 1.45rem; font-weight: 700; margin: 0 0 .75rem; letter-spacing: .02em; }
+        .g-progress {
+            height: .45rem; border-radius: 999px; background: #dde5df; overflow: hidden; margin-bottom: 1rem;
+        }
+        .g-progress > span { display: block; height: 100%; background: var(--g-accent); width: @pct%; transition: width .25s ease; }
+        .g-steps {
+            display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: .72rem; color: var(--g-muted);
+        }
+        .g-steps b { color: var(--g-accent); }
+        .g-card {
+            background: var(--g-card);
+            border-radius: 1rem;
+            padding: 1.25rem 1.15rem 1.35rem;
+            box-shadow: 0 10px 30px rgba(31, 42, 36, .06);
+        }
+        .g-hint { font-size: .88rem; color: var(--g-muted); margin-bottom: 1rem; line-height: 1.5; }
+        .g-label { font-size: .85rem; font-weight: 600; margin-bottom: .35rem; }
+        .g-actions { display: flex; flex-direction: column; gap: .65rem; margin-top: 1.25rem; }
+        .btn-g {
+            background: var(--g-accent); border-color: var(--g-accent); color: #fff;
+            padding: .7rem 1rem; font-size: 1.05rem; border-radius: .65rem;
+        }
+        .btn-g:hover { background: #255a41; border-color: #255a41; color: #fff; }
+        .btn-g-light {
+            background: var(--g-accent-soft); border: 0; color: var(--g-accent);
+            padding: .65rem 1rem; border-radius: .65rem;
+        }
+        .g-qr { width: 200px; height: 200px; border-radius: .5rem; border: 1px solid #e2e8e4; }
+        .alert { border-radius: .65rem; }
+        .form-control, .form-select { border-radius: .55rem; padding: .65rem .75rem; }
+        .g-foot { text-align: center; margin-top: 1rem; font-size: .8rem; }
+        .g-foot a { color: var(--g-muted); }
+        .g-topnav {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: .5rem; margin-bottom: .75rem; font-size: .85rem;
+        }
+        .g-topnav a { color: var(--g-muted); text-decoration: none; }
+        .g-topnav a:hover { color: var(--g-accent); }
+    </style>
+</head>
+<body>
+@{
+    string? prevStep = step switch
+    {
+        "self" => "clan",
+        "cert" => "self",
+        "spouse" => "cert",
+        "father" => "spouse",
+        "mother" => "father",
+        "grandfather" => "mother",
+        "grandmother" => "grandfather",
+        "child" => "grandmother",
+        "done" => "child",
+        _ => null
+    };
+}
+<div class="g-wrap">
+    <div class="g-topnav">
+        @if (prevStep != null)
+        {
+            <a asp-action="Index" asp-route-step="@prevStep">← 上一步</a>
+        }
+        else
+        {
+            <a asp-controller="Member" asp-action="Home">← 返回</a>
+        }
+        <a asp-controller="Member" asp-action="Home">我的任务</a>
+    </div>
+    <div class="g-brand">@siteName</div>
+    <h1 class="g-title">@TitleOf(step)</h1>
+    <div class="g-progress" aria-hidden="true"><span></span></div>
+    <div class="g-steps">第 @(stepIndex + 1) / @stepCount 步 · 可随时保存后进入下一步</div>
+
+    @if (TempData["SuccessMessage"] is string sm && sm.Length > 0)
+    { <div class="alert alert-success py-2 small">@sm</div> }
+    @if (TempData["ErrorMessage"] is string em && em.Length > 0)
+    { <div class="alert alert-warning py-2 small">@em</div> }
+
+    <div class="g-card">
+        @if (step == "clan")
+        {
+            <p class="g-hint">先加入或创建您的家族，之后填写的亲友都会归入本家族，其他人看不到。</p>
+            @if (clan != null)
+            {
+                <p>您已在家族 <strong>@clan.ClanName</strong>（ID：<code>@clan.ClanCode</code>）。</p>
+                <div class="g-actions">
+                    <a class="btn btn-g" asp-action="Index" asp-route-step="self">下一步：填写本人</a>
+                </div>
+            }
+            else
+            {
+                <div class="g-actions">
+                    <a class="btn btn-g" asp-controller="Member" asp-action="JoinClan">加入已有家族</a>
+                    <a class="btn btn-g-light" asp-controller="Member" asp-action="CreateClan">绑定邀请码，创建家族</a>
+                </div>
+            }
+        }
+        else if (step == "self")
+        {
+            <p class="g-hint">请填写您自己的基本信息。填完点「保存并下一步」。</p>
+            <form method="post" asp-action="SaveSelf">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <div class="g-label">您的姓名 <span class="text-danger">*</span></div>
+                    <input name="fullName" class="form-control form-control-lg" required maxlength="64"
+                           value="@(self?.FullName == "未命名" ? "" : self?.FullName)" placeholder="真实姓名" />
+                </div>
+                <div class="mb-3">
+                    <div class="g-label">性别</div>
+                    <select name="gender" class="form-select">
+                        @if (self?.Gender == 0) { <option value="1">男</option><option value="0" selected>女</option> }
+                        else { <option value="1" selected>男</option><option value="0">女</option> }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <div class="g-label">出生年月</div>
+                    <input name="birthDate" class="form-control" value="@self?.BirthDate" placeholder="如 1988 或 1988-01" />
+                </div>
+                <div class="mb-3">
+                    <div class="g-label">父亲姓名</div>
+                    <input name="fatherName" class="form-control" value="@self?.FatherName" placeholder="便于自动挂父子关系" />
+                </div>
+                <div class="mb-3">
+                    <div class="g-label">母亲姓名</div>
+                    <input name="motherName" class="form-control" value="@self?.MotherName" placeholder="选填" />
+                </div>
+                <div class="g-actions">
+                    <button type="submit" class="btn btn-g">保存并下一步</button>
+                </div>
+            </form>
+        }
+        else if (step == "cert")
+        {
+            <p class="g-hint">把下面二维码发给<strong>本家族的族谱管理员或支链管理员</strong>扫码确认。认证通过后可申请入主谱；父母子女可先继续填写。</p>
+            @if (self?.IsCertified == true)
+            {
+                <div class="alert alert-success py-2">您已通过认证。</div>
+            }
+            else
+            {
+                <div class="text-center mb-3">
+                    <img class="g-qr" src="@Url.Action("CertQr", "Member")" alt="认证二维码" />
+                    <div class="small text-muted mt-2 text-break">@certUrl</div>
+                </div>
+            }
+            <form method="post" asp-action="AfterCert">
+                @Html.AntiForgeryToken()
+                <div class="g-actions">
+                    <button type="submit" class="btn btn-g">@(self?.IsCertified == true ? "下一步：配偶" : "先继续填写亲属")</button>
+                </div>
+            </form>
+        }
+        else if (step == "spouse")
+        {
+            <p class="g-hint">如有配偶请填写；没有可点「跳过」。</p>
+            <form method="post" asp-action="SaveSpouse">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <div class="g-label">配偶姓名</div>
+                    <input name="spouseName" class="form-control form-control-lg" maxlength="64" placeholder="姓名" />
+                </div>
+                <div class="mb-3">
+                    <div class="g-label">出生年月</div>
+                    <input name="spouseBirth" class="form-control" placeholder="选填" />
+                </div>
+                <div class="mb-3">
+                    <div class="g-label">关系类型</div>
+                    <select name="marryType" class="form-select">
+                        <option>原配</option><option>续弦</option><option>再婚</option><option>入赘</option>
+                    </select>
+                </div>
+                <div class="g-actions">
+                    <button type="submit" name="next" value="save" class="btn btn-g">保存并下一步</button>
+                    <button type="submit" name="next" value="skip" class="btn btn-g-light">暂时跳过</button>
+                </div>
+            </form>
+        }
+        else if (step == "father" || step == "mother" || step == "child" || step == "grandfather" || step == "grandmother")
+        {
+            var rel = step switch
+            {
+                "father" => "FATHER",
+                "mother" => "MOTHER",
+                "grandfather" => "GRANDFATHER",
+                "grandmother" => "GRANDMOTHER",
+                _ => "CHILD"
+            };
+            var who = step switch
+            {
+                "father" => "父亲",
+                "mother" => "母亲",
+                "grandfather" => "祖父（爷爷）",
+                "grandmother" => "祖母（奶奶）",
+                _ => "子女"
+            };
+            var hint = step is "grandfather" or "grandmother"
+                ? "须已保存父亲档案。填写" + who + "信息，便于各支族谱匹配汇合；不清楚可点「跳过」。"
+                : "填写" + who + "的信息。可跳过；子女可连续添加多个。";
+            <p class="g-hint">@hint</p>
+            <form method="post" asp-action="SaveRelative">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="relation" value="@rel" />
+                <div class="mb-3">
+                    <div class="g-label">@(who)姓名 <span class="text-danger">*</span></div>
+                    <input name="fullName" class="form-control form-control-lg" maxlength="64"
+                           value="@(step == "father" ? self?.FatherName : step == "mother" ? self?.MotherName : "")"
+                           placeholder="@(who + "姓名")" />
+                </div>
+                @if (step == "child")
+                {
+                    <div class="mb-3">
+                        <div class="g-label">性别</div>
+                        <select name="gender" class="form-select"><option value="1">男</option><option value="0">女</option></select>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" name="gender" value="@(step is "father" or "grandfather" ? "1" : "0")" />
+                }
+                <div class="mb-3">
+                    <div class="g-label">出生年月</div>
+                    <input name="birthDate" class="form-control" placeholder="选填" />
+                </div>
+                @if (step is "father" or "mother" or "grandfather" or "grandmother")
+                {
+                    <div class="mb-3">
+                        <div class="g-label">其父亲姓名</div>
+                        <input name="fatherName" class="form-control" placeholder="选填" />
+                    </div>
+                    <div class="mb-3">
+                        <div class="g-label">其母亲姓名</div>
+                        <input name="motherName" class="form-control" placeholder="选填" />
+                    </div>
+                }
+                <div class="g-actions">
+                    <button type="submit" name="next" value="save" class="btn btn-g">保存并下一步</button>
+                    @if (step == "child")
+                    {
+                        <button type="submit" name="next" value="more" class="btn btn-g-light">保存并再录一个孩子</button>
+                    }
+                    <button type="submit" name="next" value="skip" class="btn btn-link">跳过</button>
+                </div>
+            </form>
+        }
+        else if (step == "done")
+        {
+            <p class="g-hint">感谢填写。您已完成本人、父母、祖父母（若已填）及子女的基本录入。</p>
+            <div class="alert alert-light border">
+                <strong>提示：</strong>如需录入更多旁系（叔伯姑舅姨、堂亲等），可在「我的填报」中继续添加；也可申请成为<strong>支链管理员</strong>，由族谱管理员审批后扩展世系。
+            </div>
+            <div class="g-actions">
+                @if (!isBa)
+                {
+                    <a class="btn btn-g" asp-controller="FtBranchApply" asp-action="Index">去申请支链管理员</a>
+                }
+                <a class="btn btn-g-light" asp-controller="FtPersonDraft" asp-action="Create">我的填报（补录亲属）</a>
+                <a class="btn btn-g-light" asp-action="Index" asp-route-step="child">继续添加子女</a>
+                <a class="btn btn-g-light" asp-controller="Member" asp-action="ClanTree">查看族谱一览</a>
+                <a class="btn btn-link" asp-controller="Member" asp-action="Home">返回我的任务</a>
+            </div>
+        }
+    </div>
+
+    <div class="g-foot">
+        <a asp-controller="Member" asp-action="Home">退出向导</a>
+        @if (step is "spouse" or "father" or "mother" or "grandfather" or "grandmother" or "child" or "cert")
+        {
+            <span class="mx-2">·</span>
+            <a asp-action="Index" asp-route-step="done">完成录入</a>
+        }
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<view class="card" wx:if="{{!bound}}">
+  <view>尚未绑定本人。请到「录入人物」创建关系为「本人」的记录并点完成。</view>
+</view>
+<view wx:else>
+  <view class="card">
+    <view class="title">{{fullName}}</view>
+    <input class="input" placeholder="别名" value="{{nickName}}" bindinput="set" data-k="nickName" />
+    <input class="input" placeholder="简介" value="{{selfIntro}}" bindinput="set" data-k="selfIntro" />
+    <input class="input" placeholder="微信号" value="{{wechatId}}" bindinput="set" data-k="wechatId" />
+    <view class="row"><text>公开照片</text><switch checked="{{showPhoto}}" bindchange="onSwitch" data-k="showPhoto" /></view>
+    <view class="row"><text>公开微信</text><switch checked="{{showWechat}}" bindchange="onSwitch" data-k="showWechat" /></view>
+    <view class="row"><text>允许印刷</text><switch checked="{{printAllow}}" bindchange="onSwitch" data-k="printAllow" /></view>
+    <button class="btn" bindtap="save">保存隐私与资料</button>
+  </view>
+  <view class="card">
+    <view class="title">照片</view>
+    <view class="muted">最多 12 张，单张 2MB。不公开时他人看不到。</view>
+    <view class="photos">
+      <image wx:for="{{photos}}" wx:key="*this" src="{{item}}" mode="aspectFill" class="ph" bindlongpress="delPhoto" data-path="{{item}}" />
+    </view>
+    <button class="btn btn-ghost" bindtap="choosePhoto">上传照片</button>
+    <view class="muted">长按照片可删除。</view>
+  </view>
+  <view class="card">
+    <view class="title">绑定身份证</view>
+    <input class="input" placeholder="18位身份证" value="{{bindId}}" bindinput="set" data-k="bindId" />
+    <button class="btn btn-ghost" bindtap="bindIdCard">绑定</button>
+  </view>
+</view>

@@ -1,0 +1,111 @@
+@model FamilyTree.Models.ViewModels.FtTreeNodeVm?
+@{
+    ViewData["Title"] = "族谱树";
+    var roots = ViewBag.Roots as List<(int Id, string Name)> ?? new();
+    var rootId = (int)(ViewBag.RootId ?? 0);
+    var mainMode = ViewBag.MainMode as bool? ?? false;
+    var personalMode = ViewBag.PersonalMode as bool? ?? false;
+    var joinedMain = ViewBag.JoinedMain as bool? ?? false;
+    var isStaff = ViewBag.IsStaff as bool? ?? false;
+    var scope = (string?)ViewBag.Scope ?? "mine";
+    var forest = ViewBag.Forest as List<FamilyTree.Models.ViewModels.FtTreeNodeVm> ?? new();
+    var isAll = mainMode && scope == "all";
+    var canOpenMain = isStaff || joinedMain;
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">@(personalMode
+            ? "族谱树（我录入的小树）"
+            : mainMode
+                ? (isAll ? "族谱树（完整主谱）" : "族谱树（主谱·我的支）")
+                : "族谱树（我的小树）")</h5>
+        @if (mainMode)
+        {
+            <a class="btn btn-sm btn-outline-secondary" asp-controller="FtPeer" asp-action="Index">外链对接</a>
+        }
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <a class="btn btn-sm @(personalMode || (!mainMode && !isAll) ? "btn-primary" : "btn-outline-primary")"
+               asp-action="Index" asp-route-scope="personal">我录入的小树</a>
+            @if (canOpenMain)
+            {
+                <a class="btn btn-sm @(!personalMode && !isAll && mainMode ? "btn-primary" : "btn-outline-primary")"
+                   asp-action="Index" asp-route-scope="mine">主谱·我的支</a>
+                <a class="btn btn-sm @(isAll ? "btn-primary" : "btn-outline-primary")"
+                   asp-action="Index" asp-route-scope="all">完整主谱</a>
+            }
+            else
+            {
+                <span class="small text-muted">链入审批通过后，可查看主谱。</span>
+            }
+        </div>
+
+        @if (personalMode)
+        {
+            <p class="text-muted small mb-3">仅显示您自己录入/绑定的人物。若已用人物 ID 挂上父/母（含主谱中的人），小树按该 ID 展示父子关系（标注「主谱引用」），不必再新建档案，也不会因此进入主谱。</p>
+        }
+        else if (mainMode && isAll)
+        {
+            <p class="text-muted small mb-3">以下按主谱当前根全部展开（仅已入主谱、且非待审源人）。</p>
+        }
+        else if (mainMode)
+        {
+            <p class="text-muted small mb-3">主谱中您所在的一支。未审批链入的人物不会出现在此。</p>
+        }
+
+        @if ((mainMode && !isAll || personalMode) && roots.Count > 0)
+        {
+            <form method="get" class="mb-3 d-flex gap-2 align-items-center flex-wrap">
+                <input type="hidden" name="scope" value="@(personalMode ? "personal" : "mine")" />
+                <label class="small text-muted mb-0">当前根</label>
+                <select name="rootId" class="form-select" style="max-width:24rem;" onchange="this.form.submit()">
+                    @foreach (var r in roots)
+                    { if (r.Id == rootId) { <option value="@r.Id" selected>@r.Name</option> } else { <option value="@r.Id">@r.Name</option> } }
+                </select>
+            </form>
+        }
+
+        @if (isAll)
+        {
+            if (forest.Count == 0)
+            {
+                <p class="text-muted">主谱暂无当前根。</p>
+            }
+            else
+            {
+                <div class="mb-2 d-flex gap-2 flex-wrap">
+                    <button type="button" class="btn btn-sm btn-outline-secondary ft-tree-expand-all">全部展开</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ft-tree-collapse-all">全部收起</button>
+                </div>
+                @foreach (var tree in forest)
+                {
+                    <div class="mb-4">
+                        <h6 class="text-muted">根：@tree.Name</h6>
+                        <ul class="ft-tree-root"><partial name="_TreeNode" model="tree" /></ul>
+                    </div>
+                }
+            }
+        }
+        else if (Model == null)
+        {
+            <p class="text-muted">@(personalMode || !mainMode
+                ? "暂无个人小树。请先到「录入人物」填写本人与亲属并完成入档。"
+                : "暂无可展示的主谱根。请先完成链入审批，或由超管纳入人物。")</p>
+        }
+        else
+        {
+            <div class="mb-2 d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline-secondary ft-tree-expand-all">全部展开</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary ft-tree-collapse-all">全部收起</button>
+            </div>
+            <ul id="ft-tree-root" class="ft-tree-root"><partial name="_TreeNode" model="Model" /></ul>
+        }
+    </div>
+</div>
+@section Scripts {
+@if (mainMode)
+{
+    <partial name="_PeerTreeScripts" />
+}
+}

@@ -1,0 +1,69 @@
+﻿@model IReadOnlyList<FamilyTree.Models.ViewModels.FtMatchScanRowVm>
+@{
+    ViewData["Title"] = "匹配扫描";
+    var canApply = ViewBag.CanApply == true;
+    string Lv(int n) => n switch { 1 => "高", 2 => "中", 3 => "低", 4 => "姓名+年", _ => n.ToString() };
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">匹配主谱（确认链入）</h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">返回申请列表</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">
+            对照规则：优先「姓名+父母（+出生）」；也支持「姓名+出生年」一致。
+            堂亲串链示例：一方录「父亲的弟弟」、另一方录「父亲/伯父」，老人姓名与祖父母对上后会出现在下表。
+            两棵链的<strong>根若是同一人</strong>（姓名相同，父母文字一致或出生年一致），也可命中；
+            若只是「父母相同、本人不同」（兄弟），不会当成同一人合并。
+            目标必须已在主谱；点确认后仍须超管审批。
+        </p>
+        @if (Model.Count == 0)
+        {
+            <p class="text-muted">暂无对主谱的命中。请确认：对方人物已入主谱；两边姓名一致；尽量补全父名/母名或出生年后重新打开本页。</p>
+            <a class="btn btn-outline-primary btn-sm" asp-controller="FtPerson" asp-action="Index">去人物档案</a>
+        }
+        else
+        {
+            @foreach (var row in Model)
+            {
+                <div class="mb-4">
+                    <h6 class="mb-2">我的：@row.SourceName
+                        <span class="text-muted small fw-normal">@row.SourceFather / @row.SourceMother · @row.SourceBirth</span>
+                    </h6>
+                    <table class="table table-sm">
+                        <thead><tr><th>主谱人物</th><th>父母</th><th>出生年月</th><th>规则</th><th>置信</th><th></th></tr></thead>
+                        <tbody>
+                        @foreach (var h in row.Hints)
+                        {
+                            <tr>
+                                <td>@h.FullName</td>
+                                <td>@h.FatherName / @h.MotherName</td>
+                                <td>@(h.BirthDate ?? (h.BirthYear?.ToString() ?? "—"))</td>
+                                <td class="small">@h.Reason</td>
+                                <td>@Lv(h.Level)</td>
+                                <td class="text-nowrap">
+                                    @if (canApply)
+                                    {
+                                        <a class="btn btn-sm btn-primary"
+                                           asp-action="Confirm"
+                                           asp-route-sourceId="@row.SourceId"
+                                           asp-route-targetId="@h.PersonId"
+                                           asp-route-level="@h.Level">确认链入</a>
+                                    }
+                                    <form asp-action="NotMatch" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="sourceId" value="@row.SourceId" />
+                                        <input type="hidden" name="targetId" value="@h.PersonId" />
+                                        <input type="hidden" name="returnTo" value="Match" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" onclick="return confirm('确认不是同一人？以后匹配将跳过这对人。');">排除匹配</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,53 @@
+﻿@model IReadOnlyList<FamilyTree.Models.ViewModels.FtMatchHintVm>
+@{
+    ViewData["Title"] = "确认是否链入";
+    var canApply = ViewBag.CanApply == true;
+    var sourceId = (int)(ViewBag.SourceId ?? 0);
+    var sourceName = (string?)ViewBag.SourceName ?? "";
+    var sourceBirth = (string?)ViewBag.SourceBirth;
+    var sourceFather = (string?)ViewBag.SourceFather;
+    var sourceMother = (string?)ViewBag.SourceMother;
+    string Lv(int n) => n switch { 1 => "高", 2 => "中", 3 => "低", 4 => "姓名+年", _ => n.ToString() };
+}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">发现主谱相似人物</h5></div>
+    <div class="card-body">
+        <p class="mb-2">您刚保存的：<strong>@sourceName</strong>
+            <span class="text-muted small">@sourceFather / @sourceMother · @sourceBirth</span>
+        </p>
+        <p class="text-muted small mb-3">若与下列主谱人物是同一人，请点「确认链入」；不是同一人请点「排除匹配」，以后不再提示这对人。</p>
+        <table class="table table-sm">
+            <thead><tr><th>主谱人物</th><th>父母</th><th>出生年月</th><th>规则</th><th>置信</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var h in Model)
+            {
+                <tr>
+                    <td>@h.FullName</td>
+                    <td>@h.FatherName / @h.MotherName</td>
+                    <td>@(h.BirthDate ?? h.BirthYear?.ToString() ?? "—")</td>
+                    <td class="small">@h.Reason</td>
+                    <td>@Lv(h.Level)</td>
+                    <td class="text-nowrap">
+                        @if (canApply)
+                        {
+                            <a class="btn btn-sm btn-primary"
+                               asp-action="Confirm"
+                               asp-route-sourceId="@sourceId"
+                               asp-route-targetId="@h.PersonId"
+                               asp-route-level="@h.Level">确认链入</a>
+                        }
+                        <form asp-action="NotMatch" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="sourceId" value="@sourceId" />
+                            <input type="hidden" name="targetId" value="@h.PersonId" />
+                            <input type="hidden" name="returnTo" value="Suggest" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" onclick="return confirm('确认不是同一人？以后匹配将跳过这对人。');">排除匹配</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <a class="btn btn-outline-secondary" asp-controller="FtPerson" asp-action="Edit" asp-route-id="@sourceId">返回人物</a>
+    </div>
+</div>

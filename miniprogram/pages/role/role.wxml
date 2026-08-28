@@ -1,0 +1,26 @@
+<view class="card" wx:if="{{status.isSuperAdmin}}">
+  <view>你已是超管，无需申请。</view>
+</view>
+<view class="card" wx:elif="{{status.isBranchAdmin}}">
+  <view>你已是分支管理员，可向上、向下填写人物。</view>
+</view>
+<view class="card" wx:elif="{{status.hasPending}}">
+  <view>已有待审申请，请等待超管处理。</view>
+  <view class="muted" style="margin-top:12rpx;">{{status.pendingReason}}</view>
+</view>
+<view class="card" wx:else>
+  <view class="title">申请成为分支管理员</view>
+  <view class="muted">通过后可以补祖先和子孙。超管在「填写权限岗」审批。</view>
+  <textarea class="input" style="height:160rpx;" maxlength="512" placeholder="申请理由" value="{{reason}}" bindinput="onReason" />
+  <button class="btn" bindtap="submit">提交申请</button>
+</view>
+<view class="card">
+  <view class="title">我的申请</view>
+  <view class="row" wx:for="{{rows}}" wx:key="id">
+    <view>
+      <view>{{item.status}}</view>
+      <view class="muted">{{item.reason}}</view>
+    </view>
+  </view>
+  <view class="muted" wx:if="{{rows.length===0}}">暂无记录。</view>
+</view>

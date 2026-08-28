@@ -1,0 +1,44 @@
+@model FamilyTree.Models.ViewModels.FtPeerAcceptVm
+@{
+    ViewData["Title"] = "接受外链邀请";
+    var persons = ViewBag.Persons as List<(int DataId, string FullName)> ?? new();
+}
+<div class="card mx-auto" style="max-width:40rem;">
+    <div class="card-header"><h5 class="mb-0">接受外链邀请</h5></div>
+    <div class="card-body pm-form-wrap">
+        <p class="text-muted small">填写对方发出的邀请码与对方站点地址，并选择本站对应的共同祖先。确认后双方建立授权，可在族谱树点开展开对方房支。</p>
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3 row">
+                <label class="col-md-3 col-form-label text-md-end">对方站点</label>
+                <div class="col-md-8"><input asp-for="PeerBaseUrl" class="form-control" placeholder="http://对方主机:端口" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-3 col-form-label text-md-end">邀请码</label>
+                <div class="col-md-8"><input asp-for="InviteCode" class="form-control" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-3 col-form-label text-md-end">本站祖先</label>
+                <div class="col-md-8">
+                    <select asp-for="LocalPersonId" class="form-select">
+                        <option value="0">请选择</option>
+                        @foreach (var p in persons)
+                        {
+                            if (p.DataId == Model.LocalPersonId) { <option value="@p.DataId" selected>@p.FullName</option> }
+                            else { <option value="@p.DataId">@p.FullName</option> }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-3 col-form-label text-md-end">对方房名</label>
+                <div class="col-md-8"><input asp-for="PeerLabel" class="form-control" placeholder="如 某某房" maxlength="64" /></div>
+            </div>
+            <div class="row"><div class="col-md-8 offset-md-3">
+                <button type="submit" class="btn btn-primary">确认对接</button>
+                <a class="btn btn-secondary" asp-action="Index">取消</a>
+            </div></div>
+        </form>
+    </div>
+</div>

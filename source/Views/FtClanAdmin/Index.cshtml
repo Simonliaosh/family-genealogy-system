@@ -1,0 +1,45 @@
+@model List<FamilyTree.Models.ViewModels.FtClanAdminRowVm>
+@{
+    ViewData["Title"] = "家族与族谱管理员";
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">全部家族</h5>
+        <a class="btn btn-sm btn-primary" asp-action="InviteCreate">邀请创建新家族</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small">超管只做两件事：委任各家族的<strong>族谱管理员</strong>；以及发出「创建新家族」邀请二维码。不管理支链，不处理录入/链入等业务。</p>
+        @if (Model.Count == 0)
+        {
+            <p class="text-muted">暂无家族。</p>
+        }
+        else
+        {
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>族谱名称</th>
+                        <th>家族 ID</th>
+                        <th>创建人</th>
+                        <th>人数</th>
+                        <th>族谱管理员</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.ClanName</td>
+                        <td><code>@c.ClanCode</code></td>
+                        <td>@c.OwnerName</td>
+                        <td>@c.MemberCount</td>
+                        <td>@(string.IsNullOrEmpty(c.ClanAdminNames) ? "—" : c.ClanAdminNames)</td>
+                        <td><a class="btn btn-sm btn-outline-primary" asp-action="Members" asp-route-id="@c.ClanId">委任族谱管理员</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

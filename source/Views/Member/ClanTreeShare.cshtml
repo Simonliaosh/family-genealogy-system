@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "族谱一览 · 分享二维码";
+    var pageUrl = ViewBag.PageUrl as string ?? "";
+    var wxUrl = ViewBag.WxUrl as string ?? "";
+}
+<div class="card mx-auto" style="max-width:36rem;">
+    <div class="card-header"><h5 class="mb-0">分享族谱一览</h5></div>
+    <div class="card-body">
+        <p class="text-muted small">把二维码发给<strong>已认证的族人</strong>。对方登录（或微信一键进入）后即可打开只读全屏族谱；未认证者无法查看。</p>
+        <div class="row g-4 text-center">
+            <div class="col-sm-6">
+                <h6>直接打开</h6>
+                <p class="small text-muted">已登录族人扫这个</p>
+                <img src="@Url.Action("ClanTreeQr", new { kind = "page" })" alt="族谱一览二维码" class="border rounded mb-2" style="width:180px;height:180px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="clanPageUrl" value="@pageUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('clanPageUrl').value)">复制</button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h6>微信入口</h6>
+                <p class="small text-muted">公众号内扫码后进族谱</p>
+                <img src="@Url.Action("ClanTreeQr", new { kind = "wx" })" alt="微信进族谱" class="border rounded mb-2" style="width:180px;height:180px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="clanWxUrl" value="@wxUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('clanWxUrl').value)">复制</button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 d-flex flex-wrap gap-2">
+            <a class="btn btn-primary" asp-action="ClanTree">打开族谱页</a>
+            <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Home")'">返回上一页</a>
+            <a class="btn btn-outline-secondary" asp-action="Home">返回我的任务</a>
+        </div>
+    </div>
+</div>

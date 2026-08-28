@@ -1,0 +1,81 @@
+@model FamilyTree.Models.ViewModels.EDutyFormVm
+@{
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var dutyCategoryOptions = ViewBag.DutyCategoryOptions as List<(string Value, string Text)> ?? new();
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责代码</label>
+    <div class="col-md-8">
+        <input asp-for="DutyCode" class="form-control" maxlength="30" />
+        <span asp-validation-for="DutyCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责中文名</label>
+    <div class="col-md-8">
+        <input asp-for="DutyCName" class="form-control" maxlength="100" />
+        <span asp-validation-for="DutyCName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责英文名</label>
+    <div class="col-md-8">
+        <input asp-for="DutyEName" class="form-control" maxlength="100" />
+        <span asp-validation-for="DutyEName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责分类</label>
+    <div class="col-md-8">
+        <select asp-for="DutyCategory" class="form-select">
+            @foreach (var o in dutyCategoryOptions)
+            {
+                <option value="@o.Value">@o.Text</option>
+            }
+        </select>
+        <span asp-validation-for="DutyCategory" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">显示顺序</label>
+    <div class="col-md-8">
+        <input asp-for="DutyDispSeq" type="number" min="0" class="form-control" />
+        <span asp-validation-for="DutyDispSeq" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">描述</label>
+    <div class="col-md-8">
+        <textarea asp-for="DDescription" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="DDescription" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责流程</label>
+    <div class="col-md-8">
+        <textarea asp-for="DutyFlow" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="DutyFlow" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>

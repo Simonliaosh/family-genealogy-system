@@ -1,0 +1,12 @@
+<view class="card">
+  <view class="title">你好，{{name}}</view>
+  <view class="muted" style="margin-top:12rpx;">先录入本人，即可定位个人小树；链入由超管审核。</view>
+  <button class="btn btn-ghost" bindtap="logout">退出登录</button>
+</view>
+<view class="card">
+  <view class="row" bindtap="goTab" data-url="/pages/draft/list"><text>录入人物</text><text class="muted">本人 / 父母 / 兄弟 / 子女</text></view>
+  <view class="row" bindtap="goTab" data-url="/pages/tree/tree"><text>族谱树</text><text class="muted">下延 / 上溯 / 左右</text></view>
+  <view class="row" bindtap="goTab" data-url="/pages/profile/profile"><text>我的档案</text><text class="muted">照片与隐私</text></view>
+  <view class="row" bindtap="goTab" data-url="/pages/msg/msg"><text>消息</text><text class="muted">待办与链入结果</text></view>
+  <view class="row" bindtap="go" data-url="/pages/role/role"><text>申请分支管理员</text><text class="muted">超管审批后上岗</text></view>
+</view>

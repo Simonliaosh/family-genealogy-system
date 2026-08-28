@@ -1,0 +1,8 @@
+@{ ViewData["Title"] = "批量匹配"; }
+<div class="card"><div class="card-header"><h5 class="mb-0">批量匹配</h5></div>
+<div class="card-body">
+<p>对全库人物重跑匹配提示，不会自动链入。</p>
+<form asp-action="Run" method="post">@Html.AntiForgeryToken()
+<button class="btn btn-primary" type="submit">开始</button>
+</form>
+</div></div>

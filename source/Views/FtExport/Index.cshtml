@@ -1,0 +1,39 @@
+@model FamilyTree.Models.ViewModels.FtTreeNodeVm?
+@{
+    ViewData["Title"] = "印刷视图";
+    var roots = ViewBag.Roots as List<(int Id, string Name)> ?? new();
+    var rootId = (int)(ViewBag.RootId ?? 0);
+    var canDownloadZip = ViewBag.CanDownloadZip as bool? == true;
+}
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h5 class="mb-0">印刷 / 导出</h5>
+        <div class="d-flex flex-wrap gap-2">
+            @if (canDownloadZip)
+            {
+                <a class="btn btn-sm btn-primary" asp-action="DownloadZip">
+                    下载离线族谱包（ZIP）
+                </a>
+            }
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">浏览器打印</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">
+            @if (canDownloadZip)
+            {
+                <text><strong>离线包</strong>（族谱管理员 / 支链管理员）：含 <code>genealogy.xml</code>（人物、配偶）、<code>photos/</code>（照片）与 <code>index.html</code>，解压后双击 HTML 即可离线浏览。</text>
+            }
+            else
+            {
+                <text><strong>离线包</strong>仅族谱管理员与支链管理员可下载。</text>
+            }
+            <strong>打印</strong>：在下方选择根节点后使用浏览器「打印 → 另存为 PDF」。
+        </p>
+        <form method="get" class="mb-3"><select name="rootId" class="form-select" style="max-width:24rem;" onchange="this.form.submit()">
+            @foreach (var r in roots){ if (r.Id==rootId){<option value="@r.Id" selected>@r.Name</option>}else{<option value="@r.Id">@r.Name</option>} }
+        </select></form>
+        <h2 class="text-center">家族世系</h2>
+        @if (Model==null){<p>无数据</p>} else {<ul><partial name="_TreeNode" model="Model" /></ul>}
+    </div>
+</div>

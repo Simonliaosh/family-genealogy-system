@@ -1,0 +1,264 @@
+@model FamilyTree.Models.ViewModels.DashPosTemplateIndexVm
+@{
+    ViewData["Title"] = "岗位仪表盘模板";
+    var canUp = ViewBag.CanUpdate == true;
+    var saveError = (string?)ViewBag.SaveError;
+}
+
+<link rel="stylesheet" href="~/css/dash-board.css" asp-append-version="true" />
+
+<div class="card polist-wrap">
+    <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <h5 class="mb-0">岗位仪表盘模板</h5>
+        @if (Model.PosId > 0)
+        {
+            <span class="small text-muted">4 列网格布局 · 覆盖 ChartType 1~9 演示请点「恢复默认模板」</span>
+        }
+    </div>
+    <div class="card-body py-2">
+        @if (!string.IsNullOrWhiteSpace(saveError))
+        {
+            <div class="alert alert-danger py-2">@saveError</div>
+        }
+
+        <form id="f-pos-select" asp-action="Index" method="get" class="polist-filter pm-filter-grid mb-3">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <label class="polist-filter-lbl mb-0">岗位</label>
+                <select name="posId" class="form-select form-select-sm" style="min-width:16rem;" onchange="this.form.submit()">
+                    @foreach (var o in Model.PosOptions)
+                    {
+                        if (o.PosId == Model.PosId) { <option value="@o.PosId" selected>@o.PostCName</option> } else { <option value="@o.PosId">@o.PostCName</option> }
+                    }
+                </select>
+                @if (Model.PosId > 0 && canUp)
+                {
+                    <button type="button" class="btn btn-sm btn-outline-warning" id="btn-reset-default">恢复默认模板（9类图表）</button>
+                }
+            </div>
+        </form>
+
+        @if (Model.PosId > 0)
+        {
+            @Html.AntiForgeryToken()
+
+            @if (Model.Cards.Count > 0)
+            {
+                <div class="mb-3">
+                    <div class="small text-muted mb-1">布局预览（与用户工作台一致）</div>
+                    <div id="tpl-preview-grid" class="dash-grid">
+                        @foreach (var card in Model.Cards.OrderBy(c => c.LayoutRow).ThenBy(c => c.LayoutCol))
+                        {
+                            <div class="dash-card tpl-preview-card" style="grid-column:@(card.LayoutCol) / span @(card.ColSpan); grid-row:@(card.LayoutRow);">
+                                <div class="dash-card-header">
+                                    <span class="dash-card-title">@card.CardTitle</span>
+                                    @if (card.IsLock)
+                                    {
+                                        <span class="badge bg-secondary ms-1">锁</span>
+                                    }
+                                </div>
+                                <div class="dash-card-body text-center text-muted small py-4">
+                                    @if (!string.IsNullOrEmpty(card.ChartTypeName))
+                                    {
+                                        <div>@card.ChartTypeName</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(card.IndicatorCode))
+                                    {
+                                        <div class="mt-1"><code>@card.IndicatorCode</code></div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info py-2 small mb-3">
+                    当前岗位尚无模板卡片。请点击「恢复默认模板（9类图表）」一键写入 CF_ADMIN 完整演示布局（需已执行种子脚本并完成岗位指标授权）。
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-polist table-sm align-middle" id="tpl-table">
+                    <thead>
+                    <tr>
+                        <th class="text-center">行</th>
+                        <th class="text-center">列</th>
+                        <th class="text-center">列跨度</th>
+                        <th class="text-center">业务指标</th>
+                        <th class="text-center">图表类型</th>
+                        <th class="text-center">卡片标题</th>
+                        <th class="text-center">锁定</th>
+                        @if (canUp) { <th class="text-center">操作</th> }
+                    </tr>
+                    </thead>
+                    <tbody id="tpl-tbody">
+                    @foreach (var card in Model.Cards)
+                    {
+                        <tr data-id="@card.DataId">
+                            <td class="text-center"><input type="number" class="form-control form-control-sm tpl-row" min="1" value="@card.LayoutRow" style="width:4rem;" @(canUp ? null : "readonly") /></td>
+                            <td class="text-center"><input type="number" class="form-control form-control-sm tpl-col" min="1" max="4" value="@card.LayoutCol" style="width:4rem;" @(canUp ? null : "readonly") /></td>
+                            <td class="text-center"><input type="number" class="form-control form-control-sm tpl-span" min="1" max="4" value="@card.ColSpan" style="width:4rem;" @(canUp ? null : "readonly") /></td>
+                            <td class="text-center">
+                                <select class="form-select form-select-sm tpl-indicator" @(canUp ? null : "disabled")>
+                                    @foreach (var ind in Model.AvailableIndicators)
+                                    {
+                                        if (ind.DataId == card.IndicatorId)
+                                        {
+                                            <option value="@ind.DataId" selected data-chart="@ind.ChartTypeName">@ind.IndicatorCode - @ind.IndicatorName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@ind.DataId" data-chart="@ind.ChartTypeName">@ind.IndicatorCode - @ind.IndicatorName</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td class="text-center tpl-chart-type small text-muted">@(string.IsNullOrEmpty(card.ChartTypeName) ? "-" : card.ChartTypeName)</td>
+                            <td class="text-center"><input type="text" class="form-control form-control-sm tpl-title" maxlength="100" value="@card.CardTitle" @(canUp ? null : "readonly") /></td>
+                            <td class="text-center"><input type="checkbox" class="tpl-lock align-middle" @(card.IsLock ? "checked" : null) @(canUp ? null : "disabled") /></td>
+                            @if (canUp)
+                            {
+                                <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger tpl-del">删除</button></td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (canUp)
+            {
+                <div class="mt-2 d-flex justify-content-center gap-2 flex-wrap">
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-row">添加卡片</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-save-batch">保存</button>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted mb-0">暂无可用岗位。</p>
+        }
+    </div>
+</div>
+
+@if (Model.PosId > 0 && canUp)
+{
+    <script>
+        (function () {
+            const posId = @Model.PosId;
+            const indicators = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                Model.AvailableIndicators.Select(x => new { x.DataId, x.IndicatorCode, x.IndicatorName, x.ChartTypeName }).ToList()));
+            const tbody = document.getElementById('tpl-tbody');
+            const tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenEl ? tokenEl.value : '';
+
+            function syncChartTypeCell(tr) {
+                const sel = tr.querySelector('.tpl-indicator');
+                const cell = tr.querySelector('.tpl-chart-type');
+                if (!sel || !cell) return;
+                const opt = sel.options[sel.selectedIndex];
+                cell.textContent = opt ? (opt.getAttribute('data-chart') || '-') : '-';
+            }
+
+            function buildIndicatorSelect(selectedId) {
+                const sel = document.createElement('select');
+                sel.className = 'form-select form-select-sm tpl-indicator';
+                indicators.forEach(ind => {
+                    const opt = document.createElement('option');
+                    opt.value = ind.DataId;
+                    opt.setAttribute('data-chart', ind.ChartTypeName || '');
+                    opt.textContent = ind.IndicatorCode + ' - ' + ind.IndicatorName;
+                    if (ind.DataId === selectedId) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+                sel.addEventListener('change', function () { syncChartTypeCell(sel.closest('tr')); });
+                return sel;
+            }
+
+            tbody?.querySelectorAll('tr').forEach(function (tr) {
+                tr.querySelector('.tpl-indicator')?.addEventListener('change', function () { syncChartTypeCell(tr); });
+            });
+
+            document.getElementById('btn-add-row')?.addEventListener('click', function () {
+                const tr = document.createElement('tr');
+                tr.dataset.id = '0';
+                const firstId = indicators.length > 0 ? indicators[0].DataId : 0;
+                tr.innerHTML = '<td class="text-center"><input type="number" class="form-control form-control-sm tpl-row" min="1" value="1" style="width:4rem;" /></td>'
+                    + '<td class="text-center"><input type="number" class="form-control form-control-sm tpl-col" min="1" max="4" value="1" style="width:4rem;" /></td>'
+                    + '<td class="text-center"><input type="number" class="form-control form-control-sm tpl-span" min="1" max="4" value="2" style="width:4rem;" /></td>'
+                    + '<td class="text-center"></td>'
+                    + '<td class="text-center tpl-chart-type small text-muted">-</td>'
+                    + '<td class="text-center"><input type="text" class="form-control form-control-sm tpl-title" maxlength="100" value="" /></td>'
+                    + '<td class="text-center"><input type="checkbox" class="tpl-lock align-middle" /></td>'
+                    + '<td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger tpl-del">删除</button></td>';
+                tr.children[3].appendChild(buildIndicatorSelect(firstId));
+                syncChartTypeCell(tr);
+                tbody.appendChild(tr);
+            });
+
+            tbody?.addEventListener('click', function (e) {
+                if (e.target.classList.contains('tpl-del')) {
+                    e.target.closest('tr')?.remove();
+                }
+            });
+
+            function collectCards() {
+                const cards = [];
+                tbody.querySelectorAll('tr').forEach(tr => {
+                    cards.push({
+                        DataId: parseInt(tr.dataset.id || '0', 10) || 0,
+                        LayoutRow: parseInt(tr.querySelector('.tpl-row')?.value || '1', 10),
+                        LayoutCol: parseInt(tr.querySelector('.tpl-col')?.value || '1', 10),
+                        ColSpan: parseInt(tr.querySelector('.tpl-span')?.value || '2', 10),
+                        IndicatorId: parseInt(tr.querySelector('.tpl-indicator')?.value || '0', 10),
+                        CardTitle: (tr.querySelector('.tpl-title')?.value || '').trim(),
+                        IsLock: tr.querySelector('.tpl-lock')?.checked === true
+                    });
+                });
+                return cards;
+            }
+
+            document.getElementById('btn-save-batch')?.addEventListener('click', async function () {
+                const payload = { PosId: posId, Cards: collectCards() };
+                const res = await fetch('@Url.Action("SaveBatch")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    window.location.href = '@Url.Action("Index")?posId=' + posId;
+                } else {
+                    alert(result.msg || '保存失败');
+                }
+            });
+
+            document.getElementById('btn-reset-default')?.addEventListener('click', async function () {
+                if (!confirm('确定恢复为默认模板？将覆盖当前岗位的全部模板卡片（CF_ADMIN 含 9 类图表演示，CF_STAFF 为精简版）。')) return;
+                const res = await fetch('@Url.Action("ResetToDefault")?posId=' + posId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: '{}'
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    window.location.href = '@Url.Action("Index")?posId=' + posId;
+                } else {
+                    alert(result.msg || '恢复失败');
+                }
+            });
+        })();
+    </script>
+}
+
+<style>
+    .tpl-preview-card { pointer-events: none; min-height: 6rem; }
+    .tpl-preview-card .dash-card-body { min-height: 4rem; }
+</style>

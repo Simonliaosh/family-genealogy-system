@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "外链邀请";
+    var err = ViewBag.Err as string;
+    var code = ViewBag.Code as string ?? "";
+    var fullName = ViewBag.FullName as string ?? "";
+    var fatherName = ViewBag.FatherName as string ?? "";
+    var motherName = ViewBag.MotherName as string ?? "";
+    var birthDate = ViewBag.BirthDate as string ?? "";
+    var baseUrl = ViewBag.BaseUrl as string ?? "";
+}
+<div class="card mx-auto" style="max-width:36rem;">
+    <div class="card-header"><h5 class="mb-0">外链对接邀请</h5></div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(err))
+        {
+            <div class="alert alert-warning">@err</div>
+        }
+        else
+        {
+            <p class="mb-1">对方站点邀请您对接共同祖先。</p>
+            <p class="mb-1">姓名：<strong>@fullName</strong></p>
+            <p class="mb-1">父母：@fatherName / @motherName</p>
+            <p class="mb-1">出生：@(string.IsNullOrWhiteSpace(birthDate) ? "—" : birthDate)</p>
+            <p class="mb-3">邀请码：<code class="fs-5">@code</code></p>
+            <p class="text-muted small">请用<strong>本房</strong>族谱系统登录（分支管理员或超管），打开「外链对接 → 接受邀请」，粘贴邀请码，对方站点填：</p>
+            <p><code>@baseUrl</code></p>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="btn btn-primary" asp-action="Accept" asp-route-c="@code" asp-route-baseUrl="@baseUrl">在本站接受</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Accept", "FtPeer", new { c = code, baseUrl })">登录后接受</a>
+            }
+        }
+    </div>
+</div>

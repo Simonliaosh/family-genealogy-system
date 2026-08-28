@@ -1,0 +1,60 @@
+@model FamilyTree.Models.ViewModels.HrHomeVm
+@{
+    ViewData["Title"] = "人事工作台";
+}
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-friends me-2"></i>人事工作台</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">通用请假流程演示：员工提交 → 主管待办审批 → 事件实例/日志可追溯。</p>
+                <div class="row g-3">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card border-primary h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted">我的待审请假</h6>
+                                <h3 class="mb-2">@Model.MyPendingLeaveCount</h3>
+                                <a class="btn btn-sm btn-outline-primary" asp-controller="HrLeave" asp-action="Index">我的请假</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card border-warning h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted">我的待办</h6>
+                                <h3 class="mb-2">@Model.MyTodoCount</h3>
+                                <a class="btn btn-sm btn-outline-warning" asp-controller="ETodoTask" asp-action="Index">待办任务</a>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.CanApprove)
+                    {
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card border-success h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted">待我审批</h6>
+                                    <h3 class="mb-2">@Model.PendingApprovalCount</h3>
+                                    <a class="btn btn-sm btn-outline-success" asp-controller="HrLeave" asp-action="Approval">请假审批</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card border-secondary h-100">
+                            <div class="card-body">
+                                <h6 class="text-muted">快捷操作</h6>
+                                <div class="d-grid gap-2">
+                                    <a class="btn btn-sm btn-primary" asp-controller="HrLeave" asp-action="Create">新建请假</a>
+                                    <a class="btn btn-sm btn-secondary" asp-controller="EEventInstanceQuery" asp-action="Index">事件实例</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

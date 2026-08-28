@@ -1,0 +1,114 @@
+@model FamilyTree.Models.ViewModels.EResourceFormVm
+@{
+    var editMode = ViewBag.EditMode as bool? == true;
+    var mrt = Model.ResourceType ?? "";
+    var mgc = Model.MenuGroupCode ?? "";
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var resourceTypeFormOptions = ViewBag.ResourceTypeFormOptions as List<(string Value, string Text)> ?? new();
+    var menuGroupOptions = ViewBag.MenuGroupOptions as List<(string Value, string Text)> ?? new();
+    var appCodeOptions = ViewBag.AppCodeOptions as List<(string Value, string Text)> ?? new();
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用编码</label>
+    <div class="col-md-8">
+        @if (editMode)
+        {
+            <select asp-for="AppCode" class="form-select" disabled="disabled">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+            <input type="hidden" asp-for="AppCode" />
+        }
+        else
+        {
+            <select asp-for="AppCode" class="form-select">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+        }
+        <span asp-validation-for="AppCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">资源编码</label>
+    <div class="col-md-8">
+        @if (editMode)
+        {
+            <input asp-for="ResourceId" class="form-control" maxlength="100" readonly />
+            <div class="form-text">修改页不允许变更资源编码。</div>
+        }
+        else
+        {
+            <input asp-for="ResourceId" class="form-control" maxlength="100" />
+        }
+        <span asp-validation-for="ResourceId" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">资源名称</label>
+    <div class="col-md-8">
+        <input asp-for="ResourceName" class="form-control" maxlength="100" />
+        <span asp-validation-for="ResourceName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">资源类型</label>
+    <div class="col-md-8">
+        <select asp-for="ResourceType" class="form-select">
+            @foreach (var o in resourceTypeFormOptions)
+            {
+                var sel = string.Equals(o.Value, mrt, StringComparison.OrdinalIgnoreCase);
+                if (sel) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="ResourceType" class="text-danger"></span>
+        <div class="form-text">码表：MENU=菜单，BUTTON=按钮，API=API（存库大写）。</div>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">菜单路径</label>
+    <div class="col-md-8">
+        <input asp-for="MenuPath" class="form-control" maxlength="300" placeholder="如 /EResource/Index，与权限菜单 CPrgLink 约定一致即可" />
+        <span asp-validation-for="MenuPath" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">菜单组编码</label>
+    <div class="col-md-8">
+        <select asp-for="MenuGroupCode" class="form-select">
+            <option value="">无</option>
+            @foreach (var o in menuGroupOptions)
+            {
+                var sel = string.Equals(o.Value, mgc, StringComparison.OrdinalIgnoreCase);
+                if (sel) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="MenuGroupCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>

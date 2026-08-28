@@ -1,0 +1,59 @@
+@model FamilyTree.Models.ViewModels.EMemberDetailVm
+@using FamilyTree.Helpers
+@{
+    ViewData["Title"] = "人员档案详情";
+    var canUp = ViewBag.CanUpdate == true;
+    string D(string? v) => string.IsNullOrWhiteSpace(v) ? "-" : v!;
+    string Dt(DateTime? d) => d.HasValue ? d.Value.ToString("yyyy-MM-dd") : "-";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">人员档案详情</h5>
+        <div class="d-flex gap-2 flex-wrap">
+            @if (canUp)
+            {
+                <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.DataId" asp-route-polistRt="@(ViewBag.PolistRt as string)">修改</a>
+            }
+            <a class="btn btn-sm btn-outline-secondary" href="@Url.Action("Index", PolistReturnToken.IndexRoute(ViewBag.PolistRt as string))">返回列表</a>
+        </div>
+    </div>
+    <div class="card-body pm-form-wrap small">
+        <p class="text-muted">列表与详情中身份证号均为脱敏显示；搜索证件号需具备本页查询权限并注意保密。</p>
+        <h6 class="border-bottom pb-1">基本信息</h6>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">人员编号</div><div class="col-md-8">@Model.MemberId</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">姓名</div><div class="col-md-8">@Model.MemberName</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">性别</div><div class="col-md-8">@D(Model.Sex)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">民族</div><div class="col-md-8">@D(Model.Nation)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">籍贯</div><div class="col-md-8">@D(Model.NativePlace)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">身份证号</div><div class="col-md-8">@Model.IdNoMasked</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">出生日期</div><div class="col-md-8">@Dt(Model.Birthday)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">参加工作日期</div><div class="col-md-8">@Dt(Model.WorkDate)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">职级</div><div class="col-md-8">@D(Model.PerGrade)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">部门</div><div class="col-md-8">@Model.DeptName</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">岗位</div><div class="col-md-8">@Model.PosName</div></div>
+
+        <h6 class="border-bottom pb-1 mt-3">资历信息</h6>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">学历</div><div class="col-md-8">@D(Model.ELevel)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">学位</div><div class="col-md-8">@D(Model.Degree)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">毕业院校</div><div class="col-md-8">@D(Model.School)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">专业</div><div class="col-md-8">@D(Model.Speciality)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">计算机能力</div><div class="col-md-8">@D(Model.ComputerAbility)</div></div>
+
+        <h6 class="border-bottom pb-1 mt-3">通信信息</h6>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">家庭住址</div><div class="col-md-8">@D(Model.HomeAddr)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">手机</div><div class="col-md-8">@D(Model.Mobile)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">住宅电话</div><div class="col-md-8">@D(Model.HomePhone)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">办公电话</div><div class="col-md-8">@D(Model.WorkPhone)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">微信号</div><div class="col-md-8">@D(Model.WxNum)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">QQ</div><div class="col-md-8">@D(Model.QqNum)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">电子邮箱</div><div class="col-md-8">@D(Model.EMail)</div></div>
+
+        <h6 class="border-bottom pb-1 mt-3">其他信息</h6>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">健康状况</div><div class="col-md-8">@D(Model.Health)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">备注</div><div class="col-md-8" style="white-space:pre-wrap;">@D(Model.Remark)</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">建档时间</div><div class="col-md-8">@Model.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">修改时间</div><div class="col-md-8">@Model.AmendDate.ToString("yyyy-MM-dd HH:mm:ss")</div></div>
+        <div class="row mb-2"><div class="col-md-3 text-md-end text-secondary">操作人</div><div class="col-md-8">@D(Model.OperatorName)</div></div>
+    </div>
+</div>

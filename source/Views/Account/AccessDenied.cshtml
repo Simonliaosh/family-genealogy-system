@@ -1,0 +1,197 @@
+@{
+    ViewData["Title"] = "访问被拒绝";
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .access-denied-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 80px;
+            color: #f44336;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            border-left: 4px solid #f44336;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #f44336;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .info-box p {
+            color: #555;
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .info-box strong {
+            color: #333;
+        }
+
+        .button-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .return-url {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .return-url strong {
+            color: #333;
+        }
+
+        @@media (max-width: 600px) {
+            .access-denied-container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .icon {
+                font-size: 60px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-container">
+        <div class="icon">🚫</div>
+        <h1>访问被拒绝</h1>
+        <p class="message">抱歉，您没有权限访问此页面。</p>
+
+        <div class="info-box">
+            <h3>可能的原因：</h3>
+            <p>✗ 您的账户未被授予访问此功能的权限</p>
+            <p>✗ 此功能需要特定的角色或职责权限</p>
+            <p>✗ 您的权限配置可能需要更新</p>
+        </div>
+
+        <div class="info-box">
+            <h3>建议操作：</h3>
+            <p><strong>1. 返回首页</strong> - 点击下方"返回首页"按钮</p>
+            <p><strong>2. 联系管理员</strong> - 如需访问此功能，请联系系统管理员为您分配相应权限</p>
+            <p><strong>3. 查看其他功能</strong> - 尝试访问其他您有权限的功能模块</p>
+        </div>
+
+        @if (Context.Request.Query.ContainsKey("ReturnUrl"))
+        {
+            <div class="return-url">
+                <strong>您尝试访问的页面：</strong><br />
+                @Context.Request.Query["ReturnUrl"]
+            </div>
+        }
+
+        <div class="button-group">
+            <a href="/" class="btn btn-primary">返回首页</a>
+            <a href="/Account/Logout" class="btn btn-secondary">退出登录</a>
+        </div>
+
+        <div style="margin-top: 30px; color: #999; font-size: 13px;">
+            <p>当前用户：@(User.Identity?.Name ?? "未知")</p>
+            <p>时间：@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</p>
+        </div>
+    </div>
+</body>
+</html>

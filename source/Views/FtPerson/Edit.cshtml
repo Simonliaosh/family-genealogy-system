@@ -1,0 +1,242 @@
+﻿@model FamilyTree.Models.ViewModels.FtPersonFormVm
+@{
+    ViewData["Title"] = "人物详情";
+    var polistRt = ViewBag.PolistRt as string;
+    var hints = ViewBag.Hints as List<FamilyTree.Models.ViewModels.FtMatchHintVm> ?? new();
+    var lin = ViewBag.Lineage as FamilyTree.Models.ViewModels.FtLineageVm;
+    var canExt = ViewBag.CanExtendTree == true;
+    var canSave = ViewBag.CanSave == true;
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5 class="mb-0">人物详情 @(Model.InMainGenealogy ? "（主谱）" : "（个人小树）")</h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-controller="FtPersonMarry" asp-action="Index" asp-route-personId="@Model.DataId">配偶</a>
+    </div>
+    <div class="card-body pm-form-wrap">
+        @if (lin != null)
+        {
+            <div class="border rounded p-3 mb-3 bg-light">
+                <h6 class="mb-2">世系</h6>
+                <p class="text-muted small mb-2">要填写祖父、曾祖，请先打开或添加父亲（或母亲）档案，再在那一页继续向上添加。</p>
+                <div class="mb-1">
+                    父亲：
+                    @if (lin.FatherId is int fid)
+                    {
+                        <a asp-action="Edit" asp-route-id="@fid" asp-route-polistRt="@polistRt">@(string.IsNullOrWhiteSpace(lin.FatherLabel) ? ("#" + fid) : lin.FatherLabel)</a>
+                    }
+                    else
+                    {
+                        <span>@(string.IsNullOrWhiteSpace(lin.FatherLabel) ? "尚未建档" : lin.FatherLabel + "（尚未建档）")</span>
+                        @if (canExt)
+                        {
+                            <a class="btn btn-sm btn-outline-primary ms-2" asp-action="AddRelative" asp-route-fromId="@Model.DataId" asp-route-kind="FATHER" asp-route-polistRt="@polistRt">添加父亲</a>
+                        }
+                    }
+                </div>
+                <div class="mb-1">
+                    母亲：
+                    @if (lin.MotherId is int mid)
+                    {
+                        <a asp-action="Edit" asp-route-id="@mid" asp-route-polistRt="@polistRt">@(string.IsNullOrWhiteSpace(lin.MotherLabel) ? ("#" + mid) : lin.MotherLabel)</a>
+                    }
+                    else
+                    {
+                        <span>@(string.IsNullOrWhiteSpace(lin.MotherLabel) ? "尚未建档" : lin.MotherLabel + "（尚未建档）")</span>
+                        @if (canExt)
+                        {
+                            <a class="btn btn-sm btn-outline-primary ms-2" asp-action="AddRelative" asp-route-fromId="@Model.DataId" asp-route-kind="MOTHER" asp-route-polistRt="@polistRt">添加母亲</a>
+                        }
+                    }
+                </div>
+                <div class="mb-0">
+                    子女：
+                    @if (lin.Children.Count == 0)
+                    {
+                        <span>无</span>
+                    }
+                    else
+                    {
+                        @foreach (var c in lin.Children)
+                        {
+                            <a class="me-2" asp-action="Edit" asp-route-id="@c.DataId" asp-route-polistRt="@polistRt">@c.FullName</a>
+                        }
+                    }
+                    @if (canExt)
+                    {
+                        <a class="btn btn-sm btn-outline-primary ms-2" asp-action="AddRelative" asp-route-fromId="@Model.DataId" asp-route-kind="CHILD" asp-route-polistRt="@polistRt">添加子女</a>
+                    }
+                </div>
+                @if (!canExt)
+                {
+                    <p class="text-muted small mb-0 mt-2">向上补父辈、向下补子女由分支管理员操作。</p>
+                }
+            </div>
+        }
+        @if (!canSave)
+        {
+            <div class="alert alert-info small py-2">资料内容仅<strong>录入人</strong>或<strong>超管</strong>可改。分支管理员请用上方「世系」添加父母/子女。</div>
+        }
+        <form asp-action="Edit" asp-route-id="@Model.DataId" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="polistRt" value="@polistRt" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <fieldset disabled="@(!canSave)">
+            @await Html.PartialAsync("_Form", Model)
+            </fieldset>
+            <div class="row mt-2"><div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2 flex-wrap">
+                @if (canSave)
+                {
+                    <button type="submit" name="selectNo" value="1" class="btn btn-primary">保存/继续</button>
+                    <button type="submit" name="selectNo" value="0" class="btn btn-primary">保存/退出</button>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">仅录入人或超管可保存此人档案。</p>
+                }
+                <button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+            </div></div>
+        </form>
+        @{
+            var photos = ViewBag.Photos as List<string> ?? new();
+            var canPhoto = ViewBag.CanManagePhoto as bool? == true;
+        }
+        <hr />
+        <h6>照片</h6>
+        <div class="d-flex flex-wrap gap-3 mb-3">
+        @foreach (var ph in photos)
+        {
+            <div class="text-center">
+                <img src="@ph" alt="" style="max-width:120px;max-height:120px;object-fit:cover;" class="border rounded d-block mb-1" />
+                @if (canPhoto)
+                {
+                    <form asp-action="DeletePhoto" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.DataId" />
+                        <input type="hidden" name="path" value="@ph" />
+                        <input type="hidden" name="polistRt" value="@polistRt" />
+                        <button class="btn btn-sm btn-outline-danger" type="submit">删除</button>
+                    </form>
+                }
+            </div>
+        }
+        </div>
+        @if (canPhoto)
+        {
+            <form asp-action="UploadPhoto" method="post" enctype="multipart/form-data" class="d-flex gap-2 align-items-center mb-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.DataId" />
+                <input type="hidden" name="polistRt" value="@polistRt" />
+                <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.webp,image/*" class="form-control" style="max-width:20rem;" />
+                <button class="btn btn-outline-primary">上传照片</button>
+            </form>
+        }
+        <hr />
+        <h6>认证</h6>
+        @if (Model.IsCertified)
+        {
+            <p class="text-muted small mb-2">已认证，具备加入主谱的资格。</p>
+        }
+        else
+        {
+            <p class="text-muted small mb-2">尚未认证。认证后才可加入主谱或申请链入。</p>
+        }
+        @if (ViewBag.CanCertify == true)
+        {
+            <form asp-action="SetCertified" asp-route-id="@Model.DataId" method="post" class="mt-2 mb-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.DataId" />
+                <input type="hidden" name="polistRt" value="@polistRt" />
+                @if (!Model.IsCertified)
+                {
+                    <button type="submit" name="certified" value="true" class="btn btn-sm btn-outline-success">认证此人</button>
+                }
+                else if (!Model.InMainGenealogy)
+                {
+                    <button type="submit" name="certified" value="false" class="btn btn-sm btn-outline-secondary">取消认证</button>
+                }
+                else
+                {
+                    <span class="text-muted small">已在主谱中。取消认证须先退出主谱。</span>
+                }
+            </form>
+        }
+        @if (ViewBag.CanSetMain == true)
+        {
+        <hr />
+        <h6>主谱</h6>
+        <form asp-action="SetMain" asp-route-id="@Model.DataId" method="post" class="mt-2" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.DataId" />
+            <input type="hidden" name="polistRt" value="@polistRt" />
+            @if (!Model.InMainGenealogy)
+            {
+                if (ViewBag.CanApplyMain != true)
+                {
+                    <p class="text-muted small mb-2">须先完成族员认证，才可申请加入主谱。请打开右上角「申请认证」，把二维码发给分支管理员或超管。</p>
+                    <a class="btn btn-sm btn-outline-primary" asp-controller="Member" asp-action="Cert">去申请认证</a>
+                }
+                else
+                {
+                <p class="text-muted small mb-2">自己录入的人可随时加入或退出主谱。请点下面按钮，不要点上方「保存」。勾选后只处理你自己录入的子孙。</p>
+                <label class="me-2"><input type="checkbox" name="withDesc" value="true" /> 连同我录入的子孙</label>
+                <button type="submit" name="include" value="true" class="btn btn-sm btn-outline-success">申请加入主谱</button>
+                }
+            }
+            else
+            {
+                <p class="text-muted small mb-2">退出只改当前这个人，子女仍可留在主谱。勾选则可同时退出你录入的子孙。</p>
+                <label class="me-2"><input type="checkbox" name="withDesc" value="true" /> 连同我录入的子孙</label>
+                <input type="hidden" name="include" value="false" />
+                <button type="submit" class="btn btn-sm btn-outline-warning">退出主谱</button>
+                <button type="submit" name="descendantsOnly" value="true" class="btn btn-sm btn-outline-secondary">仅退出子孙</button>
+            }
+        </form>
+        }
+        @if (ViewBag.CanPeer == true)
+        {
+            <hr />
+            <h6>外链对接</h6>
+            <p class="text-muted small mb-2">与另一库共用此人为共同祖先时，可发起邀请二维码；对方接受后，族谱树会出现「外链房」，点开展开对方数据（数据不拷贝）。</p>
+            <a class="btn btn-sm btn-outline-primary" asp-controller="FtPeer" asp-action="Invite" asp-route-personId="@Model.DataId">发起外链对接</a>
+            <a class="btn btn-sm btn-outline-secondary" asp-controller="FtPeer" asp-action="Index">对接列表</a>
+        }
+        @if (hints.Count > 0)
+        {
+            <h6 class="mt-4">相似人物（先对照，再确认链入）</h6>
+            <p class="text-muted small mb-2">只有目标已在主谱时才能串树；两棵都未入主谱的小树只提示、不合并。</p>
+            <table class="table table-sm">
+                <thead><tr><th>姓名</th><th>父母</th><th>出生年月</th><th>主谱</th><th>规则</th><th>置信</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var h in hints)
+                {
+                    var lv = h.Level == 1 ? "高" : h.Level == 2 ? "中" : h.Level is 3 or 4 ? "低" : h.Level.ToString();
+                    <tr>
+                        <td>@h.FullName</td>
+                        <td>@h.FatherName / @h.MotherName</td>
+                        <td>@h.BirthDate</td>
+                        <td>@(h.InMain ? "是" : "否")</td>
+                        <td class="small">@h.Reason</td>
+                        <td>@lv</td>
+                        <td>
+                            @if (h.InMain)
+                            {
+                                if (ViewBag.CanApplyMain == true)
+                                {
+                                    <a class="btn btn-sm btn-primary"
+                                       asp-controller="FtPersonLink" asp-action="Confirm"
+                                       asp-route-sourceId="@Model.DataId"
+                                       asp-route-targetId="@h.PersonId"
+                                       asp-route-level="@h.Level">确认链入</a>
+                                }
+                                else { <span class="text-muted">须先完成族员认证</span> }
+                            }
+                            else { <span class="text-muted">未入主谱，不合并</span> }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

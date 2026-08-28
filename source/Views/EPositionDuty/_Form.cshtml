@@ -1,0 +1,87 @@
+@model FamilyTree.Models.ViewModels.EPositionDutyFormVm
+@{
+    var posOptions = ViewBag.PosOptions as List<(string Value, string Text)> ?? new();
+    var dutyOptions = ViewBag.DutyOptions as List<(string Value, string Text)> ?? new();
+    var deptOptions = ViewBag.DeptOptions as List<(string Value, string Text)> ?? new();
+    var bStatusFormOptions = ViewBag.BStatusFormOptions as List<(string Value, string Text)> ?? new();
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">岗位</label>
+    <div class="col-md-8">
+        <select asp-for="PosId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in posOptions)
+            {
+                if (o.Value == Model.PosId.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="PosId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责</label>
+    <div class="col-md-8">
+        <select asp-for="DutyId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in dutyOptions)
+            {
+                if (o.Value == Model.DutyId.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="DutyId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">部门</label>
+    <div class="col-md-8">
+        <select asp-for="DeptId" class="form-select">
+            @foreach (var o in deptOptions)
+            {
+                if (o.Value == (Model.DeptId?.ToString() ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="DeptId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">业务限制</label>
+    <div class="col-md-8">
+        <input asp-for="BusinessLimit" class="form-control" maxlength="50" />
+        <span asp-validation-for="BusinessLimit" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">显示顺序</label>
+    <div class="col-md-8">
+        <input asp-for="DispSeq" type="number" min="0" class="form-control" />
+        <span asp-validation-for="DispSeq" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusFormOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>

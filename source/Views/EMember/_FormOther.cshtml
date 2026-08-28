@@ -1,0 +1,20 @@
+@model FamilyTree.Models.ViewModels.EMemberFormVm
+@{
+    var healthOptions = ViewBag.HealthFormOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">健康状况</label>
+    <div class="col-md-8">
+        <select asp-for="Health" class="form-select">
+            @foreach (var o in healthOptions)
+            {
+                if (o.Value == (Model.Health ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8"><textarea asp-for="Remark" class="form-control" rows="5"></textarea></div>
+</div>

@@ -1,0 +1,11 @@
+@model FamilyTree.Models.ViewModels.FtDraftFormVm
+@{ ViewData["Title"] = "新建人物"; }
+<div class="card"><div class="card-header"><h5 class="mb-0">新建人物</h5></div>
+<div class="card-body pm-form-wrap">
+<form asp-action="Create" method="post">@Html.AntiForgeryToken()
+@await Html.PartialAsync("_Form", Model)
+<div class="row mt-2"><div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2">
+<button type="submit" name="selectNo" value="1" class="btn btn-primary">保存/继续</button>
+<button type="submit" name="selectNo" value="0" class="btn btn-primary">保存/退出</button>
+<button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+</div></div></form></div></div>

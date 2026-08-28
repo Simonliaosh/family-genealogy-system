@@ -1,0 +1,106 @@
+@model FamilyTree.Models.ViewModels.FtMemberRegisterVm
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = null;
+    var siteName = Configuration["App:SiteName"] ?? "家族族谱";
+    var ret = string.IsNullOrWhiteSpace(Model.ReturnUrl) ? "/Member/Go" : Model.ReturnUrl;
+    var retEnc = Uri.EscapeDataString(ret);
+    var isCreateClanInvite = ret.Contains("/Member/CreateClan", StringComparison.OrdinalIgnoreCase)
+        && ret.Contains("c=", StringComparison.OrdinalIgnoreCase);
+    var isJoinClanInvite = ret.Contains("/Member/JoinClan", StringComparison.OrdinalIgnoreCase)
+        && ret.Contains("c=", StringComparison.OrdinalIgnoreCase);
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>加入族谱 - @siteName</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <style>
+        body { background: #f6f4ef; min-height: 100vh; }
+        .join-wrap { max-width: 26rem; margin: 0 auto; padding: 1.25rem; }
+        .join-hero { font-size: 1.35rem; font-weight: 700; margin-bottom: .35rem; }
+        .step { font-size: .85rem; color: #666; margin-bottom: 1rem; }
+        .step b { color: #333; }
+        .card { border: 0; box-shadow: 0 8px 24px rgba(0,0,0,.06); border-radius: 1rem; }
+        .btn-join { padding: .75rem; font-size: 1.05rem; }
+        .join-field-label {
+            width: 5rem;
+            flex-shrink: 0;
+            margin-bottom: 0;
+            padding-top: 0.65rem;
+        }
+    </style>
+</head>
+<body>
+<div class="join-wrap">
+    <p class="join-hero">@siteName</p>
+    <p class="step">三步：<b>1 注册</b> → <b>2 认证</b> → <b>3 录入人物</b></p>
+    <div class="card">
+        <div class="card-body p-4">
+            <h1 class="h5 mb-3">族人注册</h1>
+            @if (isCreateClanInvite)
+            {
+                <div class="alert alert-info py-2 small mb-3">您持有<strong>创建家族邀请码</strong>。注册后将自动登录并带入邀请码，您将成为新家族的<strong>族谱管理员</strong>。</div>
+            }
+            else if (isJoinClanInvite)
+            {
+                <div class="alert alert-info py-2 small mb-3">注册后将自动登录并带入家族 ID，继续加入已有家族。</div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-warning py-2 small">@TempData["ErrorMessage"]</div>
+            }
+            @if (ViewBag.MpEnabled == true)
+            {
+                <a class="btn btn-success w-100 btn-join mb-3" href="/Member/Wx?returnUrl=@retEnc">微信一键进入</a>
+                <p class="text-center text-muted small mb-3">在微信公众号内打开可自动识别；首次进入会自动注册。</p>
+                <hr class="my-3" />
+                <p class="small text-muted mb-2">或不使用微信，自行注册登录名：</p>
+            }
+            <form method="post" asp-action="Join">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+                <div class="mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <label class="form-label join-field-label" asp-for="LoginName">登录名</label>
+                        <div class="flex-grow-1">
+                            <input asp-for="LoginName" class="form-control form-control-lg" autocomplete="username" placeholder="手机号或拼音，至少6位" />
+                            <div class="form-text">只用字母或数字，例如 13800138000、zhangsan。不可与已有账号重复。</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <label class="form-label join-field-label">姓名</label>
+                        <div class="flex-grow-1">
+                            <input asp-for="RealName" class="form-control form-control-lg" autocomplete="name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <label class="form-label join-field-label">设置密码</label>
+                        <div class="flex-grow-1">
+                            <input asp-for="Password" type="password" class="form-control form-control-lg" autocomplete="new-password" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <label class="form-label join-field-label">确认密码</label>
+                        <div class="flex-grow-1">
+                            <input asp-for="Password2" type="password" class="form-control form-control-lg" autocomplete="new-password" />
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100 btn-join" type="submit">注册并继续</button>
+            </form>
+            <a class="d-block text-center mt-3" href="/Account/Login?returnUrl=@retEnc">已有账号？登录</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

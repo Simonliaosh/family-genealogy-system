@@ -1,0 +1,19 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtConflictListRowVm>
+@{ ViewData["Title"] = "匹配冲突"; var canUp = ViewBag.CanUpdate == true; }
+<div class="card"><div class="card-header"><h5 class="mb-0">匹配冲突</h5></div>
+<div class="card-body">
+<table class="table table-sm"><thead><tr><th>类型</th><th>状态</th><th>说明</th><th>时间</th><th></th></tr></thead>
+<tbody>
+@foreach (var x in Model) {
+<tr>
+<td>@x.ConflictType</td><td>@x.ResolveStatus</td><td>@x.ConflictDetail</td><td>@x.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+<td>@if (canUp && x.ResolveStatus=="OPEN") {
+<form asp-action="Resolve" method="post" class="d-inline">@Html.AntiForgeryToken()
+<input type="hidden" name="id" value="@x.DataId" />
+<button class="btn btn-sm btn-primary" name="status" value="RESOLVED">已处理</button>
+<button class="btn btn-sm btn-outline-secondary" name="status" value="IGNORED">忽略</button>
+</form>}</td>
+</tr>
+}
+</tbody></table>
+</div></div>

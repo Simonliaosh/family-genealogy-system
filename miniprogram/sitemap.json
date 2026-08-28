@@ -1,0 +1,4 @@
+{
+  "desc": "家族族谱成员小程序",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

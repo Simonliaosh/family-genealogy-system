@@ -1,0 +1,15 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtOpLogListRowVm>
+@{ ViewData["Title"] = "操作日志"; }
+<div class="card"><div class="card-header"><h5 class="mb-0">操作日志</h5></div>
+<div class="card-body">
+<form method="post" class="mb-2 d-flex gap-2">@Html.AntiForgeryToken()
+<select name="searchField" class="form-select form-select-sm" style="width:10rem;">
+<option value="OpType">类型</option><option value="ObjectType">对象</option>
+</select>
+<input name="searchContent" value="@((string?)ViewBag.SearchContent)" class="form-control form-control-sm" style="width:12rem;" />
+<button class="btn btn-sm btn-outline-primary">查询</button>
+</form>
+<table class="table table-sm"><thead><tr><th>类型</th><th>对象</th><th>键</th><th>说明</th><th>时间</th></tr></thead>
+<tbody>@foreach (var x in Model){<tr><td>@x.OpType</td><td>@x.ObjectType</td><td>@x.ObjectKey</td><td>@x.Remark</td><td>@x.CreateDate.ToString("yyyy-MM-dd HH:mm")</td></tr>}</tbody>
+</table>
+</div></div>

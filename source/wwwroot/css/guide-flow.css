@@ -1,0 +1,130 @@
+/* EFrame 系统实施流程指南页 */
+.guide-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #222;
+  background: #f8f9fb;
+}
+
+.guide-page h1 {
+  font-size: 26px;
+  color: #1f4e79;
+  margin: 0 0 8px;
+  border-bottom: 3px solid #1f4e79;
+  padding-bottom: 10px;
+}
+
+.guide-page .subtitle {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.guide-page hgroup {
+  background: #fff;
+  border-left: 4px solid #1f4e79;
+  padding: 16px 20px;
+  margin: 0 0 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+
+.guide-page hgroup h2 {
+  font-size: 20px;
+  color: #1f4e79;
+  margin: 0 0 10px;
+}
+
+.guide-page hgroup p {
+  margin: 0;
+  color: #444;
+}
+
+.guide-page .section-title {
+  display: block;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #1f4e79;
+  margin: 36px 0 20px;
+  padding: 12px;
+  background: linear-gradient(90deg, transparent, #e8eef5, transparent);
+}
+
+.guide-page .step-list {
+  background: #fff;
+  padding: 8px 20px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  border-radius: 4px;
+}
+
+.guide-page .step-list p {
+  margin: 10px 0;
+  padding-left: 4px;
+}
+
+.guide-page .step-list a {
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+.guide-page .step-list a:hover {
+  text-decoration: underline;
+  color: #0a58ca;
+}
+
+.guide-page .step-num {
+  font-weight: bold;
+  color: #1f4e79;
+  margin-right: 4px;
+}
+
+.guide-page .hint {
+  font-size: 13px;
+  color: #666;
+  margin-left: 24px;
+}
+
+.guide-page .arch-box {
+  background: #fff;
+  border: 1px dashed #adb5bd;
+  padding: 14px 18px;
+  margin: 16px 0 24px;
+  font-size: 14px;
+  color: #333;
+}
+
+.guide-page .arch-box strong {
+  color: #1f4e79;
+}
+
+.guide-page .warn {
+  color: #c0392b;
+  font-size: 14px;
+}
+
+.guide-page .tag {
+  display: inline-block;
+  font-size: 12px;
+  background: #e8eef5;
+  color: #1f4e79;
+  padding: 1px 8px;
+  border-radius: 3px;
+  margin-left: 6px;
+}
+
+.guide-page footer {
+  margin-top: 40px;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .guide-page { padding: 16px 12px 32px; }
+  .guide-page h1 { font-size: 22px; }
+}

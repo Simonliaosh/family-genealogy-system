@@ -1,0 +1,1739 @@
+/* ==================== 全局样式 ==================== */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --light-bg: #f8f9fa;
+    --border-color: #dee2e6;
+    --text-color: #333;
+    --sidebar-width: 250px;
+    /* 侧栏：一级相对旧版 20px 左移两个汉字；二级相对一级再缩进一个汉字（1em≈当前字号一个汉字） */
+    --sidebar-l1-pad: max(0.4em, calc(20px - 2em));
+    --sidebar-l2-indent: 1em;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--light-bg);
+}
+
+/* ==================== 布局 ==================== */
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 侧边栏 */
+.sidebar {
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, var(--secondary-color) 0%, #34495e 100%);
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 侧栏可滚动区（底部固定「系统使用指引」） */
+.sidebar-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-guide-footer {
+    flex-shrink: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.22);
+    padding: 2px 0 6px;
+}
+
+.sidebar-guide-footer .menu-link {
+    border-radius: 0;
+}
+
+.sidebar-guide-link .menu-icon {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.sidebar-header {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-brand {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.sidebar-menu li {
+    margin: 3px 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.28rem 12px 0.28rem var(--sidebar-l1-pad);
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    position: relative;
+    flex-wrap: nowrap;          /* 不允许换行 */
+    white-space: nowrap;        /* 强制不换行 */
+    line-height: 1.15;
+    font-size: 13px;
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar-menu a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 仅压缩“可折叠一级菜单”的变色块高度，不影响“首页”等普通菜单项 */
+.menu-item.has-submenu.active > .menu-toggle,
+.menu-item.has-submenu > .menu-toggle:hover {
+    padding-top: 0.24rem !important;
+    padding-bottom: 0.24rem !important;
+    min-height: 0 !important;
+}
+
+.sidebar-menu .menu-icon {
+    margin-right: 8px;
+    min-width: 20px;            /* Emoji 需要更大空间 */
+    width: 20px;
+    text-align: center;
+    font-style: normal;
+    flex-shrink: 0;             /* 不允许缩小 */
+    display: inline-block;
+    line-height: 1;             /* 防止 Emoji 显示不全 */
+    font-size: 15px;            /* Emoji 字体大小 */
+    vertical-align: middle;     /* 垂直居中 */
+    /* 支持 Emoji 渲染 */
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+}
+
+.sidebar-menu .menu-text {
+    flex: 1;
+    white-space: nowrap;        /* 强制不换行 */
+    overflow: hidden;           /* 超出隐藏 */
+    text-overflow: ellipsis;    /* 超长显示省略号 */
+    writing-mode: horizontal-tb; /* 强制水平书写模式 */
+}
+
+/* 一级菜单折叠功能 */
+.menu-item.has-submenu > .menu-toggle {
+    cursor: pointer;
+}
+
+.menu-item.has-submenu .toggle-icon {
+    margin-left: auto;
+    font-size: 13px;
+    transition: transform 0.3s ease;
+}
+
+/* 子菜单样式（去掉 ul 默认左内边距，避免叠成约三个汉字） */
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.submenu li {
+    margin: 0;
+}
+
+.submenu a {
+    padding: 4px 10px 7px calc(var(--sidebar-l1-pad) + var(--sidebar-l2-indent));
+    font-size: 13px;
+    line-height: 1.12;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+.sidebar-menu .submenu a {
+    padding-left: calc(var(--sidebar-l1-pad) + var(--sidebar-l2-indent));
+    padding-right: 12px;
+}
+
+.sidebar-menu .submenu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar-menu .submenu a.active {
+    background-color: rgba(52, 152, 219, 0.3);
+    color: white;
+    box-shadow: inset 3px 0 0 var(--primary-color);
+    border-left: none;
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: var(--light-bg);
+}
+
+/* 顶部导航栏 */
+.navbar {
+    background-color: white;
+    padding: 15px 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.navbar-left h1 {
+    font-size: 24px;
+    color: var(--secondary-color);
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* 内容容器 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.content-wrapper {
+    background-color: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 卡片 ==================== */
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 15px 20px;
+    background-color: var(--light-bg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* 族人录入：标签左、内容右，手机也同行 */
+.ft-form-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.85rem;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.ft-form-row > .ft-form-label {
+    flex: 0 0 5.75rem;
+    width: 5.75rem;
+    max-width: 38%;
+    margin-bottom: 0;
+    padding-top: 0.45rem;
+    text-align: right;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: #444;
+    white-space: nowrap;
+}
+.ft-form-row > .ft-form-field {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.ft-form-row > .ft-form-field .form-control,
+.ft-form-row > .ft-form-field .form-select,
+.ft-form-row > .ft-form-field textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.ft-form-row > .ft-form-field .form-text {
+    margin-top: 0.25rem;
+}
+@media (max-width: 480px) {
+    .ft-form-row > .ft-form-label {
+        flex-basis: 4.75rem;
+        width: 4.75rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* 增改页：与卡片内边距协调，窄屏不裁切（对齐基准价等页全宽表单） */
+.pm-form-wrap {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+@media (min-width: 769px) {
+    .pm-form-wrap {
+        padding: 0 2.4rem;
+    }
+}
+/* 防止窄屏时表单控件超出右边界（Bootstrap row 负边距/长文本导致） */
+.pm-form-wrap .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+.pm-form-wrap [class*="col-"] {
+    min-width: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+.pm-form-wrap .form-control,
+.pm-form-wrap .form-select,
+.pm-form-wrap textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+@media (max-width: 576px) {
+    .pm-form-wrap {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+/* ==================== 表格 ==================== */
+.table-responsive {
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 表格操作按钮 */
+.table-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.table-actions .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* ==================== 按钮 ==================== */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #229954;
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #e67e22;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* ==================== 表单 ==================== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 5px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-control:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* ==================== 搜索栏 ==================== */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar .form-control {
+    flex: 1;
+}
+
+/* ==================== 分页 ==================== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination button,
+.pagination a {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.pagination button:hover,
+.pagination a:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination .active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* ==================== 提示信息 ==================== */
+.alert {
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* ==================== 徽章 ==================== */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.badge-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.badge-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.badge-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* ==================== 模态框 ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    background-color: white;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ==================== 加载动画 ==================== */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== 工具类 ==================== */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-1 { margin-top: 10px; }
+.mt-2 { margin-top: 20px; }
+.mt-3 { margin-top: 30px; }
+
+.mb-1 { margin-bottom: 10px; }
+.mb-2 { margin-bottom: 20px; }
+.mb-3 { margin-bottom: 30px; }
+
+.p-1 { padding: 10px; }
+.p-2 { padding: 20px; }
+.p-3 { padding: 30px; }
+
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+
+/* ==================== 响应式设计 ==================== */
+/* 移动端主规则统一放在 mobile-responsive.css，避免重复定义导致横竖屏切换冲突 */
+
+/* ==================== 打印样式 ==================== */
+@media print {
+    .sidebar,
+    .navbar,
+    .btn,
+    .search-bar {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .container {
+        padding: 0;
+    }
+}
+
+/* ========== 一级菜单文字显示修复补丁 ========== */
+
+/* 确保一级菜单（可折叠）的文字正确显示 */
+.sidebar-menu .menu-toggle .menu-text {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex: 1 !important;
+    writing-mode: horizontal-tb !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    font-size: 13px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 确保一级菜单链接正常显示 */
+.sidebar-menu .menu-toggle {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-top: 0.28rem !important;
+    padding-bottom: 0.28rem !important;
+    padding-left: var(--sidebar-l1-pad) !important;
+    padding-right: 12px !important;
+    min-height: 0 !important;
+}
+
+/* 确保展开时子菜单正确显示 */
+.menu-item.has-submenu.active > .submenu {
+    max-height: 1000px;
+    margin-top: calc(10px + 0.2rem);
+}
+
+
+/* 展开时箭头旋转 */
+.menu-item.has-submenu.active > .menu-toggle .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* ========== 修复3：顶部导航栏布局 ========== */
+
+/* 确保Bootstrap navbar正常工作 */
+.navbar.navbar-expand-lg {
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+.navbar .container-fluid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* 确保右侧菜单在右边 */
+.navbar-nav.ms-auto {
+    margin-left: auto !important;
+}
+
+/* ========== 修复4：移动端切换按钮 ========== */
+
+/* 桌面端隐藏移动端切换按钮 */
+@media (min-width: 769px) {
+    #sidebarToggle {
+        display: none !important;
+    }
+}
+
+/* 移动端显示切换按钮 */
+@media (max-width: 768px) {
+    #sidebarToggle {
+        display: inline-block !important;
+    }
+}
+
+/* ========== 修复5：Bootstrap卡片和网格系统 ========== */
+
+/* 确保Bootstrap卡片正常显示 */
+.card.bg-primary,
+.card.bg-success,
+.card.bg-warning,
+.card.bg-info {
+    background-color: initial; /* 让Bootstrap的背景色生效 */
+}
+
+/* 确保Bootstrap网格系统正常工作 */
+.row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+.col-12,
+.col-md-3,
+.col-md-6,
+.col-sm-6 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+}
+
+@media (min-width: 576px) {
+    .col-sm-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (min-width: 768px) {
+    .col-md-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* 确保卡片内容正确显示 */
+.card-body .d-flex {
+    display: flex !important;
+}
+
+.card-body .justify-content-between {
+    justify-content: space-between !important;
+}
+
+.card-body .align-items-center {
+    align-items: center !important;
+}
+
+/* ========== 修复6：移动端关闭按钮 ========== */
+
+/* 桌面端隐藏关闭按钮 */
+@media (min-width: 769px) {
+    .sidebar-close {
+        display: none !important;
+    }
+}
+
+/* 移动端显示关闭按钮 */
+@media (max-width: 768px) {
+    .sidebar-close {
+        display: block !important;
+    }
+}
+
+/* ========== 修复7：确保页面标题显示 ========== */
+
+.navbar-brand {
+    display: inline-block !important;
+    padding-top: 0.3125rem;
+    padding-bottom: 0.3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+}
+
+/* ========== 修复8：下拉菜单样式 ========== */
+
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 1000 !important;
+    display: none !important;
+    min-width: 10rem !important;
+}
+
+.dropdown-menu form.d-inline {
+    display: block !important;  /* 改为block确保按钮正确显示 */
+}
+
+.dropdown-menu form button.dropdown-item {
+    cursor: pointer !important;
+    text-align: left !important;
+    width: 100% !important;
+}
+
+.dropdown-menu form button.dropdown-item:hover {
+    background-color: #e9ecef !important;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+}
+
+/* ========== 采购录入 POrder：标签在左、控件在右、限宽不换行 ========== */
+.po-form-grid {
+    max-width: 1100px;
+}
+
+.po-form-grid .po-line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    margin-bottom: 0.5rem;
+    min-width: 0;
+}
+
+.po-form-grid .po-line.po-line-top {
+    align-items: flex-start;
+}
+
+.po-form-grid .po-line.po-line-multiline {
+    flex-wrap: wrap;
+}
+
+.po-form-grid .po-lbl {
+    flex: 0 0 auto;
+    width: 4.75rem;
+    text-align: left;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    line-height: 1.5;
+}
+
+.po-form-grid .po-lbl-wide {
+    width: 5.5rem;
+}
+
+.po-form-grid .po-lbl-inline {
+    width: auto;
+    margin-left: 0.35rem;
+}
+
+.po-form-grid .po-lbl-inline:first-child {
+    margin-left: 0;
+}
+
+.po-form-grid .po-ctl {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.po-form-grid .po-ctl .form-select,
+.po-form-grid .po-ctl .form-control:not(textarea) {
+    width: auto;
+    max-width: 15rem;
+    min-width: 7.5rem;
+}
+
+.po-form-grid .po-ctl-narrow .form-select,
+.po-form-grid .po-ctl-narrow .form-control:not(textarea) {
+    max-width: 11.5rem;
+    min-width: 7rem;
+}
+
+.po-form-grid .po-ctl-mid .form-select,
+.po-form-grid .po-ctl-mid .form-control:not(textarea) {
+    max-width: 13rem;
+}
+
+.po-form-grid .po-ctl-wide .form-control {
+    max-width: 24rem;
+    min-width: 12rem;
+}
+
+.po-form-grid .po-cluster {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    min-width: 0;
+}
+
+.po-form-grid textarea.form-control {
+    flex: 1 1 auto;
+    max-width: 42rem;
+    min-width: 12rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .po-form-grid .po-line {
+        flex-wrap: wrap;
+    }
+
+    .po-form-grid .po-lbl {
+        width: 100%;
+        margin-bottom: 0.1rem;
+    }
+
+    .po-form-grid .po-lbl-inline {
+        margin-left: 0;
+        width: auto;
+    }
+}
+
+/* ========== 筛选区：标签 + 下拉框 / 日期 对齐 ==========
+   解决栅格内 select 宽度过窄、与输入框高度不齐、箭头贴边等问题 */
+.pm-filter-label {
+    display: inline-block;
+    width: 12ch;
+    flex-shrink: 0;
+    text-align: left;
+    font-size: inherit;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+/* 标签与输入/下拉始终同一行，不在中间折行 */
+.pm-filter-grid > .d-flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+/* 仅多选/按钮特别多的一行允许折行（如勾选 + 查询） */
+.pm-filter-grid > .d-flex.pm-filter-row-multiline {
+    flex-wrap: wrap;
+}
+
+/* 下拉：占满「标签右侧」剩余列宽，不设过小 min-width 避免被挤扁 */
+.pm-filter-grid > .d-flex .form-select {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+    max-width: 100%;
+    min-height: calc(1.5em + 0.5rem + 2px);
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-right: 2rem;
+    background-position: right 0.6rem center;
+    background-size: 14px 11px;
+}
+
+/* 月份、日期与下拉等高 */
+.pm-filter-grid > .d-flex .form-control[type="month"],
+.pm-filter-grid > .d-flex .form-control[type="date"] {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+    max-width: 100%;
+    min-height: calc(1.5em + 0.5rem + 2px);
+}
+
+/* 筛选区内固定宽度输入（如关键字），不参与拉伸 */
+.pm-filter-grid > .d-flex .pm-filter-no-grow {
+    flex: 0 0 auto;
+    width: 8rem;
+    max-width: 8rem;
+}
+
+.pm-filter-grid > .d-flex .pm-filter-btn-fixed {
+    flex: 0 0 auto;
+    width: 4rem;
+    min-width: 4rem;
+}
+
+/* 占位栅格，避免破坏每行三列结构 */
+.pm-filter-grid-spacer {
+    min-height: 0;
+    pointer-events: none;
+}
+
+/* ========== 采购合同列表（POrderList.asp 版式） ========== */
+.polist-wrap .polist-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    margin-bottom: 0.65rem;
+}
+
+/* polist + pm-filter-grid：大屏三列、中小屏二列/一列（RULE.md / legacy-asp-migration） */
+.polist-wrap .polist-filter.pm-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem 0.65rem;
+    width: 80%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: stretch;
+}
+
+.polist-wrap .polist-filter.pm-filter-grid > .d-flex {
+    min-width: 0;
+}
+
+/* 避免 polist-filter 通用 .form-select 的 max-width 压窄栅格内下拉 */
+.polist-wrap .polist-filter.pm-filter-grid .form-select {
+    max-width: none;
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+}
+
+@media (max-width: 991.98px) {
+    .polist-wrap .polist-filter.pm-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .polist-wrap .polist-filter.pm-filter-grid {
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+    }
+}
+
+.polist-wrap .polist-filter .polist-filter-lbl {
+    display: inline-block;
+    width: 12ch;
+    flex-shrink: 0;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.polist-wrap .polist-filter .polist-lbl {
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.polist-wrap .polist-filter .form-select {
+    width: auto;
+    max-width: 18rem;
+    min-width: 10rem;
+}
+
+.polist-wrap .table-polist {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+.polist-wrap .table-polist thead th {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.polist-wrap .table-polist .polist-subtotal td {
+    font-weight: 600;
+    background-color: #f1f3f5;
+}
+
+.polist-wrap .polist-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem 0.28rem;
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.875rem;
+    line-height: 1.25;
+}
+
+.polist-wrap .polist-bottom .polist-bottom-lbl {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+}
+
+.polist-wrap .polist-bottom .polist-bottom-meta {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+}
+
+.polist-wrap .polist-bottom a.polist-page-nav {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.polist-wrap .polist-bottom a.polist-page-nav:hover {
+    text-decoration: underline;
+}
+
+.polist-wrap .polist-bottom .polist-page-nav--disabled {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--bs-secondary);
+    white-space: nowrap;
+    cursor: default;
+}
+
+.polist-wrap .polist-bottom .btn.polist-qry-btn,
+.polist-wrap .polist-bottom .btn.polist-go-btn {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    padding: 0.2rem 0.45rem;
+    letter-spacing: -0.02em;
+}
+
+.polist-wrap .polist-bottom .form-control.form-control-sm {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    min-height: calc(1.25em + 0.2rem + 2px);
+}
+
+.polist-wrap .polist-bottom .form-select.form-select-sm {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    min-height: calc(1.25em + 0.4rem + 2px);
+}
+
+.polist-wrap .polist-bottom .form-control.polist-page-in {
+    width: 4ch;
+    min-width: 4ch;
+    max-width: 4ch;
+    display: inline-block;
+    box-sizing: border-box;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    text-align: center;
+}
+
+.polist-wrap .polist-bottom .form-control.polist-pagesize-in {
+    width: 4ch;
+    min-width: 4ch;
+    max-width: 4ch;
+    display: inline-block;
+    box-sizing: border-box;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    text-align: center;
+}
+
+.polist-wrap .polist-bottom .form-select.polist-search-field {
+    width: 16ch;
+    min-width: 16ch;
+    max-width: 16ch;
+    box-sizing: border-box;
+    min-height: calc(1.5em + 0.5rem + 2px);
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+
+.polist-wrap .polist-bottom .form-control.polist-search-txt {
+    width: 12ch;
+    min-width: 12ch;
+    max-width: 12ch;
+    box-sizing: border-box;
+}
+
+/* polist 底栏：桌面一行；窄屏（≤768px）按组断成 2～3 行 */
+.polist-wrap .polist-bottom .polist-bottom-group {
+    display: contents;
+}
+
+/* 通用 pm-pager：桌面单行紧凑；窄屏（≤768px）按 pm-pager-group 断成 2～3 行 */
+.pm-pager .pm-pager-group {
+    display: contents;
+}
+
+.pm-pager .form-control,
+.pm-pager .form-select {
+    min-height: 32px;
+}
+
+.pm-pager .btn {
+    min-height: 32px;
+    line-height: 1.25;
+    padding: 0.2rem 0.45rem;
+}
+
+@media (max-width: 767.98px) {
+    .polist-wrap .polist-bottom {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .polist-wrap .polist-bottom .polist-bottom-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.15rem 0.28rem;
+        width: 100%;
+    }
+
+    .pm-pager {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .pm-pager .pm-pager-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.15rem 0.28rem;
+        width: 100%;
+    }
+}
+
+/* 表头：字段名右侧上下叠放的排序三角 */
+.polist-wrap .table-polist thead th .polist-sort-stack {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.02em;
+    font-size: 0.65em;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.polist-wrap .table-polist thead th .polist-sort-stack a {
+    display: block;
+    line-height: 1;
+}
+
+.polist-wrap .table-polist thead th .polist-sort-link {
+    text-decoration: none;
+    color: var(--bs-secondary);
+}
+
+.polist-wrap .table-polist thead th .polist-sort-link:hover {
+    color: var(--bs-primary);
+}
+
+.polist-wrap .table-polist thead th .polist-sort-link--active {
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.polist-wrap .table-polist .polist-actions {
+    white-space: nowrap;
+}
+
+.polist-wrap .table-polist .polist-actions .btn {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.35rem;
+    line-height: 1.2;
+}
+
+/* PM 伙伴/公司端列表：右侧操作列 sticky（详情/删除/勾选） */
+.polist-wrap .pm-sticky-col {
+    position: sticky;
+    background: #fff;
+    z-index: 4;
+}
+
+.polist-wrap thead .pm-sticky-col {
+    background: #f8f9fa;
+    z-index: 5;
+}
+
+.polist-wrap .pm-op-col {
+    padding-left: 0.2rem !important;
+    padding-right: 0.2rem !important;
+    white-space: nowrap;
+    text-align: right !important;
+}
+
+.polist-wrap .pm-col-sel {
+    right: 0;
+    width: 1.65rem;
+    min-width: 1.65rem;
+}
+
+.polist-wrap .pm-col-del {
+    right: 1.65rem;
+    width: 2.7rem;
+    min-width: 2.7rem;
+}
+
+.polist-wrap .pm-col-detail {
+    right: 4.35rem;
+    width: 2.9rem;
+    min-width: 2.9rem;
+}
+
+.polist-wrap .pm-col-detail-only {
+    right: 0;
+    width: 2.9rem;
+    min-width: 2.9rem;
+}
+
+.polist-wrap .pm-op-btn {
+    font-size: 0.72rem !important;
+    line-height: 1.15 !important;
+    padding: 0.05rem 0.2rem !important;
+    min-height: 1.2rem;
+    height: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.polist-wrap .pm-op-chk {
+    margin: 0;
+    transform: scale(0.92);
+}
+
+.polist-wrap .pm-pager .form-select.polist-search-field,
+.polist-wrap .pm-pager .form-control.polist-search-txt,
+.polist-wrap .pm-pager .form-control.polist-pagesize-in,
+.polist-wrap .pm-pager .form-control.polist-page-in {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 576px) {
+    .polist-wrap .pm-col-sel {
+        width: 1.5rem;
+        min-width: 1.5rem;
+    }
+
+    .polist-wrap .pm-col-del {
+        right: 1.5rem;
+        width: 2.45rem;
+        min-width: 2.45rem;
+    }
+
+    .polist-wrap .pm-col-detail {
+        right: 3.95rem;
+        width: 2.65rem;
+        min-width: 2.65rem;
+    }
+
+    .polist-wrap .pm-col-detail-only {
+        right: 0;
+        width: 2.65rem;
+        min-width: 2.65rem;
+    }
+
+    .polist-wrap .pm-op-btn {
+        font-size: 0.68rem !important;
+        padding: 0.03rem 0.14rem !important;
+        min-height: 1.1rem;
+        height: 1.1rem;
+    }
+}
+
+/* ========== 采购合同查询 POrderqry.asp（与 polist-wrap 同套筛选/表格风格） ========== */
+.polist-wrap .table-poqry-month,
+.polist-wrap .table-poqry-detail {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+.polist-wrap .table-poqry-month thead th,
+.polist-wrap .table-poqry-detail thead th {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.polist-wrap .polist-filter .form-control[type="date"] {
+    width: auto;
+    max-width: 11rem;
+    min-width: 9rem;
+}
+
+/* ========== 销售合同查询 SellContractqry.asp（与 POrderQry 同套 polist） ========== */
+.polist-wrap.scqry-wrap .polist-filter--tight {
+    margin-bottom: 0.5rem;
+    gap: 0.3rem 0.55rem;
+}
+
+.polist-wrap.scqry-wrap .scqry-filter-in {
+    width: 12ch;
+    min-width: 10rem;
+    max-width: 16rem;
+    box-sizing: border-box;
+}
+
+.polist-wrap.scqry-wrap .btn.scqry-filter-ok {
+    flex: 0 0 auto;
+    min-width: 3.25rem;
+    font-size: 0.875rem;
+    padding: 0.2rem 0.45rem;
+    line-height: 1.25;
+}
+
+/* ========== 首页 MainContent.asp 中间区（公告/日程/知识库等） ========== */
+.home-main-content-card {
+    border-color: #ccc;
+}
+
+.home-main-content-table {
+    font-size: 0.875rem;
+    table-layout: fixed;
+}
+
+.home-main-content-th {
+    background-color: #ccc;
+    color: #333;
+    font-weight: 600;
+    vertical-align: middle;
+    padding: 0.35rem 0.5rem;
+    border-color: #bbb !important;
+}
+
+.home-main-content-title-link {
+    color: #222;
+    text-decoration: none;
+}
+
+.home-main-content-title-link:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.home-main-content-td {
+    background-color: #f7f7f7;
+    min-height: 10rem;
+    padding: 0.35rem 0.45rem;
+    border-color: #ddd !important;
+    vertical-align: top;
+}
+
+.home-main-content-ul {
+    max-height: 10.5rem;
+    overflow-y: auto;
+}
+
+.home-main-content-li {
+    line-height: 1.35;
+    padding: 0.1rem 0;
+}
+
+.home-main-content-item-link {
+    color: #1a1a1a;
+    text-decoration: none;
+    min-width: 0;
+}
+
+.home-main-content-item-link:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+/* ========== 系统使用指引（旧 UStep.asp） ========== */
+.system-guide-card {
+    max-width: 52rem;
+}
+
+.system-guide-body {
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+
+.system-guide-h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.system-guide-plain {
+    color: inherit;
+}
+
+.system-guide-body p {
+    margin-bottom: 0.35rem;
+}
+
+.system-guide-body a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.system-guide-body a:hover {
+    text-decoration: underline;
+}
+
+.system-guide-section-title {
+    display: block;
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    margin: 0.5rem 0 0.35rem;
+    color: inherit;
+}
+
+.system-guide-footer-note {
+    font-size: 18px;
+    color: #ff0000;
+}
+
+/* 族谱树：逐级展开/收起 */
+.ft-tree-root {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+.ft-tree-root ul.ft-tree-children {
+    list-style: none;
+    padding-left: 1.25rem;
+    margin: 0.15rem 0 0.15rem 0.35rem;
+    border-left: 1px solid #dee2e6;
+}
+.ft-tree-node {
+    margin: 0.2rem 0;
+    line-height: 1.45;
+}
+.ft-tree-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    margin-right: 0.25rem;
+    border: 1px solid #adb5bd;
+    border-radius: 0.2rem;
+    background: #f8f9fa;
+    color: #495057;
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.ft-tree-toggle:hover {
+    background: #e9ecef;
+}
+.ft-tree-toggle-spacer {
+    display: inline-block;
+    width: 1.25rem;
+    margin-right: 0.25rem;
+    vertical-align: middle;
+}
+.ft-tree-node.collapsed > .ft-tree-children,
+.ft-tree-children[hidden] {
+    display: none !important;
+}

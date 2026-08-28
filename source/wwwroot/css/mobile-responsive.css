@@ -1,0 +1,325 @@
+/* ==================== 移动端响应式优化 ==================== */
+
+/* 汉堡菜单按钮（默认隐藏，移动端显示；勿与侧栏 .sidebar-menu .menu-toggle 混用） */
+#sidebarToggle,
+.sidebar-hamburger {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+#sidebarToggle:hover,
+.sidebar-hamburger:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+#sidebarToggle span,
+.sidebar-hamburger i {
+    font-size: 20px;
+}
+
+/* 遮罩层（移动端菜单打开时显示） */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* 侧边栏关闭按钮（移动端显示） */
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.sidebar-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==================== 平板设备优化 (≤1024px) ==================== */
+@media screen and (max-width: 1024px) {
+    :root {
+        --sidebar-width: 220px;
+    }
+    
+    .navbar h1 {
+        font-size: 20px;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+}
+
+/* ==================== 移动端优化 (≤768px) ==================== */
+@media screen and (max-width: 768px) {
+    /* 显示汉堡菜单按钮 */
+    #sidebarToggle,
+    .sidebar-hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* 侧边栏默认隐藏在左侧 */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 280px;
+    }
+    
+    /* 侧边栏打开状态 */
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    /* 显示关闭按钮 */
+    .sidebar-close {
+        display: block;
+    }
+    
+    /* 主内容区占满屏幕 */
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    /* 调整顶部导航栏 */
+    .navbar {
+        padding: 15px 20px;
+        padding-left: 70px; /* 为汉堡按钮留空间 */
+    }
+    
+    .navbar h1 {
+        font-size: 18px;
+    }
+    
+    .navbar-right {
+        gap: 10px;
+    }
+    
+    .user-info span {
+        display: none; /* 隐藏用户名，只显示头像 */
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    /* 调整容器内边距 */
+    .container {
+        padding: 10px;
+    }
+    .container-fluid.p-4,
+    #pageContentHost {
+        padding: 10px !important;
+    }
+    
+    /* 调整卡片样式 */
+    .card {
+        margin-bottom: 15px;
+    }
+    
+    .card-header {
+        padding: 12px 15px;
+    }
+    
+    .card-body {
+        padding: 10px;
+    }
+    
+    /* 调整表格 */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table {
+        font-size: 13px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 8px;
+        white-space: nowrap;
+    }
+    
+    /* 调整按钮 */
+    .btn-sm {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+    
+    /* 调整表单 */
+    .form-label {
+        font-size: 13px;
+    }
+    
+    .form-control,
+    .form-select {
+        font-size: 14px;
+    }
+}
+
+/* ==================== 小屏手机优化 (≤480px) ==================== */
+@media screen and (max-width: 480px) {
+    .sidebar {
+        width: 260px;
+    }
+    
+    .navbar {
+        padding: 12px 15px;
+        padding-left: 65px;
+    }
+    
+    .navbar h1 {
+        font-size: 16px;
+    }
+    
+    #sidebarToggle,
+    .sidebar-hamburger {
+        width: 40px;
+        height: 40px;
+        top: 12px;
+        left: 12px;
+    }
+    
+    #sidebarToggle span,
+    .sidebar-hamburger i {
+        font-size: 18px;
+    }
+    
+    .container {
+        padding: 8px;
+    }
+    .container-fluid.p-4,
+    #pageContentHost {
+        padding: 6px !important;
+    }
+    
+    /* 卡片头部按钮堆叠显示 */
+    .card-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .card-body {
+        padding: 8px;
+    }
+    
+    .card-header .btn {
+        width: 100%;
+    }
+    
+    /* 表单行变为单列 */
+    .row > .col-md-6,
+    .row > .col-md-4,
+    .row > .col-md-3 {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    /* 调整模态框 */
+    .modal-dialog {
+        margin: 10px;
+    }
+    
+    /* 调整按钮组 */
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* ==================== 横屏手机优化 ==================== */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .sidebar-menu {
+        padding: 5px 0;
+    }
+    
+    .sidebar-menu a {
+        padding-top: 7px;
+        padding-bottom: 7px;
+        font-size: 13px;
+    }
+}
+
+/* ==================== 触摸设备优化 ==================== */
+@media (hover: none) and (pointer: coarse) {
+    /* 增大可点击区域 */
+    .btn,
+    .table-responsive button {
+        min-height: 44px; /* iOS 推荐的最小触摸目标 */
+    }
+
+    /* 侧栏菜单使用桌面同款紧凑高度，避免蓝色背景过高 */
+    .sidebar-menu a {
+        min-height: 0 !important;
+    }
+}
+
+/* ==================== 打印样式 ==================== */
+@media print {
+    .sidebar,
+    .navbar,
+    #sidebarToggle,
+    .sidebar-hamburger,
+    .sidebar-overlay,
+    .btn,
+    .card-header .btn {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .container {
+        max-width: 100%;
+    }
+}

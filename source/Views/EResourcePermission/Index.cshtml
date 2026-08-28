@@ -1,0 +1,151 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.EResourcePermissionListRowVm>
+@{
+    ViewData["Title"] = "资源权限分配";
+    var canCr = ViewBag.CanCreate == true;
+    var canUp = ViewBag.CanUpdate == true;
+    var canDel = ViewBag.CanDelete == true;
+    var bStatus1 = (string?)ViewBag.BStatus1 ?? "";
+    var searchField = (string?)ViewBag.SearchField ?? "Duty";
+    var searchContent = (string?)ViewBag.SearchContent ?? "";
+    var intPage = (int)(ViewBag.IntPage ?? 1);
+    var pageShowNum = (int)(ViewBag.PageShowNum ?? 16);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalRecords = (int)(ViewBag.TotalRecords ?? 0);
+    var selectField = (string?)ViewBag.SelectField ?? "-";
+    var selectFieldArrow = (string?)ViewBag.SelectFieldArrow ?? "0";
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    string A(string f, string d) => selectField == f && selectFieldArrow == d ? "text-dark" : "text-secondary";
+    var polistPr = PolistReturnToken.Encode(new Dictionary<string, string?>
+    {
+        ["intPage"] = intPage.ToString(),
+        ["pageShowNum"] = pageShowNum.ToString(),
+        ["selectField"] = selectField,
+        ["selectFieldArrow"] = selectFieldArrow,
+        ["searchField"] = searchField,
+        ["searchContent"] = searchContent,
+        ["bStatus1"] = bStatus1,
+    });
+}
+
+<div class="card polist-wrap">
+    <div class="card-header"><h5 class="mb-0">资源权限分配</h5></div>
+    <div class="card-body py-2">
+        <form id="f-main" asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="polistRt" value="@polistPr" />
+            <input type="hidden" name="selectField" id="sf" value="@selectField" />
+            <input type="hidden" name="selectFieldArrow" id="sa" value="@selectFieldArrow" />
+            <div class="polist-filter pm-filter-grid mb-2">
+                <div class="d-flex align-items-center gap-1">
+                    <label class="polist-filter-lbl mb-0">状态</label>
+                    <select name="bStatus1" class="form-select form-select-sm" onchange="this.form.submit()">
+                        @foreach (var o in bStatusOptions)
+                        {
+                            if (o.Value == bStatus1) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-polist table-sm align-middle">
+                    <thead>
+                    <tr>
+                        <th class="text-center"><span class="d-inline-flex align-items-center">职责<span class="polist-sort-stack"><a class="@A("DutyID","0") text-decoration-none" href="javascript:doSort('DutyID','0');">▲</a><a class="@A("DutyID","1") text-decoration-none" href="javascript:doSort('DutyID','1');">▼</a></span></span></th>
+                        <th class="text-center"><span class="d-inline-flex align-items-center">资源<span class="polist-sort-stack"><a class="@A("ResourceID","0") text-decoration-none" href="javascript:doSort('ResourceID','0');">▲</a><a class="@A("ResourceID","1") text-decoration-none" href="javascript:doSort('ResourceID','1');">▼</a></span></span></th>
+                        <th class="text-center">可查询</th>
+                        <th class="text-center">可新增</th>
+                        <th class="text-center">可修改</th>
+                        <th class="text-center">可删除</th>
+                        <th class="text-center"><span class="d-inline-flex align-items-center">状态<span class="polist-sort-stack"><a class="@A("BStatus","0") text-decoration-none" href="javascript:doSort('BStatus','0');">▲</a><a class="@A("BStatus","1") text-decoration-none" href="javascript:doSort('BStatus','1');">▼</a></span></span></th>
+                        @if (canUp || canCr)
+                        {
+                            <th class="text-end pm-sticky-col pm-col-detail pm-op-col">@if (canCr) { <a class="btn btn-sm btn-outline-primary pm-op-btn" asp-action="Create">添加</a> }</th>
+                        }
+                        @if (canDel)
+                        {
+                            <th class="text-end pm-sticky-col pm-col-del pm-op-col"><button type="submit" formaction="@Url.Action("BatchDelete")" class="btn btn-sm btn-outline-danger pm-op-btn" onclick="return confirm('确定要删除吗？\n注意：删除后不能恢复！');">删除</button></th>
+                            <th class="text-end pm-sticky-col pm-col-sel pm-op-col"><input type="checkbox" id="chk-all-fn" class="align-middle pm-op-chk" /></th>
+                        }
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var x in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@x.DutyDisplay</td>
+                            <td class="text-center">@x.ResourceDisplay</td>
+                            <td class="text-center">@x.CanQueryText</td>
+                            <td class="text-center">@x.CanCreateText</td>
+                            <td class="text-center">@x.CanUpdateText</td>
+                            <td class="text-center">@x.CanDeleteText</td>
+                            <td class="text-center">@x.BStatusText</td>
+                            @if (canUp || canCr) { <td class="text-end pm-sticky-col pm-col-detail pm-op-col">@if (canUp) { <a class="btn btn-sm btn-outline-primary pm-op-btn" asp-action="Edit" asp-route-id="@x.DataId" asp-route-polistRt="@polistPr">详情</a> }</td> }
+                            @if (canDel)
+                            {
+                                <td class="text-end pm-sticky-col pm-col-del pm-op-col">
+                                    <button type="submit" formaction="@Url.Action("Delete")" name="id" value="@x.DataId" class="btn btn-sm btn-outline-danger pm-op-btn" onclick="return confirm('确定要删除吗？\n注意：删除后不能恢复！');">删除</button>
+                                </td>
+                                <td class="text-end pm-sticky-col pm-col-sel pm-op-col"><input type="checkbox" name="ids" value="@x.DataId" class="fn-row-chk align-middle pm-op-chk" /></td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="polist-bottom"></div>
+            <div class="mt-2 d-flex align-items-center justify-content-center flex-wrap pm-pager" style="column-gap:.25rem;row-gap:.35rem;font-size:.88rem;">
+                <div class="pm-pager-group">
+                    <select name="searchField" class="form-select form-select-sm" style="width:16ch;font-size:.8rem;min-height:calc(1.8125rem + 2px);">
+                        @if (searchField == "Duty") { <option value="Duty" selected>职责代码/名称</option> } else { <option value="Duty">职责代码/名称</option> }
+                        @if (searchField == "ResourceID") { <option value="ResourceID" selected>ResourceID</option> } else { <option value="ResourceID">ResourceID</option> }
+                        @if (searchField == "ResourceName") { <option value="ResourceName" selected>资源名称</option> } else { <option value="ResourceName">资源名称</option> }
+                    </select>
+                    <span>包含内容</span>
+                    <input name="searchContent" value="@searchContent" class="form-control form-control-sm" style="width:12ch;font-size:.8rem;padding:0 .25rem;" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(1);">查询</button>
+                </div>
+                <div class="pm-pager-group">
+                    <span>第 @(intPage) 页/总 @(totalPages) 页 总 @(totalRecords) 条</span>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(1);" @(intPage<=1?"disabled":null)>首页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(intPage-1));" @(intPage<=1?"disabled":null)>上页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(intPage+1));" @(intPage>=totalPages?"disabled":null)>下页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(totalPages));" @(intPage>=totalPages?"disabled":null)>尾页</button>
+                </div>
+                <div class="pm-pager-group">
+                    <span>每页显示</span>
+                    <input name="pageShowNum" value="@(pageShowNum)" class="form-control form-control-sm" style="width:4ch;height:1.2rem;font-size:.8rem;padding:0 .2rem;" />
+                    <span>条</span>
+                    <span>转到第</span>
+                    <input name="intPage" id="intPageInput" value="@(intPage)" class="form-control form-control-sm" style="width:4ch;height:1.2rem;font-size:.8rem;padding:0 .2rem;" />
+                    <span>页</span>
+                    <button type="submit" class="btn btn-sm btn-primary" style="font-size:.88rem;padding:.08rem .4rem;">Go</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function setPage(p){document.getElementById('intPageInput').value=p;}
+    function doSort(f,a){document.getElementById('sf').value=f;document.getElementById('sa').value=a;document.getElementById('f-main').submit();}
+    document.getElementById('chk-all-fn')?.addEventListener('change',function(){document.querySelectorAll('.fn-row-chk').forEach(c=>c.checked=this.checked);});
+</script>
+
+<style>
+    .pm-sticky-col{position:sticky;background:#fff;z-index:4;}
+    thead .pm-sticky-col{background:#f8f9fa;z-index:5;}
+    .pm-op-col{padding-left:.2rem!important;padding-right:.2rem!important;white-space:nowrap;text-align:right!important;}
+    .pm-col-sel{right:0;width:1.65rem;min-width:1.65rem;}
+    .pm-col-del{right:1.65rem;width:2.7rem;min-width:2.7rem;}
+    .pm-col-detail{right:4.35rem;width:2.9rem;min-width:2.9rem;}
+    .pm-op-btn{font-size:.72rem!important;line-height:1.15!important;padding:.05rem .2rem!important;min-height:1.2rem;height:1.2rem;display:inline-flex;align-items:center;justify-content:center;}
+    .pm-op-chk{margin:0;transform:scale(.92);}
+    @@media (max-width:576px){
+        .pm-col-sel{width:1.5rem;min-width:1.5rem;}
+        .pm-col-del{right:1.5rem;width:2.45rem;min-width:2.45rem;}
+        .pm-col-detail{right:3.95rem;width:2.65rem;min-width:2.65rem;}
+        .pm-op-btn{font-size:.68rem!important;padding:.03rem .14rem!important;min-height:1.1rem;height:1.1rem;}
+    }
+</style>

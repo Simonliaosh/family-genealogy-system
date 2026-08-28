@@ -1,0 +1,40 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.EDictItemListRowVm>
+@{
+    ViewData["Title"] = "字典条目";
+    var header = (FamilyTree.Models.ViewModels.EDictTypeListRowVm)ViewBag.TypeHeader!;
+    var intPage = (int)(ViewBag.IntPage ?? 1);
+    var totalRecords = (int)(ViewBag.TotalRecords ?? 0);
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5 class="mb-0">@header.DictTypeCode — @header.DictTypeName</h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">返回类型列表</a>
+    </div>
+    <div class="card-body py-2">
+        <p class="small text-muted">应用 @header.AppCode · 状态 @header.BStatusText · 共 @header.ItemCount 条（本页 @totalRecords）</p>
+        <form method="get" asp-action="Items" asp-route-code="@header.DictTypeCode">
+            <div class="d-flex gap-2 mb-2">
+                <select name="bStatus1" class="form-select form-select-sm" style="width:8rem">
+                    @foreach (var o in bStatusOptions) { <option value="@o.Value">@o.Text</option> }
+                </select>
+                <input name="searchContent" value="@ViewBag.SearchContent" class="form-control form-control-sm" placeholder="编码/名称" />
+                <button type="submit" class="btn btn-sm btn-primary">筛选</button>
+            </div>
+        </form>
+        <table class="table table-sm table-bordered">
+            <thead><tr><th>编码</th><th>名称</th><th>英文</th><th>父项</th><th>排序</th><th>状态</th><th>系统</th></tr></thead>
+            <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.ItemCode</td><td>@x.ItemName</td><td>@(x.ItemNameEn ?? "-")</td>
+                    <td>@(x.ParentItemCode ?? "-")</td><td>@x.DispSeq</td><td>@x.BStatusText</td>
+                    <td>@(x.IsSystem ? "是" : "否")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

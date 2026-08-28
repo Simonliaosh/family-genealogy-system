@@ -1,0 +1,17 @@
+<view class="card">
+  <picker range="{{relLabels}}" bindchange="onRel">
+    <view class="row"><text>关系</text><text>{{relLabels[relIndex]}}</text></view>
+  </picker>
+  <input class="input" placeholder="姓名" value="{{fullName}}" bindinput="set" data-k="fullName" />
+  <input class="input" placeholder="父亲姓名（匹配必填）" value="{{fatherName}}" bindinput="set" data-k="fatherName" />
+  <input class="input" placeholder="母亲姓名" value="{{motherName}}" bindinput="set" data-k="motherName" />
+  <input class="input" placeholder="出生（如 1990-01-01）" value="{{birthDate}}" bindinput="set" data-k="birthDate" />
+  <picker range="{{genders}}" bindchange="onGender">
+    <view class="row"><text>性别</text><text>{{genders[gender]}}</text></view>
+  </picker>
+  <input class="input" placeholder="世代号（0 表示未填）" type="number" value="{{generationNo}}" bindinput="set" data-k="generationNo" />
+  <input class="input" placeholder="字辈" value="{{wordOfGeneration}}" bindinput="set" data-k="wordOfGeneration" />
+  <input class="input" placeholder="备注" value="{{remark}}" bindinput="set" data-k="remark" />
+  <button class="btn" bindtap="save">保存草稿</button>
+  <button class="btn btn-ghost" bindtap="complete" wx:if="{{dataId}}">完成（写入人物）</button>
+</view>

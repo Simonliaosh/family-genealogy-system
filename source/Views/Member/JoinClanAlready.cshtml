@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "已有家族";
+    var my = ViewBag.MyClan as FamilyTree.Models.FtClan;
+}
+<div class="card mx-auto" style="max-width:28rem;">
+    <div class="card-header"><h5 class="mb-0">无法加入</h5></div>
+    <div class="card-body">
+        <div class="alert alert-warning">您已加入家族「@(my?.ClanName)」（ID：<code>@(my?.ClanCode)</code>），每人只能加入一个家族。</div>
+        <a class="btn btn-primary" asp-action="Home">返回我的任务</a>
+    </div>
+</div>

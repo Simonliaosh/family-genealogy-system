@@ -1,0 +1,23 @@
+@model FamilyTree.Models.ViewModels.FtGenWordFormVm
+@{ var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new(); }
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">排序</label>
+    <div class="col-md-8"><input asp-for="SeqNo" class="form-control" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">字辈用字</label>
+    <div class="col-md-8"><input asp-for="Word" class="form-control" maxlength="16" /><span asp-validation-for="Word" class="text-danger"></span></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            { if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> } }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8"><textarea asp-for="Remark" class="form-control" rows="3"></textarea></div>
+</div>

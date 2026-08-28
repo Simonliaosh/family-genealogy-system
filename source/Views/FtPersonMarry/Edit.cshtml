@@ -1,0 +1,22 @@
+@model FamilyTree.Models.ViewModels.FtMarryFormVm
+@{ ViewData["Title"] = "配偶详情"; var polistRt = ViewBag.PolistRt as string; var canSave = ViewBag.CanSave != false; }
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">配偶详情</h5></div>
+    <div class="card-body pm-form-wrap">
+        <form asp-action="Edit" asp-route-id="@Model.DataId" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="polistRt" value="@polistRt" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            @await Html.PartialAsync("_Form", Model)
+            <div class="row mt-2"><div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2">
+                @if (canSave)
+                {
+                    <button type="submit" name="selectNo" value="1" class="btn btn-primary">保存/继续</button>
+                    <button type="submit" name="selectNo" value="0" class="btn btn-primary">保存/退出</button>
+                }
+                <button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+            </div></div>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,85 @@
+@model FamilyTree.Models.ViewModels.EDepartmentFormVm
+@{
+    var editMode = ViewBag.EditMode == true;
+    var parentOptions = ViewBag.ParentDeptOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">部门代码</label>
+    <div class="col-md-8">
+        <input asp-for="DeptCode" class="form-control" maxlength="30" readonly="@editMode" />
+        <span asp-validation-for="DeptCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">部门中文名</label>
+    <div class="col-md-8">
+        <input asp-for="DeptCName" class="form-control" maxlength="100" />
+        <span asp-validation-for="DeptCName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">部门英文名</label>
+    <div class="col-md-8">
+        <input asp-for="DeptEName" class="form-control" maxlength="100" />
+        <span asp-validation-for="DeptEName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">上级部门</label>
+    <div class="col-md-8">
+        <select asp-for="ParentDeptId" class="form-select">
+            <option value="">无</option>
+            @foreach (var o in parentOptions.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
+            {
+                if (Model.ParentDeptId?.ToString() == o.Value) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="ParentDeptId" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">层级</label>
+    <div class="col-md-8">
+        <select asp-for="DeptLevel" class="form-select">
+            <option value="1">一级</option>
+            <option value="2">二级</option>
+            <option value="3">三级</option>
+            <option value="4">四级</option>
+            <option value="5">五级</option>
+        </select>
+        <span asp-validation-for="DeptLevel" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">显示顺序</label>
+    <div class="col-md-8">
+        <input asp-for="DispSeq" type="number" min="0" class="form-control" />
+        <span asp-validation-for="DispSeq" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            <option value="1">启用</option>
+            <option value="2">停用</option>
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">描述</label>
+    <div class="col-md-8">
+        <textarea asp-for="DDescription" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="DDescription" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Remark" class="text-danger"></span>
+    </div>
+</div>
+

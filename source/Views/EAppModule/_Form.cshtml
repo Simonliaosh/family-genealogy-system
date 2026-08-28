@@ -1,0 +1,59 @@
+@model FamilyTree.Models.ViewModels.EAppModuleFormVm
+@{
+    var appTypeOptions = ViewBag.AppTypeOptions as List<(string Value, string Text)> ?? new();
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var editMode = ViewBag.EditMode == true;
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用编码</label>
+    <div class="col-md-8">
+        <input asp-for="AppCode" class="form-control" maxlength="50" readonly="@editMode" />
+        <span asp-validation-for="AppCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用名称</label>
+    <div class="col-md-8">
+        <input asp-for="AppName" class="form-control" maxlength="100" />
+        <span asp-validation-for="AppName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用类型</label>
+    <div class="col-md-8">
+        <select asp-for="AppType" class="form-select">
+            @foreach (var o in appTypeOptions)
+            {
+                if (o.Value == Model.AppType) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">BaseUrl</label>
+    <div class="col-md-8"><input asp-for="BaseUrl" class="form-control" maxlength="300" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">图标</label>
+    <div class="col-md-8"><input asp-for="Icon" class="form-control" maxlength="100" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">排序</label>
+    <div class="col-md-8"><input asp-for="DispSeq" type="number" min="0" class="form-control" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8"><textarea asp-for="Remark" class="form-control" rows="3"></textarea></div>
+</div>

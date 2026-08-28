@@ -1,0 +1,40 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtLinkListRowVm>
+@{ ViewData["Title"] = "链入申请"; var canCr = ViewBag.CanCreate == true; var status1 = (string?)ViewBag.Status1 ?? ""; }
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">链入申请</h5>
+        <a class="btn btn-sm btn-primary" asp-action="Match">扫描匹配</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-2">本页是已提交的申请单。待审时可生成二维码，发给分支管/超管扫码审批。</p>
+        <form method="post">@Html.AntiForgeryToken()
+            <select name="status1" class="form-select form-select-sm mb-2" style="width:12rem;" onchange="this.form.submit()">
+                @if (status1==""){<option value="" selected>全部</option>}else{<option value="">全部</option>}
+                @if (status1=="PENDING"){<option value="PENDING" selected>待审</option>}else{<option value="PENDING">待审</option>}
+                @if (status1=="EFFECTIVE"){<option value="EFFECTIVE" selected>生效</option>}else{<option value="EFFECTIVE">生效</option>}
+            </select>
+        </form>
+        <table class="table table-sm">
+            <thead><tr><th>源</th><th>主谱目标</th><th>状态</th><th>级</th><th>时间</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.SourceName</td>
+                    <td>@x.TargetName</td>
+                    <td>@x.LinkStatus</td>
+                    <td>@x.MatchLevel</td>
+                    <td>@x.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td class="text-nowrap">
+                        @if (x.LinkStatus == "PENDING")
+                        {
+                            <a class="btn btn-sm btn-outline-primary" asp-action="ApplyQr" asp-route-id="@x.DataId">审批二维码</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (canCr) { <span class="d-none">@canCr</span> }
+    </div>
+</div>

@@ -1,0 +1,15 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=你的服务器;Initial Catalog=EFrame;User ID=你的账号;Password=你的密码;MultipleActiveResultSets=True;TrustServerCertificate=True"
+  },
+  "EventFlow": {
+    "PublicBaseUrl": "http://hc.easydo88.cn",
+    "CallbackSecret": "请改为生产环境随机密钥"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+@model FamilyTree.Models.ViewModels.FtTreeNodeVm
+@{
+    var key = string.IsNullOrEmpty(Model.NodeKey) ? ("local:" + Model.Id) : Model.NodeKey;
+    var hasKids = Model.Children.Count > 0;
+}
+<li class="ft-tree-node@(hasKids ? "" : " ft-tree-leaf")" data-node-key="@key">
+    @if (hasKids)
+    {
+        <button type="button" class="ft-tree-toggle" aria-expanded="true" title="收起" aria-label="收起下级">−</button>
+    }
+    else
+    {
+        <span class="ft-tree-toggle-spacer" aria-hidden="true"></span>
+    }
+    @if (Model.IsRemote)
+    {
+        <span class="text-primary">@Model.Name</span>
+        @if (!string.IsNullOrWhiteSpace(Model.Birth)) { <span class="text-muted">（@Model.Birth）</span> }
+        <span class="badge text-bg-light border">外链</span>
+        @if (Model.LazyExpand && Model.BridgeId is int bid && Model.RemotePersonId is int rid)
+        {
+            <button type="button" class="btn btn-sm btn-link p-0 ms-1 ft-peer-expand"
+                    data-bridge-id="@bid" data-person-id="@rid">展开</button>
+            <ul class="ft-peer-children" style="display:none;"></ul>
+        }
+    }
+    else
+    {
+        <strong>@Model.Name</strong>
+        @if (!string.IsNullOrWhiteSpace(Model.Birth)) { <span class="text-muted">（@Model.Birth）</span> }
+        @if (Model.IsMainRef) { <span class="badge text-bg-light border">主谱引用</span> }
+        <a class="small" asp-controller="FtPerson" asp-action="Edit" asp-route-id="@Model.Id">详情</a>
+        @if (hasKids)
+        {
+            <ul class="ft-tree-children">
+                @foreach (var c in Model.Children)
+                { <partial name="_TreeNode" model="c" /> }
+            </ul>
+        }
+    }
+</li>

@@ -1,0 +1,57 @@
+<script>
+(function () {
+    function esc(s) {
+        return (s || '').replace(/[&<>"']/g, function (c) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+        });
+    }
+    function renderKids(kids) {
+        var html = '';
+        (kids || []).forEach(function (k) {
+            html += '<li data-node-key="' + esc(k.nodeKey) + '">';
+            html += '<span class="text-primary">' + esc(k.name) + '</span>';
+            if (k.birth) html += ' <span class="text-muted">（' + esc(k.birth) + '）</span>';
+            html += ' <span class="badge text-bg-light border">外链</span>';
+            if (k.lazyExpand) {
+                html += ' <button type="button" class="btn btn-sm btn-link p-0 ms-1 ft-peer-expand" data-bridge-id="'
+                    + k.bridgeId + '" data-person-id="' + k.remotePersonId + '">展开</button>';
+                html += '<ul class="ft-peer-children" style="display:none;"></ul>';
+            }
+            html += '</li>';
+        });
+        return html;
+    }
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.ft-peer-expand');
+        if (!btn) return;
+        e.preventDefault();
+        var li = btn.closest('li');
+        var box = li.querySelector(':scope > .ft-peer-children');
+        if (!box) return;
+        if (btn.dataset.loaded === '1') {
+            box.style.display = box.style.display === 'none' ? '' : 'none';
+            btn.textContent = box.style.display === 'none' ? '展开' : '收起';
+            return;
+        }
+        btn.disabled = true;
+        btn.textContent = '加载中…';
+        var url = '/FtTree/ExpandPeer?bridgeId=' + encodeURIComponent(btn.dataset.bridgeId)
+            + '&personId=' + encodeURIComponent(btn.dataset.personId);
+        fetch(url, { credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (j) {
+                if (!j || !j.ok) throw new Error((j && j.message) || '展开失败');
+                box.innerHTML = renderKids(j.data || []);
+                box.style.display = '';
+                btn.dataset.loaded = '1';
+                btn.textContent = '收起';
+                btn.disabled = false;
+            })
+            .catch(function (err) {
+                btn.textContent = '展开';
+                btn.disabled = false;
+                alert(err.message || '展开失败');
+            });
+    });
+})();
+</script>

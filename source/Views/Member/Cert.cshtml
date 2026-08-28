@@ -1,0 +1,30 @@
+@model FamilyTree.Models.FtPerson
+@{ ViewData["Title"] = "申请认证"; var url = ViewBag.CertUrl as string ?? ""; }
+<div class="card mx-auto" style="max-width:32rem;">
+    <div class="card-header"><h5 class="mb-0">② 族员认证</h5></div>
+    <div class="card-body text-center">
+        @if (Model.IsCertified)
+        {
+            <div class="alert alert-success">已认证。下一步去录入人物。</div>
+            <div class="d-grid gap-2">
+                <a class="btn btn-primary btn-lg" asp-controller="FtPersonDraft" asp-action="Index">进入录入人物</a>
+                <a class="btn btn-outline-secondary" asp-action="Home">我的任务</a>
+            </div>
+        }
+        else
+        {
+            <p class="mb-2">把下面二维码发给<strong>分支管理员或超管</strong>，对方扫一下点确认即可。</p>
+            <p class="fw-bold mb-3">@Model.FullName</p>
+            <img src="@Url.Action("CertQr")" alt="认证二维码" class="border rounded mb-3" style="width:220px;height:220px;" />
+            <div class="input-group mb-2">
+                <input id="certUrl" class="form-control" value="@url" readonly />
+                <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('certUrl').value);this.innerText='已复制';">复制</button>
+            </div>
+            <p class="text-muted small">也可截图发微信。管理员须已登录本系统。</p>
+            <div class="d-flex flex-wrap gap-2 justify-content-center mt-2">
+                <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Home")'">返回上一页</a>
+                <a class="btn btn-outline-secondary" asp-action="Home">返回我的任务</a>
+            </div>
+        }
+    </div>
+</div>

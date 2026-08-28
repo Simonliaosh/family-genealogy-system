@@ -1,0 +1,101 @@
+@model FamilyTree.Models.ViewModels.EResourcePermissionFormVm
+@{
+    var dutyOptions = ViewBag.DutyOptions as List<(string Value, string Text)> ?? new();
+    var resourceOptions = ViewBag.ResourceOptions as List<(string Code, string Display)> ?? new();
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var lockDutyResource = ViewBag.LockDutyResource as bool? == true;
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职责</label>
+    <div class="col-md-8">
+        @if (lockDutyResource)
+        {
+            <input type="hidden" asp-for="DutyId" />
+            <p class="form-control-plaintext mb-0">@(ViewBag.DutyDisplay as string)</p>
+        }
+        else
+        {
+            <select asp-for="DutyId" class="form-select">
+                <option value="0">请选择</option>
+                @foreach (var o in dutyOptions)
+                {
+                    if (o.Value == Model.DutyId.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+            <span asp-validation-for="DutyId" class="text-danger"></span>
+        }
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">资源</label>
+    <div class="col-md-8">
+        @if (lockDutyResource)
+        {
+            <input type="hidden" asp-for="ResourceId" />
+            <p class="form-control-plaintext mb-0">@(ViewBag.ResourceDisplay as string)</p>
+        }
+        else
+        {
+            <select asp-for="ResourceId" class="form-select">
+                <option value="">请选择</option>
+                @foreach (var o in resourceOptions)
+                {
+                    if (o.Code == Model.ResourceId) { <option value="@o.Code" selected>@o.Display</option> } else { <option value="@o.Code">@o.Display</option> }
+                }
+            </select>
+            <span asp-validation-for="ResourceId" class="text-danger"></span>
+        }
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">可查询</label>
+    <div class="col-md-8 pt-md-2">
+        <div class="form-check">
+            <input asp-for="CanQuery" class="form-check-input" />
+            <label asp-for="CanQuery" class="form-check-label">允许查询（须勾选）</label>
+        </div>
+        <span asp-validation-for="CanQuery" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">可新增</label>
+    <div class="col-md-8 pt-md-2">
+        <div class="form-check">
+            <input asp-for="CanCreate" class="form-check-input" />
+            <label asp-for="CanCreate" class="form-check-label">允许新增</label>
+        </div>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">可修改</label>
+    <div class="col-md-8 pt-md-2">
+        <div class="form-check">
+            <input asp-for="CanUpdate" class="form-check-input" />
+            <label asp-for="CanUpdate" class="form-check-label">允许修改</label>
+        </div>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">可删除</label>
+    <div class="col-md-8 pt-md-2">
+        <div class="form-check">
+            <input asp-for="CanDelete" class="form-check-input" />
+            <label asp-for="CanDelete" class="form-check-label">允许删除</label>
+        </div>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>

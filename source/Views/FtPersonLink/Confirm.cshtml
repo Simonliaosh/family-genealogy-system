@@ -1,0 +1,86 @@
+﻿@model FamilyTree.Models.ViewModels.FtLinkConfirmVm
+@{
+    ViewData["Title"] = "确认链入";
+    string Dash(string? s) => string.IsNullOrWhiteSpace(s) ? "—" : s;
+}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">确认链入主谱</h5></div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">
+            匹配只提示「可能是同一人」。链入把<strong>你录入的这一人</strong>接到<strong>主谱里已有的同一人</strong>上：
+            你的子女会挂到主谱此人下，从而把小树串进主谱。不会把两棵未入主谱的小树直接合并。
+        </p>
+        <p class="mb-3"><span class="badge bg-secondary">@Model.LevelLabel</span></p>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <h6>我录入的人（源）</h6>
+                <table class="table table-sm table-bordered mb-0">
+                    <tr><th style="width:7rem;">姓名</th><td>@Model.Source.FullName</td></tr>
+                    <tr><th>父名 / 母名</th><td>@Dash(Model.Source.FatherName) / @Dash(Model.Source.MotherName)</td></tr>
+                    <tr><th>出生年月</th><td>@Dash(Model.Source.BirthDate)@(Model.Source.BirthYear.HasValue ? $"（{Model.Source.BirthYear}）" : "")</td></tr>
+                    <tr><th>树上父母</th><td>@Dash(Model.Source.FatherOnTree) / @Dash(Model.Source.MotherOnTree)</td></tr>
+                    <tr><th>主谱</th><td>@(Model.Source.InMain ? "是" : "否")</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6>主谱人物（目标）</h6>
+                <table class="table table-sm table-bordered mb-0">
+                    <tr><th style="width:7rem;">姓名</th><td>@Model.Target.FullName</td></tr>
+                    <tr><th>父名 / 母名</th><td>@Dash(Model.Target.FatherName) / @Dash(Model.Target.MotherName)</td></tr>
+                    <tr><th>出生年月</th><td>@Dash(Model.Target.BirthDate)@(Model.Target.BirthYear.HasValue ? $"（{Model.Target.BirthYear}）" : "")</td></tr>
+                    <tr><th>树上父母</th><td>@Dash(Model.Target.FatherOnTree) / @Dash(Model.Target.MotherOnTree)</td></tr>
+                    <tr><th>主谱</th><td>@(Model.Target.InMain ? "是" : "否")</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <h6>链入后影响</h6>
+        <ul class="small text-muted">
+            <li>源人记为「等同」主谱目标，本人不再单独占主谱位。</li>
+            <li>子女挂接：@(Model.ChildrenToAttach.Count == 0 ? "无直接子女" : string.Join("、", Model.ChildrenToAttach))</li>
+            <li>若目标在主谱尚无父亲、而源有父亲节点，审批通过后可把该父挂到目标上（补缺，不覆盖已有）。</li>
+        </ul>
+
+        @if (!string.IsNullOrEmpty(Model.BlockReason))
+        {
+            <div class="alert alert-warning">@Model.BlockReason</div>
+        }
+        else if (Model.CanSubmit)
+        {
+            <div class="alert alert-info">核对无误后提交申请；由<strong>超管或分支管</strong>审批，通过前不会挂入主谱。</div>
+        }
+
+        <div class="mt-3">
+            @if (Model.CanSubmit)
+            {
+                <form asp-action="Apply" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="sourceId" value="@Model.SourceId" />
+                    <input type="hidden" name="targetId" value="@Model.TargetId" />
+                    <input type="hidden" name="level" value="@Model.MatchLevel" />
+                    <button type="submit" class="btn btn-primary" onclick="return confirm('确认向超管申请链入？');">确认并申请链入</button>
+                </form>
+            }
+            else if (Model.HasAncestorConflict)
+            {
+                <form asp-action="Apply" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="sourceId" value="@Model.SourceId" />
+                    <input type="hidden" name="targetId" value="@Model.TargetId" />
+                    <input type="hidden" name="level" value="@Model.MatchLevel" />
+                    <button type="submit" class="btn btn-outline-warning" onclick="return confirm('世系冲突将提交冲突单，不进入链入待审。继续？');">提交冲突给超管</button>
+                </form>
+            }
+            <a class="btn btn-outline-secondary" asp-controller="FtPerson" asp-action="Edit" asp-route-id="@Model.SourceId">返回人物</a>
+            <form asp-action="NotMatch" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="sourceId" value="@Model.SourceId" />
+                <input type="hidden" name="targetId" value="@Model.TargetId" />
+                <input type="hidden" name="returnTo" value="Confirm" />
+                <button type="submit" class="btn btn-outline-secondary" onclick="return confirm('确认不是同一人？以后匹配将跳过这对人。');">不是同一人（排除匹配）</button>
+            </form>
+            <a class="btn btn-link" asp-controller="FtPerson" asp-action="Edit" asp-route-id="@Model.TargetId">查看主谱目标</a>
+        </div>
+    </div>
+</div>

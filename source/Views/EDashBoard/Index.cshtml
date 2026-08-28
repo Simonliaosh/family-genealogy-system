@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "我的工作台";
+}
+
+<link rel="stylesheet" href="~/css/dash-board.css" asp-append-version="true" />
+
+<div class="card dash-board-wrap" id="dash-board-page">
+    <div class="card-header py-2">
+        <div class="d-flex flex-wrap align-items-center gap-2 dash-toolbar">
+            <label class="mb-0 small text-muted">任岗</label>
+            <select id="dash-user-pos" class="form-select form-select-sm" style="min-width:14rem;"></select>
+
+            <label class="mb-0 small text-muted ms-2">时间范围</label>
+            <select id="dash-time-type" class="form-select form-select-sm" style="width:8rem;">
+                <option value="1">今日</option>
+                <option value="2">本周</option>
+                <option value="3" selected>本月</option>
+                <option value="4">本年</option>
+            </select>
+
+            <button type="button" id="btn-dash-refresh" class="btn btn-sm btn-outline-primary">刷新</button>
+            <button type="button" id="btn-dash-add" class="btn btn-sm btn-outline-success">添加卡片</button>
+            <button type="button" id="btn-dash-reset" class="btn btn-sm btn-outline-warning">恢复默认</button>
+            <button type="button" id="btn-dash-edit" class="btn btn-sm btn-outline-secondary">编辑模式</button>
+        </div>
+    </div>
+    <div class="card-body py-3">
+        <div id="dash-loading" class="text-muted small mb-2 d-none">加载中…</div>
+        <div id="dash-error" class="alert alert-danger py-2 d-none"></div>
+        <div id="dash-grid" class="dash-grid"></div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<script src="~/lib/echarts/echarts.min.js" asp-append-version="true"></script>
+<script src="~/js/dash/dash-charts.js" asp-append-version="true"></script>
+<script src="~/js/dash/dash-board.js" asp-append-version="true"></script>
+<script>
+    if (window.DashBoardPage && window.DashBoardPage.init) {
+        window.DashBoardPage.init();
+    }
+</script>

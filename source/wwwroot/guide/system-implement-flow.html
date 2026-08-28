@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EFrame 系统实施与使用流程</title>
+  <link href="/css/guide-flow.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="guide-page">
+
+  <h1>EFrame 事件订阅框架 — 系统实施与使用流程</h1>
+  <p class="subtitle">推荐路径：<strong>先填 Excel → 第一步投产导入（框架 SQL + 01~17）→ 重新登录 → 抽查联调 → 日常业务</strong>。</p>
+
+  <div class="arch-box">
+    <strong>导入一次写入的内容：</strong>
+    组织（部门/岗位/职责/用户/任岗）+ 菜单订阅 + 事件配置 + <strong>流转规则（Tbl_E_EventFlowRule）</strong> + 仪表盘（可选）。<br />
+    <strong>核心链路：</strong>用户 → 任岗 → 岗位职责 → 职责 → 订阅 → 发布事件 → 流转规则 → 待办/通知。
+  </div>
+
+  <!-- ========== 准备 ========== -->
+  <hgroup>
+    <h2>准备 — 填表（导入前由公司完成）</h2>
+    <p>应用负责人员接收签字表格，整理为 Excel <strong>01~17</strong>（或使用「模板-贸易公司默认」）。<br />
+    对应：A02 部门 → A03 岗位 → A04 职责 → A05 岗位职责 → A06 用户任岗 → A07 菜单 → A08~A10 事件/规则/订阅 → A11 仪表盘（可选）。</p>
+  </hgroup>
+
+  <!-- ========== 第一阶段：投产导入 ========== -->
+  <span class="section-title">第一阶段 — 投产数据导入（实施第一步）</span>
+
+  <div class="step-list">
+    <p><span class="step-num">1、</span>确认 Web 已部署、<code>appsettings.json</code> 连接串正确；
+      <a href="/health" target="_blank">/health</a> 显示数据库 Connected。</p>
+
+    <p><span class="step-num">2、</span>用初始管理员登录（种子账号如 <strong>cfadmin / 123456</strong>，或已有管理员）。</p>
+
+    <p><span class="step-num">3、</span><a href="/EDataImport/Index" target="_blank"><strong>投产数据导入</strong></a>
+      <span class="hint">— 默认顺序：框架 SQL（10/11/20/23）→ 清空原组织 → 导入 Excel 01~17；支持 ZIP 一次上传</span></p>
+
+    <p><span class="step-num">4、</span>查看导入报告，确认 07 表用户、11/14 订阅与流转规则无报错。</p>
+
+    <p><span class="step-num">5、</span><strong>全员退出重新登录</strong>，使用 Excel 07 中的 LoginId + 初始密码（默认多为 123456）。</p>
+
+    <p><span class="step-num">6、</span>若菜单无「投产数据导入」，在库中执行一次 <code>scripts/27-Patch_EDataImport_Menu.sql</code> 后重新登录。</p>
+  </div>
+
+  <!-- ========== 第二阶段：导入后抽查 ========== -->
+  <span class="section-title">第二阶段 — 导入后抽查（一般不必逐条手工录入）</span>
+
+  <div class="step-list">
+    <p class="hint" style="margin-bottom:12px;">以下数据<strong>已含在 Excel 导入中</strong>，仅在需要核对或微调时点菜单：</p>
+
+    <p><span class="step-num">1、</span><a href="/EDepartment/Index" target="_blank">部门</a> /
+      <a href="/EPosition/Index" target="_blank">岗位</a> /
+      <a href="/EDuty/Index" target="_blank">职责</a> /
+      <a href="/EUserPosition/Index" target="_blank">用户任岗</a>
+      <span class="hint">— 抽查 A02~A06</span></p>
+
+    <p><span class="step-num">2、</span><a href="/ESubscription/Index" target="_blank">订阅管理</a> /
+      <a href="/EResourcePermission/Index" target="_blank">资源权限</a>
+      <span class="hint">— 抽查 A07 菜单是否齐全</span></p>
+
+    <p><span class="step-num">3、</span><a href="/EEventConfig/Index" target="_blank">事件配置</a> /
+      <a href="/EEventFlowRule/Index" target="_blank">事件流转规则</a>
+      <span class="hint">— 抽查 A08/A09（<strong>Tbl_E_EventFlowRule</strong>）</span></p>
+
+    <p><span class="step-num">4、</span>抽 3 个用户登录，确认侧栏菜单、任岗切换正常。</p>
+  </div>
+
+  <!-- ========== 第三阶段：事件联调 ========== -->
+  <span class="section-title">第三阶段 — 事件与流转规则联调</span>
+
+  <div class="step-list">
+    <p><span class="step-num">1、</span><a href="/EventDemo/Index" target="_blank">事件发布 Demo</a>
+      <span class="hint">— 发布 Excel 13/14 中配置的 EventCode，验证待办是否落到正确职责</span></p>
+
+    <p><span class="step-num">2、</span><a href="/EEventInstanceQuery/Index" target="_blank">事件实例</a> /
+      <a href="/ETodoTask/Index" target="_blank">待办任务</a>
+      <span class="hint">— 确认 CREATE_TODO 规则生效</span></p>
+
+    <p><span class="step-num">3、</span><strong>人事请假</strong>（内置完整示例）：
+      <a href="/HrLeave/Create" target="_blank">申请</a> →
+      <a href="/HrLeave/Approval" target="_blank">审批</a></p>
+
+    <p><span class="step-num">4、</span>贸易 TRADE.* 等业务：页面开发完成后在代码中 PublishAsync；开发前用 EventDemo 模拟。</p>
+  </div>
+
+  <!-- ========== 第四阶段：日常使用 ========== -->
+  <span class="section-title">第四阶段 — 公司开张，大家开始用</span>
+
+  <div class="step-list">
+    <p><span class="step-num">1、</span><a href="/Account/Login" target="_blank">登录</a>，多任岗在首页切换。</p>
+    <p><span class="step-num">2、</span><a href="/Home/Index" target="_blank">首页 / 工作台</a></p>
+    <p><span class="step-num">3、</span><a href="/ETodoTask/Index" target="_blank">待办任务</a> — 处理审批</p>
+    <p><span class="step-num">4、</span><a href="/EDashBoard/Index" target="_blank">仪表盘</a>
+      <span class="tag">可选</span><span class="hint">— 若导入 15~17</span></p>
+  </div>
+
+  <!-- ========== 第五阶段：增量变更 ========== -->
+  <span class="section-title">第五阶段 — 上线后增量（少量变更时再用界面）</span>
+
+  <div class="step-list">
+    <p><span class="step-num">1、</span>新增人员 → <a href="/EUsers/Index" target="_blank">用户</a> + <a href="/EUserPosition/Index" target="_blank">任岗</a></p>
+    <p><span class="step-num">2、</span>新增菜单 → B01：<a href="/EResource/Index" target="_blank">资源</a> + <a href="/ESubscription/Index" target="_blank">订阅</a></p>
+    <p><span class="step-num">3、</span>新增事件/规则 → B02：<a href="/EEventConfig/Index" target="_blank">事件</a> + <a href="/EEventFlowRule/Index" target="_blank">流转规则</a> + 开发 PublishAsync</p>
+    <p><span class="step-num">4、</span>大批量变更 → 改 Excel 后再次 <a href="/EDataImport/Index" target="_blank">投产导入</a>（默认全量覆盖）</p>
+    <p><span class="step-num">5、</span>字典/选项 → <a href="/EDictType/Index" target="_blank">字典维护</a></p>
+    <p><span class="step-num">6、</span>人员交接 → <a href="/EUserHandover/Index" target="_blank">用户交接</a></p>
+    <p class="warn"><span class="step-num">注意：</span>改组织、订阅、流转规则后，相关用户需 <strong>退出重新登录</strong>。</p>
+  </div>
+
+  <footer>
+    EFrameDash · 实施流程指南 · 第一步：投产数据导入 · /guide/system-implement-flow.html
+  </footer>
+
+</div>
+</body>
+</html>

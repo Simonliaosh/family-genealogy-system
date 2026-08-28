@@ -1,0 +1,56 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtBranchApplyRowVm>
+@{
+    ViewData["Title"] = "申请分支管理员";
+    var canCr = ViewBag.CanCreate == true;
+    var st = ViewBag.Status as FamilyTree.Models.ViewModels.FtBranchApplyStatusVm ?? new();
+}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">申请成为分支管理员</h5></div>
+    <div class="card-body">
+        <p class="text-muted">分支管理员可以在人物档案上<strong>向上补祖先、向下补子孙</strong>。通过后由超管上岗，不审本支草稿。</p>
+        @if (st.IsSuperAdmin)
+        {
+            <div class="alert alert-info">你已是超管，无需申请。</div>
+        }
+        else if (st.IsBranchAdmin)
+        {
+            <div class="alert alert-success">你已是分支管理员。</div>
+        }
+        else if (st.HasPending)
+        {
+            <div class="alert alert-warning">已有待审申请，请等待超管处理。理由：@st.PendingReason</div>
+        }
+        else if (canCr)
+        {
+            <form asp-action="Apply" method="post" class="mb-4">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label">申请理由</label>
+                    <textarea name="reason" class="form-control" rows="3" maxlength="512" required placeholder="例如：负责补录某某支世系"></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">提交申请</button>
+            </form>
+        }
+        else
+        {
+            <p class="text-muted">当前身份无权提交申请。</p>
+        }
+
+        <h6 class="mt-3">我的申请</h6>
+        <table class="table table-sm">
+            <thead><tr><th>时间</th><th>状态</th><th>理由</th><th>审批说明</th></tr></thead>
+            <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@x.ApplyStatus</td>
+                    <td>@x.ApplyReason</td>
+                    <td>@x.Remark</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        @if (Model.Count == 0) { <p class="text-muted">暂无记录。</p> }
+    </div>
+</div>

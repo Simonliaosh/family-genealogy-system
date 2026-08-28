@@ -1,0 +1,63 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.EDictItemManageListRowVm>
+@{
+    ViewData["Title"] = "字典条目维护";
+    var typeCode = (string)ViewBag.TypeCode;
+    var canCr = ViewBag.CanCreate == true;
+    var canUp = ViewBag.CanUpdate == true;
+    var canDel = ViewBag.CanDelete == true;
+    var intPage = (int)(ViewBag.IntPage ?? 1);
+    var totalRecords = (int)(ViewBag.TotalRecords ?? 0);
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5 class="mb-0">@ViewBag.TypeName <small class="text-muted">(@typeCode)</small></h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-controller="EDictType" asp-action="Index">返回类型</a>
+    </div>
+    <div class="card-body py-2">
+        <form asp-action="Index" asp-route-code="@typeCode" method="post">
+            @Html.AntiForgeryToken()
+            <div class="d-flex gap-2 mb-2">
+                <select name="bStatus1" class="form-select form-select-sm" style="width:8rem">
+                    @foreach (var o in ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new())
+                    {
+                        if (o.Value == (string?)ViewBag.BStatus1) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                    }
+                </select>
+                <input name="searchContent" value="@ViewBag.SearchContent" class="form-control form-control-sm" style="width:12rem" />
+                <button type="submit" class="btn btn-sm btn-primary">查询</button>
+                @if (canCr) { <a class="btn btn-sm btn-outline-primary" asp-action="Create" asp-route-code="@typeCode">添加条目</a> }
+            </div>
+            <table class="table table-sm table-bordered">
+                <thead><tr>
+                    <th>编码</th><th>名称</th><th>英文</th><th>父项</th><th>排序</th><th>状态</th><th>系统</th><th></th>
+                    @if (canDel) { <th>删除</th><th><input type="checkbox" id="chk-all" /></th> }
+                </tr></thead>
+                <tbody>
+                @foreach (var x in Model)
+                {
+                    <tr>
+                        <td>@x.ItemCode</td><td>@x.ItemName</td><td>@(x.ItemNameEn ?? "-")</td>
+                        <td>@(x.ParentItemCode ?? "-")</td><td>@x.DispSeq</td><td>@x.BStatusText</td>
+                        <td>@(x.IsSystem ? "是" : "否")</td>
+                        <td>@if (canUp) { <a asp-action="Edit" asp-route-id="@x.DataId">详情</a> }</td>
+                        @if (canDel && !x.IsSystem)
+                        {
+                            <td><button type="submit" formaction="@Url.Action("Delete")" name="id" value="@x.DataId" class="btn btn-sm btn-outline-danger" onclick="return confirm('确定删除？');">删</button></td>
+                            <td><input type="checkbox" name="ids" value="@x.DataId" class="row-chk" /></td>
+                        }
+                        else if (canDel) { <td></td><td></td> }
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <p class="small text-muted">共 @totalRecords 条</p>
+            @if (canDel)
+            {
+                <button type="submit" formaction="@Url.Action("BatchDelete")" class="btn btn-sm btn-outline-danger" onclick="return confirm('批量删除所选？');">批量删除</button>
+            }
+            <input type="hidden" name="intPage" value="@intPage" />
+        </form>
+    </div>
+</div>
+<script>document.getElementById('chk-all')?.addEventListener('change',function(){document.querySelectorAll('.row-chk').forEach(c=>c.checked=this.checked);});</script>

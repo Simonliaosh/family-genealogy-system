@@ -1,0 +1,63 @@
+@model FamilyTree.Models.ViewModels.EventDemoPublishFormVm
+@{
+    ViewData["Title"] = "事件发布 Demo";
+    var result = ViewBag.Result as FamilyTree.Models.ViewModels.EventDemoPublishResultVm;
+}
+
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">事件发布联调</h5></div>
+    <div class="card-body">
+        @if (result != null)
+        {
+            <div class="alert @(result.Success ? "alert-success" : "alert-danger")">
+                @(result.Success ? "成功" : "失败")：@result.Message
+                @if (result.EventInstanceId.HasValue)
+                {
+                    <div class="small mt-1">
+                        实例 ID：<a asp-controller="EEventInstanceQuery" asp-action="Details" asp-route-id="@result.EventInstanceId">@result.EventInstanceId</a>
+                        · 接收人 @result.ReceiverCount · 待办 @result.TodoCreatedCount
+                        @(result.IdempotentHit ? "（幂等命中）" : "")
+                    </div>
+                }
+            </div>
+        }
+        <form asp-action="Publish" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">应用</label>
+                <div class="col-md-6"><input asp-for="AppCode" class="form-control" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">事件编码</label>
+                <div class="col-md-6"><input asp-for="EventCode" class="form-control" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">对象类型</label>
+                <div class="col-md-6"><input asp-for="ObjectType" class="form-control" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">对象键</label>
+                <div class="col-md-6"><input asp-for="ObjectKey" class="form-control" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">对象标题</label>
+                <div class="col-md-6"><input asp-for="ObjectTitle" class="form-control" /></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">PayloadJson</label>
+                <div class="col-md-8"><textarea asp-for="PayloadJson" class="form-control" rows="3" placeholder='{"status":"SUBMIT"}'></textarea></div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-md-2 col-form-label text-md-end">幂等键</label>
+                <div class="col-md-6"><input asp-for="IdempotencyKey" class="form-control" /></div>
+            </div>
+            <div class="row"><div class="col-md-6 offset-md-2">
+                <button type="submit" class="btn btn-primary">发布事件</button>
+            </div></div>
+        </form>
+        <p class="small text-muted mt-3 mb-0">
+            JSON API：<code>POST /EventDemo/ApiPublish</code>（需登录 Cookie）。<br />
+            CALL_API 回调：<code>POST /EventDemo/ApiCallback</code>；配置 <code>EventFlow:PublicBaseUrl</code> 与种子规则 <code>FLOW_DEMO_SUBMIT_API</code>。
+        </p>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+@* 列表页筛选/分页状态回传（见 PolistReturnToken）。勿声明 @model，避免继承父页 FormVm 导致类型错误。 *@
+@{
+    var polistRt = ViewBag.PolistRt as string;
+}
+@if (!string.IsNullOrWhiteSpace(polistRt))
+{
+    <input type="hidden" name="polistRt" value="@polistRt" />
+}

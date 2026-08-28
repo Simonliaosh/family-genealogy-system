@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>成员入口</title>
+  <style>
+    body { font-family: "微软雅黑", sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    a { color: #2c3e50; }
+    .muted { color: #666; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>家族族谱 · 成员入口</h1>
+  <p>
+    <a href="/Account/Login">登录</a>　
+    <a href="/Member/Join">族人注册</a>　
+    <a href="/Member/Home">成员首页（树 / 录入人物 / 档案）</a>
+  </p>
+  <p>
+    <a href="/FtMyProfile/Index">我的档案（含照片）</a>　
+    <a href="/FtBranchApply/Index">申请分支管理员</a>　
+    <a href="/FtPersonDraft/Index">录入人物</a>
+  </p>
+  <p class="muted">微信小程序与本站共用 <code>/api/Ft*</code>。工程目录见仓库 <code>miniprogram/</code>。照片保存在 <code>/uploads/person/{人物ID}/</code>。</p>
+</body>
+</html>

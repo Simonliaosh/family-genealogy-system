@@ -1,0 +1,100 @@
+@model FamilyTree.Models.ViewModels.EMemberFormVm
+@{
+    var isEdit = ViewBag.IsEdit as bool? == true;
+    var deptOptions = ViewBag.DeptOptions as List<(string Value, string Text)> ?? new();
+    var posOptions = ViewBag.PosOptions as List<(string Value, string Text)> ?? new();
+    var sexOptions = ViewBag.SexFormOptions as List<(string Value, string Text)> ?? new();
+    var perGradeOptions = ViewBag.PerGradeFormOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">人员编号</label>
+    <div class="col-md-8">
+        @if (isEdit)
+        {
+            <input asp-for="MemberId" class="form-control" readonly />
+        }
+        else
+        {
+            <input asp-for="MemberId" class="form-control" maxlength="30" />
+        }
+        <span asp-validation-for="MemberId" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">姓名</label>
+    <div class="col-md-8">
+        <input asp-for="MemberName" class="form-control" maxlength="20" />
+        <span asp-validation-for="MemberName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">性别</label>
+    <div class="col-md-8">
+        <select asp-for="Sex" class="form-select">
+            @foreach (var o in sexOptions)
+            {
+                if (o.Value == (Model.Sex ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="Sex" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">民族</label>
+    <div class="col-md-8"><input asp-for="Nation" class="form-control" maxlength="12" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">籍贯</label>
+    <div class="col-md-8"><input asp-for="NativePlace" class="form-control" maxlength="30" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">身份证号</label>
+    <div class="col-md-8">
+        <input asp-for="IdNo" class="form-control" maxlength="20" />
+        <span asp-validation-for="IdNo" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">出生日期</label>
+    <div class="col-md-8"><input asp-for="Birthday" class="form-control" type="date" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">参加工作日期</label>
+    <div class="col-md-8"><input asp-for="WorkDate" class="form-control" type="date" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">职级</label>
+    <div class="col-md-8">
+        <select asp-for="PerGrade" class="form-select">
+            @foreach (var o in perGradeOptions)
+            {
+                if (o.Value == (Model.PerGrade ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">部门</label>
+    <div class="col-md-8">
+        <select class="form-select" id="DeptId" name="DeptId">
+            @foreach (var o in deptOptions)
+            {
+                var sel = (Model.DeptId?.ToString() ?? "") == o.Value;
+                if (sel) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">岗位</label>
+    <div class="col-md-8">
+        <select class="form-select" id="PosId" name="PosId">
+            @foreach (var o in posOptions)
+            {
+                var sel = (Model.PosId?.ToString() ?? "") == o.Value;
+                if (sel) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>

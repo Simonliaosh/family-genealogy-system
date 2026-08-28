@@ -1,0 +1,74 @@
+@model FamilyTree.Models.ViewModels.EDictTypeFormVm
+@{
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var appCodeOptions = ViewBag.AppCodeOptions as List<(string Value, string Text)> ?? new();
+    var editMode = ViewBag.EditMode == true;
+    var isSystem = ViewBag.IsSystem == true;
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">应用编码</label>
+    <div class="col-md-8">
+        @if (editMode)
+        {
+            <select asp-for="AppCode" class="form-select" disabled="disabled">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+            <input type="hidden" asp-for="AppCode" />
+        }
+        else
+        {
+            <select asp-for="AppCode" class="form-select">
+                @foreach (var o in appCodeOptions)
+                {
+                    if (string.Equals(o.Value, Model.AppCode, StringComparison.OrdinalIgnoreCase)) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                }
+            </select>
+        }
+        <span asp-validation-for="AppCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">类型编码</label>
+    <div class="col-md-8">
+        <input asp-for="DictTypeCode" class="form-control" maxlength="50" readonly="@editMode" />
+        <span asp-validation-for="DictTypeCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">类型名称</label>
+    <div class="col-md-8">
+        <input asp-for="DictTypeName" class="form-control" maxlength="100" readonly="@isSystem" />
+        <span asp-validation-for="DictTypeName" class="text-danger"></span>
+    </div>
+</div>
+@if (!isSystem)
+{
+    <div class="mb-3 row">
+        <label class="col-md-2 col-form-label text-md-end">允许编辑</label>
+        <div class="col-md-8">
+            <input asp-for="IsEditable" type="checkbox" class="form-check-input" />
+        </div>
+    </div>
+}
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select" disabled="@isSystem">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8">
+        <textarea asp-for="Remark" class="form-control" rows="3" readonly="@isSystem"></textarea>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+@model FamilyTree.Models.ViewModels.EDictItemFormVm
+@{
+    var bStatusOptions = ViewBag.BStatusOptions as List<(string Value, string Text)> ?? new();
+    var editMode = ViewBag.EditMode == true;
+    var isSystem = ViewBag.IsSystem == true;
+}
+<input type="hidden" asp-for="DictTypeCode" />
+<input type="hidden" asp-for="DataId" />
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">条目编码</label>
+    <div class="col-md-8">
+        <input asp-for="ItemCode" class="form-control" maxlength="50" readonly="@editMode" />
+        <span asp-validation-for="ItemCode" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">条目名称</label>
+    <div class="col-md-8">
+        <input asp-for="ItemName" class="form-control" maxlength="100" readonly="@isSystem" />
+        <span asp-validation-for="ItemName" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">英文名称</label>
+    <div class="col-md-8"><input asp-for="ItemNameEn" class="form-control" maxlength="100" readonly="@isSystem" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">父项编码</label>
+    <div class="col-md-8"><input asp-for="ParentItemCode" class="form-control" maxlength="50" readonly="@isSystem" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">排序</label>
+    <div class="col-md-8"><input asp-for="DispSeq" type="number" min="0" class="form-control" readonly="@isSystem" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">扩展 JSON</label>
+    <div class="col-md-8"><input asp-for="ExtJson" class="form-control" maxlength="500" readonly="@isSystem" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态</label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select" disabled="@isSystem">
+            @foreach (var o in bStatusOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">备注</label>
+    <div class="col-md-8"><textarea asp-for="Remark" class="form-control" rows="2" readonly="@isSystem"></textarea></div>
+</div>

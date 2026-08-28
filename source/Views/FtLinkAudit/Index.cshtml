@@ -1,0 +1,31 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtLinkListRowVm>
+@{ ViewData["Title"] = "链入审批"; var canUp = ViewBag.CanUpdate == true; }
+<div class="card"><div class="card-header"><h5 class="mb-0">链入审批</h5></div>
+<div class="card-body">
+<p class="text-muted small mb-2">也可扫族人发来的「链入申请二维码」打开审批页。</p>
+<table class="table table-sm"><thead><tr><th>源</th><th>目标</th><th>状态</th><th>级</th><th></th></tr></thead>
+<tbody>
+@foreach (var x in Model)
+{
+<tr>
+<td>@x.SourceName</td><td>@x.TargetName</td><td>@x.LinkStatus</td><td>@x.MatchLevel</td>
+<td class="text-nowrap">
+<a class="btn btn-sm btn-outline-secondary" asp-action="Open" asp-route-id="@x.DataId">详情/扫码页</a>
+@if (canUp && x.LinkStatus=="PENDING") {
+<form asp-action="Approve" method="post" class="d-inline">@Html.AntiForgeryToken()
+<input type="hidden" name="id" value="@x.DataId" />
+<button class="btn btn-sm btn-success" name="pass" value="true">通过</button>
+<button class="btn btn-sm btn-outline-danger" name="pass" value="false">驳回</button>
+</form>
+}
+@if (canUp && x.LinkStatus=="EFFECTIVE") {
+<form asp-action="Unlink" method="post" class="d-inline">@Html.AntiForgeryToken()
+<input type="hidden" name="id" value="@x.DataId" />
+<button class="btn btn-sm btn-outline-warning" onclick="return confirm('解链？');">解链</button>
+</form>
+}
+</td>
+</tr>
+}
+</tbody></table>
+</div></div>

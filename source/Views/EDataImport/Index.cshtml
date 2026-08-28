@@ -1,0 +1,179 @@
+@{
+    ViewData["Title"] = "投产数据导入";
+    var scriptsDir = (string?)ViewBag.ScriptsDir ?? "";
+    var dataDirs = ViewBag.DataDirs as IReadOnlyList<string> ?? Array.Empty<string>();
+    var defaultDataDir = dataDirs.FirstOrDefault() ?? "";
+    var report = (string?)ViewBag.Report;
+    var error = (string?)ViewBag.Error;
+    var success = ViewBag.Success as bool?;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">投产数据导入</h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-3">
+            支持三种方式，<strong>均不需要逐个 Excel 上传</strong>。系统将执行框架 SQL（可选）并导入 01~17 表；
+            默认全量覆盖组织数据，完成后请<strong>退出重新登录</strong>。
+        </p>
+        <p class="small text-secondary mb-1">框架 SQL 目录：<code>@scriptsDir</code></p>
+        @if (ViewBag.ScriptsDirOk != true)
+        {
+            <div class="alert alert-warning py-2 mb-3">
+                未找到框架 SQL 目录。请配置 <code>ProductionImport:ScriptsDir</code>，或取消勾选「执行框架 SQL」。
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <div class="alert alert-danger">@error</div>
+        }
+        @if (success == true)
+        {
+            <div class="alert alert-success">导入完成。请通知所有用户退出后重新登录。</div>
+        }
+
+        <form asp-action="Import" method="post" enctype="multipart/form-data" id="importForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="importMode" id="importMode" value="server" />
+
+            <ul class="nav nav-tabs mb-3" id="importTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" type="button" data-mode="server" id="tab-server">服务器目录（推荐）</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" type="button" data-mode="folder" id="tab-folder">选择本地文件夹</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" type="button" data-mode="zip" id="tab-zip">ZIP 包</button>
+                </li>
+            </ul>
+
+            <div id="panel-server" class="import-panel mb-3">
+                <label class="form-label">服务器上的 Excel 目录</label>
+                @if (dataDirs.Count > 0)
+                {
+                    <select name="serverDataDir" class="form-select" id="serverDataDir">
+                        @foreach (var d in dataDirs)
+                        {
+                            <option value="@d" selected="@(d == defaultDataDir)">@d</option>
+                        }
+                    </select>
+                    <div class="form-text">
+                        在 <code>appsettings.json</code> 的 <code>ProductionImport:DataDir</code> 中配置；
+                        填好 Excel 后放至该目录，点「开始导入」即可，无需上传。
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning py-2 mb-0">
+                        未配置 <code>ProductionImport:DataDir</code>。请在站点 appsettings.json 中设置，或使用下方「本地文件夹 / ZIP」方式。
+                    </div>
+                }
+            </div>
+
+            <div id="panel-folder" class="import-panel mb-3 d-none">
+                <label class="form-label">本地 Excel 目录</label>
+                <input type="file" name="excelFiles" id="excelFiles" class="form-control"
+                       webkitdirectory directory multiple accept=".xlsx" />
+                <div class="form-text">
+                    点击后选<strong>文件夹</strong>（不是单个文件），浏览器会一次上传目录内全部 xlsx。
+                </div>
+            </div>
+
+            <div id="panel-zip" class="import-panel mb-3 d-none">
+                <label class="form-label">Excel 数据包（ZIP）</label>
+                <input type="file" name="zipFile" id="zipFile" class="form-control" accept=".zip" />
+                <div class="form-text">将 01~17 xlsx 打成 zip 后一次上传。</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check">
+                    <input type="hidden" name="initFramework" value="false" />
+                    <input class="form-check-input" type="checkbox" name="initFramework" value="true" id="initFramework" checked />
+                    <label class="form-check-label" for="initFramework">执行框架 SQL（10/11/20/23）</label>
+                </div>
+                <div class="form-check">
+                    <input type="hidden" name="replaceExisting" value="false" />
+                    <input class="form-check-input" type="checkbox" name="replaceExisting" value="true" id="replaceExisting" checked />
+                    <label class="form-check-label" for="replaceExisting">全量覆盖原组织/用户/订阅</label>
+                </div>
+                <div class="form-check">
+                    <input type="hidden" name="skipDash" value="false" />
+                    <input class="form-check-input" type="checkbox" name="skipDash" value="true" id="skipDash" />
+                    <label class="form-check-label" for="skipDash">跳过仪表盘（11 与 15~17）</label>
+                </div>
+                <div class="form-check">
+                    <input type="hidden" name="dryRun" value="false" />
+                    <input class="form-check-input" type="checkbox" name="dryRun" value="true" id="dryRun" />
+                    <label class="form-check-label" for="dryRun">仅校验（DryRun，不写库）</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnImport">开始导入</button>
+        </form>
+
+        @if (!string.IsNullOrWhiteSpace(report))
+        {
+            <hr />
+            <h6>导入报告</h6>
+            <pre class="bg-light p-3 border rounded small" style="max-height:480px;overflow:auto;">@report</pre>
+        }
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    var modeInput = document.getElementById('importMode');
+    var panels = {
+        server: document.getElementById('panel-server'),
+        folder: document.getElementById('panel-folder'),
+        zip: document.getElementById('panel-zip')
+    };
+    var tabs = document.querySelectorAll('#importTabs [data-mode]');
+
+    function setMode(mode) {
+        modeInput.value = mode;
+        tabs.forEach(function (t) {
+            t.classList.toggle('active', t.getAttribute('data-mode') === mode);
+        });
+        Object.keys(panels).forEach(function (k) {
+            panels[k].classList.toggle('d-none', k !== mode);
+        });
+    }
+
+    tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            setMode(btn.getAttribute('data-mode'));
+        });
+    });
+
+    document.getElementById('importForm').addEventListener('submit', function (e) {
+        var mode = modeInput.value;
+        if (mode === 'server' && !document.getElementById('serverDataDir')) {
+            alert('请先在 appsettings.json 配置 ProductionImport:DataDir');
+            e.preventDefault();
+            return false;
+        }
+        if (mode === 'folder') {
+            var files = document.getElementById('excelFiles').files;
+            if (!files || files.length === 0) {
+                alert('请选择本地文件夹（含 xlsx 的目录）');
+                e.preventDefault();
+                return false;
+            }
+        }
+        if (mode === 'zip') {
+            var zip = document.getElementById('zipFile').files;
+            if (!zip || zip.length === 0) {
+                alert('请选择 ZIP 文件');
+                e.preventDefault();
+                return false;
+            }
+        }
+        return confirm('确认执行导入？将覆盖现有组织数据（若已勾选）。');
+    });
+})();
+</script>
+}

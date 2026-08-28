@@ -1,0 +1,56 @@
+@model FamilyTree.Models.ViewModels.EEventLogDetailVm
+@{
+    ViewData["Title"] = "事件日志详情";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">事件日志详情</h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">返回列表</a>
+    </div>
+    <div class="card-body pm-form-wrap">
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">DataID</div>
+            <div class="col-md-8">@Model.DataId</div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">发生时间</div>
+            <div class="col-md-8">@Model.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">事件编码</div>
+            <div class="col-md-8">@Model.EventCode</div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">事件名称</div>
+            <div class="col-md-8">@(string.IsNullOrWhiteSpace(Model.EventName) ? "-" : Model.EventName)</div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">应用</div>
+            <div class="col-md-8">@Model.AppCode</div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">业务对象</div>
+            <div class="col-md-8">
+                <div>@Model.ObjectRefDisplay</div>
+                <div class="text-muted small">类型 <code>@Model.ObjectType</code> · 键 <code>@Model.ObjectKey</code></div>
+            </div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">操作人</div>
+            <div class="col-md-8">@Model.UserDisplay <span class="text-muted">(UserID=@Model.UserId)</span></div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">动作类型</div>
+            <div class="col-md-8">@Model.ActionTypeText <code class="small">@Model.ActionType</code></div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">处理结果</div>
+            <div class="col-md-8">@Model.HandleResultText <code class="small">@Model.HandleResult</code></div>
+        </div>
+        <div class="mb-2 row">
+            <div class="col-md-3 text-md-end text-secondary">备注</div>
+            <div class="col-md-8" style="white-space:pre-wrap;">@(Model.Remark ?? "-")</div>
+        </div>
+    </div>
+</div>

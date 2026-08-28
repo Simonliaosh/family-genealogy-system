@@ -1,0 +1,55 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtPeerBridgeRowVm>
+@{ ViewData["Title"] = "外链对接"; var can = ViewBag.CanManage == true; }
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">外链对接</h5>
+        @if (can)
+        {
+            <a class="btn btn-sm btn-outline-primary" asp-action="Accept">接受邀请</a>
+        }
+    </div>
+    <div class="card-body">
+        <p class="text-muted small">与另一库的共同祖先对接后，本谱树会显示「外链房」，点开后按代拉取对方数据；取消互通后对方不可再看。数据不拷贝。</p>
+        <p class="small">发起对接：打开人物详情 →「发起外链对接」。</p>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>本站祖先</th><th>对方站点</th><th>对方人物</th><th>房名</th><th>状态</th><th>建立时间</th>
+                    @if (can) { <th></th> }
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var x in Model)
+                {
+                    <tr>
+                        <td><a asp-controller="FtPerson" asp-action="Edit" asp-route-id="@x.LocalPersonId">@x.LocalName</a></td>
+                        <td class="small">@x.PeerBaseUrl<br /><span class="text-muted">@x.PeerSiteId</span></td>
+                        <td>#@x.PeerPersonId</td>
+                        <td>@(x.PeerLabel ?? "—")</td>
+                        <td>@(x.BridgeStatus == "ACTIVE" ? "互通中" : "已取消")</td>
+                        <td>@x.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        @if (can)
+                        {
+                            <td>
+                                @if (x.BridgeStatus == "ACTIVE")
+                                {
+                                    <form asp-action="Revoke" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@x.DataId" />
+                                        <button class="btn btn-sm btn-outline-warning" type="submit" onclick="return confirm('确定取消互通？');">取消互通</button>
+                                    </form>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="7" class="text-muted">暂无对接。</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

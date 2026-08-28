@@ -1,0 +1,95 @@
+@model FamilyTree.Models.ViewModels.FtPersonFormVm
+@{ var nameLocked = Model.NameLocked; }
+<div class="ft-form-row">
+    <label class="ft-form-label">姓名</label>
+    <div class="ft-form-field">
+        <input asp-for="FullName" class="form-control" readonly="@nameLocked" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+        @if (nameLocked) { <div class="form-text">纳入主谱后姓名锁定，仅超管可纠错。</div> }
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">父亲姓名</label>
+    <div class="ft-form-field">
+        <input asp-for="FatherName" class="form-control" />
+        <div class="form-text">填写后若库中已有同名人物（且唯一），会自动挂到该父亲下，无需手工选 ID。</div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">母亲姓名</label>
+    <div class="ft-form-field">
+        <input asp-for="MotherName" class="form-control" />
+        <div class="form-text">同上，母亲姓名唯一时可自动挂边。</div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">出生年月</label>
+    <div class="ft-form-field"><input asp-for="BirthDate" class="form-control" maxlength="32" placeholder="如 1960、1960-05 或 1960-05-12" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">状态</label>
+    <div class="ft-form-field">
+        <select name="IsDead" id="ft-isdead" class="form-select" onchange="ftToggleDeath()">
+            @if (!Model.IsDead) { <option value="false" selected>在世</option> } else { <option value="false">在世</option> }
+            @if (Model.IsDead) { <option value="true" selected>故去</option> } else { <option value="true">故去</option> }
+        </select>
+    </div>
+</div>
+<div id="ft-death-row" hidden="@(!Model.IsDead)">
+    <div class="ft-form-row">
+        <label class="ft-form-label">离世时间</label>
+        <div class="ft-form-field">
+            <input asp-for="DeathInfo" class="form-control" maxlength="128" placeholder="如 1998、1998-03 或 1998-03-15，格式不限" />
+            <div class="form-text">可选。可只写年、年月或年月日，也可写约数。</div>
+        </div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">认证</label>
+    <div class="ft-form-field">
+        <p class="form-control-plaintext mb-0 py-1">@(Model.IsCertified ? "已认证" : "未认证")</p>
+        <div class="form-text">@(Model.DataId > 0
+            ? "本人认证请用右上角「申请认证」生成二维码，发给分支管理员或超管扫码。档案上的认证也可由管理员在下方操作。"
+            : "新建后默认为未认证。注册族员请用「申请认证」二维码请管理员扫码。")</div>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">性别</label>
+    <div class="ft-form-field">
+        <select asp-for="Gender" class="form-select">
+            @if (Model.Gender == 1) { <option value="1" selected>男</option> } else { <option value="1">男</option> }
+            @if (Model.Gender == 0) { <option value="0" selected>女</option> } else { <option value="0">女</option> }
+        </select>
+    </div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">世代号</label>
+    <div class="ft-form-field"><input asp-for="GenerationNo" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">字辈</label>
+    <div class="ft-form-field"><input asp-for="WordOfGeneration" class="form-control" maxlength="32" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">别名</label>
+    <div class="ft-form-field"><input asp-for="NickName" class="form-control" /></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">简介</label>
+    <div class="ft-form-field"><textarea asp-for="SelfIntro" class="form-control" rows="3"></textarea></div>
+</div>
+<div class="ft-form-row">
+    <label class="ft-form-label">备注</label>
+    <div class="ft-form-field"><textarea asp-for="Remark" class="form-control" rows="2"></textarea></div>
+</div>
+<input type="hidden" asp-for="KeyLocked" />
+<input type="hidden" asp-for="InMainGenealogy" />
+<script>
+    function ftToggleDeath() {
+        var sel = document.getElementById('ft-isdead');
+        var row = document.getElementById('ft-death-row');
+        if (!sel || !row) return;
+        row.hidden = sel.value !== 'true';
+    }
+    ftToggleDeath();
+</script>

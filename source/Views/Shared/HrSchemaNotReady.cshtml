@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "人事模块未就绪";
+    var table = ViewData["TableName"] as string ?? "Tbl_E_HrLeaveRequest";
+    var script = ViewData["ScriptHint"] as string ?? "scripts/CreateTbl_E_HrLeaveRequest.sql";
+}
+<div class="container py-4">
+    <div class="alert alert-warning">
+        <h4 class="alert-heading">人事模块数据库未就绪</h4>
+        <p>缺少业务表 <strong>@table</strong>，无法使用请假相关功能。</p>
+        <hr />
+        <p class="mb-0">请在目标库执行：<code>@script</code>，人事联调可继续执行 <code>scripts/SeedTestData_HR_Leave_Full.sql</code>，然后重新发布站点并登录。</p>
+    </div>
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">返回首页</a>
+</div>

@@ -1,0 +1,62 @@
+@model FamilyTree.Models.ViewModels.FtPersonFormVm
+@{
+    ViewData["Title"] = "新建人物";
+    var dups = ViewBag.PreCreateDups as List<FamilyTree.Models.ViewModels.FtMatchHintVm> ?? new();
+}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">新建人物</h5></div>
+    <div class="card-body pm-form-wrap">
+        @if (dups.Count > 0)
+        {
+            <div class="alert alert-warning">
+                <p class="mb-2"><strong>主谱已有疑似同一人</strong>，建议保存后去确认链入，避免再造一条重复档案。</p>
+                <ul class="small mb-2">
+                    @foreach (var d in dups)
+                    {
+                        <li>@d.FullName（@d.FatherName / @d.MotherName，@d.BirthDate）— @d.Reason</li>
+                    }
+                </ul>
+                <form asp-action="Create" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="FullName" />
+                    <input type="hidden" asp-for="FatherName" />
+                    <input type="hidden" asp-for="MotherName" />
+                    <input type="hidden" asp-for="BirthDate" />
+                    <input type="hidden" asp-for="Gender" />
+                    <input type="hidden" asp-for="GenerationNo" />
+                    <input type="hidden" asp-for="WordOfGeneration" />
+                    <input type="hidden" asp-for="NickName" />
+                    <input type="hidden" asp-for="SelfIntro" />
+                    <input type="hidden" asp-for="WechatId" />
+                    <input type="hidden" asp-for="DeathInfo" />
+                    <input type="hidden" asp-for="IsDead" />
+                    <input type="hidden" asp-for="PrivacyLevel" />
+                    <input type="hidden" asp-for="BStatus" />
+                    <input type="hidden" asp-for="Remark" />
+                    <input type="hidden" name="forceCreate" value="true" />
+                    <input type="hidden" name="selectNo" value="1" />
+                    <button type="submit" class="btn btn-primary btn-sm">保存并去确认链入</button>
+                </form>
+                <span class="text-muted small ms-2">若确定不是同一人，可改姓名信息后再保存，或勾选下方仍要新建。</span>
+            </div>
+        }
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            @await Html.PartialAsync("_Form", Model)
+            @if (dups.Count > 0)
+            {
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="forceCreate" value="true" id="forceCreate" />
+                    <label class="form-check-label" for="forceCreate">确定不是同一人，仍要新建</label>
+                </div>
+            }
+            <div class="row mt-2"><div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2">
+                <button type="submit" name="selectNo" value="1" class="btn btn-primary">保存/继续</button>
+                <button type="submit" name="selectNo" value="0" class="btn btn-primary">保存/退出</button>
+                <button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+            </div></div>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

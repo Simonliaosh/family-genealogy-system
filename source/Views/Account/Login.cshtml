@@ -1,0 +1,126 @@
+@model FamilyTree.Models.ViewModels.LoginViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = null;
+    var siteName = Configuration["App:SiteName"] ?? "HSR企业管理系统";
+    var ret = string.IsNullOrWhiteSpace(Model.ReturnUrl) ? "/Member/Go" : Model.ReturnUrl;
+    var retEnc = Uri.EscapeDataString(ret);
+    var isCreateClanInvite = ret.Contains("/Member/CreateClan", StringComparison.OrdinalIgnoreCase)
+        && ret.Contains("c=", StringComparison.OrdinalIgnoreCase);
+    var isJoinClanInvite = ret.Contains("/Member/JoinClan", StringComparison.OrdinalIgnoreCase)
+        && ret.Contains("c=", StringComparison.OrdinalIgnoreCase);
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录 - @siteName</title>
+    <link rel="stylesheet" href="@Url.Content("~/lib/bootstrap/css/bootstrap.min.css")" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .login-body {
+            padding: 30px;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .login-field-label {
+            width: 4.5rem;
+            flex-shrink: 0;
+            margin-bottom: 0;
+            padding-top: 0.375rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h2>@siteName</h2>
+            <p class="mb-0">欢迎登录</p>
+        </div>
+        <div class="login-body">
+            @if (isCreateClanInvite)
+            {
+                <div class="alert alert-info py-2 small mb-3">您持有<strong>创建家族邀请码</strong>。登录后将自动带入邀请码，您将成为新家族的<strong>族谱管理员</strong>。</div>
+            }
+            else if (isJoinClanInvite)
+            {
+                <div class="alert alert-info py-2 small mb-3">登录后将自动带入家族 ID，继续加入已有家族。</div>
+            }
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                <div class="mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <label asp-for="LoginName" class="form-label login-field-label">登录名</label>
+                        <div class="flex-grow-1">
+                            <input asp-for="LoginName" class="form-control" placeholder="手机号或拼音登录名" />
+                            <span asp-validation-for="LoginName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <label asp-for="Password" class="form-label login-field-label">密码</label>
+                        <div class="flex-grow-1">
+                            <input asp-for="Password" class="form-control" type="password" placeholder="请输入密码" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                    <label asp-for="RememberMe" class="form-check-label">记住我</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-login w-100">登录</button>
+            </form>
+            <div class="text-center mt-3">
+                <a class="btn btn-outline-success btn-sm mb-2" href="/Member/Wx?returnUrl=@retEnc">微信一键进入</a><br />
+                <a href="/Member/Join?returnUrl=@retEnc">族人注册（登录名）</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="@Url.Content("~/lib/jquery/jquery.min.js")"></script>
+    <script src="@Url.Content("~/lib/jquery-validation/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/lib/jquery-validation/jquery.validate.unobtrusive.min.js")"></script>
+    <script src="@Url.Content("~/lib/bootstrap/js/bootstrap.bundle.min.js")"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+@* 详情/编辑页返回列表（ViewBag.PolistRt，见 PolistReturnToken）。 *@
+@{
+    var polistRt = ViewBag.PolistRt as string;
+    var label = ViewBag.PolistListLabel as string ?? "返回列表";
+    var css = ViewBag.PolistBackBtnClass as string ?? "btn btn-sm btn-outline-secondary";
+}
+<a class="@css" href="@Url.Action("Index", PolistReturnToken.IndexRoute(polistRt))">@label</a>

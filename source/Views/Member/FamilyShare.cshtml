@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "分享家族";
+    var clan = ViewBag.Clan as FamilyTree.Models.FtClan;
+    var joinUrl = ViewBag.JoinUrl as string ?? "";
+    var wxUrl = ViewBag.WxUrl as string ?? "";
+}
+<div class="card mx-auto" style="max-width:36rem;">
+    <div class="card-header"><h5 class="mb-0">分享家族「@(clan?.ClanName)」</h5></div>
+    <div class="card-body">
+        <p class="text-muted small">把二维码发给亲友。对方登录后扫码加入本家族；每人只能加入一个家族，加入后只能看到本家族信息。</p>
+        <p>家族 ID：<code class="fs-5">@clan?.ClanCode</code></p>
+        <div class="row g-4 text-center">
+            <div class="col-sm-6">
+                <h6>加入家族</h6>
+                <img src="@Url.Action("FamilyQr", new { kind = "page" })" alt="加入家族" class="border rounded mb-2" style="width:180px;height:180px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="joinUrl" value="@joinUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('joinUrl').value)">复制</button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h6>微信入口</h6>
+                <img src="@Url.Action("FamilyQr", new { kind = "wx" })" alt="微信加入" class="border rounded mb-2" style="width:180px;height:180px;" />
+                <div class="input-group input-group-sm">
+                    <input class="form-control" id="wxUrl" value="@wxUrl" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('wxUrl').value)">复制</button>
+                </div>
+            </div>
+        </div>
+        <a class="btn btn-outline-secondary mt-4" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Home")'">返回上一页</a>
+        <a class="btn btn-outline-primary mt-4" asp-action="Home">返回我的任务</a>
+    </div>
+</div>

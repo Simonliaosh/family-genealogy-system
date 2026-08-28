@@ -1,0 +1,32 @@
+@model FamilyTree.Models.ViewModels.EMemberFormVm
+@{
+    var eLevelOptions = ViewBag.ELevelFormOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">学历</label>
+    <div class="col-md-8">
+        <select asp-for="ELevel" class="form-select">
+            @foreach (var o in eLevelOptions)
+            {
+                if (o.Value == (Model.ELevel ?? "")) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+    </div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">学位</label>
+    <div class="col-md-8"><input asp-for="Degree" class="form-control" maxlength="20" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">毕业院校</label>
+    <div class="col-md-8"><input asp-for="School" class="form-control" maxlength="40" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">专业</label>
+    <div class="col-md-8"><input asp-for="Speciality" class="form-control" maxlength="30" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">计算机能力</label>
+    <div class="col-md-8"><input asp-for="ComputerAbility" class="form-control" maxlength="30" /></div>
+</div>

@@ -1,0 +1,126 @@
+@model List<FamilyTree.Models.ViewModels.FtTreeNodeVm>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = null;
+    var siteName = Configuration["App:SiteName"] ?? "家族族谱";
+    var selfName = ViewBag.SelfName as string ?? "";
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>族谱一览 - @siteName</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            background: #f4f1ea;
+            color: #2c2a26;
+        }
+        .ft-clan-bar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .5rem 1rem;
+            padding: .65rem 1rem;
+            background: rgba(255, 252, 247, .94);
+            border-bottom: 1px solid #e4dfd4;
+            backdrop-filter: blur(8px);
+        }
+        .ft-clan-brand {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            margin: 0;
+            flex: 1 1 auto;
+            min-width: 8rem;
+        }
+        .ft-clan-meta { font-size: .8rem; color: #6c757d; width: 100%; order: 3; }
+        .ft-clan-nav { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+        .ft-clan-body {
+            max-width: 56rem;
+            margin: 0 auto;
+            padding: 1rem 1rem 3rem;
+        }
+        .ft-clan-note {
+            font-size: .85rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .ft-clan-root-block {
+            background: #fff;
+            border-radius: .5rem;
+            padding: .85rem 1rem 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
+        }
+        .ft-clan-root-title {
+            font-size: .9rem;
+            color: #6c757d;
+            margin-bottom: .5rem;
+        }
+        @@media (min-width: 576px) {
+            .ft-clan-meta { width: auto; order: 0; }
+        }
+    </style>
+</head>
+<body>
+<header class="ft-clan-bar">
+    <div class="ft-clan-nav">
+        <a class="btn btn-sm btn-outline-secondary" href="javascript:void(0)" id="ftClanBack">返回</a>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Home">我的任务</a>
+    </div>
+    <p class="ft-clan-brand">@siteName · @(ViewBag.ClanName as string ?? "族谱")</p>
+    <span class="ft-clan-meta">只读一览@(string.IsNullOrEmpty(selfName) ? "" : " · " + selfName)</span>
+    <div class="ms-auto d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary ft-tree-expand-all">全部展开</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary ft-tree-collapse-all">全部收起</button>
+        <a class="btn btn-sm btn-outline-primary" asp-action="ClanTreeShare">分享二维码</a>
+    </div>
+</header>
+
+<main class="ft-clan-body">
+    <p class="ft-clan-note">以下为已入主谱人物，按世系规范展示。本页不可编辑；点击 −/+ 可收放支系。</p>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <p class="text-muted">主谱暂无数据。</p>
+    }
+    else
+    {
+        @foreach (var tree in Model)
+        {
+            <div class="ft-clan-root-block">
+                <div class="ft-clan-root-title">根：@tree.Name</div>
+                <ul class="ft-tree-root">
+                    <partial name="_TreeNodeView" model="tree" />
+                </ul>
+            </div>
+        }
+    }
+</main>
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+(function () {
+    var home = '@Url.Action("Home", "Member")';
+    var btn = document.getElementById('ftClanBack');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        var ref = document.referrer || '';
+        if (ref.indexOf(location.origin) === 0 && ref.indexOf('/Member/ClanTree') < 0)
+            window.history.back();
+        else
+            window.location.href = home;
+    });
+})();
+</script>
+</body>
+</html>

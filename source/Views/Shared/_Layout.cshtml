@@ -1,0 +1,470 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @(Configuration["App:SiteName"] ?? "FamilyTree")</title>
+    
+    <!-- Bootstrap CSS（不依赖外网 CDN，避免内网无法打开页面） -->
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
+    
+    <!-- 自定义CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/mobile-responsive.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <!-- 移动端关闭按钮 -->
+        <button class="sidebar-close" id="sidebarClose" aria-label="关闭菜单">
+            <span aria-hidden="true">×</span>
+        </button>
+
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-brand">
+                <span>@(Configuration["App:SiteName"] ?? "FamilyTree")</span>
+            </a>
+        </div>
+
+        <div class="sidebar-scroll" id="sidebarScroll">
+            @await Component.InvokeAsync("Menu")
+        </div>
+
+        <div class="sidebar-guide-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="/guide/system-implement-flow.html"
+                       class="menu-link sidebar-guide-link"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       title="系统实施与使用流程（新窗口）">
+                        <span class="menu-icon" aria-hidden="true">📘</span>
+                        <span class="menu-text">系统使用指引</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content" id="mainContent">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+            <div class="container-fluid">
+                <!-- 移动端菜单切换按钮 -->
+                <button class="btn btn-link" id="sidebarToggle" type="button">
+                    <span aria-hidden="true">≡</span>
+                </button>
+
+                <!-- 页面标题 -->
+                <span class="navbar-brand mb-0 h1">@ViewData["Title"]</span>
+
+                <!-- 右侧用户菜单 -->
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-1" aria-hidden="true">●</span>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <span>@(User.FindFirst("EmployeeName")?.Value ?? User.Identity?.Name ?? "用户")</span>
+                            }
+                            else
+                            {
+                                <span>游客</span>
+                            }
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <li><a class="dropdown-item" href="/Member/Home">我的任务</a></li>
+                                <li><a class="dropdown-item" href="/Member/Go">扫码入口（继续下一步）</a></li>
+                                <li><a class="dropdown-item" href="/Member/Cert">申请认证</a></li>
+                                <li><a class="dropdown-item" href="/Member/Share">分享注册/录入人物码</a></li>
+                                <li><a class="dropdown-item" href="/Account/Profile">个人资料</a></li>
+                                <li><a class="dropdown-item" href="/Account/ChangePassword">修改密码</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                        <button type="submit" class="dropdown-item">
+                                            退出登录
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item" href="/Account/Login">登录</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 面包屑导航（可选） -->
+        @if (ViewData["Breadcrumb"] != null)
+        {
+            <nav aria-label="breadcrumb" class="p-3 bg-light" id="breadcrumbHost">
+                <ol class="breadcrumb mb-0">
+                    @Html.Raw(ViewData["Breadcrumb"])
+                </ol>
+            </nav>
+        }
+
+        <!-- 页面内容 -->
+        <div class="container-fluid p-4" id="pageContentHost">
+            @if (TempData["SuccessMessage"] is string sm && sm.Length > 0)
+            { <div class="alert alert-success">@sm</div> }
+            @if (TempData["ErrorMessage"] is string em && em.Length > 0)
+            { <div class="alert alert-danger">@em</div> }
+            @RenderBody()
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container-fluid text-center">
+                <span class="text-muted">@(Configuration["App:CopyrightLine"] ?? "2026 FamilyTree.")</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // 侧边栏状态持久化：刷新后保持菜单展开与滚动位置
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarScroll = document.getElementById('sidebarScroll');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+            window.hideLeftMenu = function () {
+                if (sidebar) sidebar.classList.remove('active');
+            };
+            const STORAGE_OPEN_KEYS = 'hsr.sidebar.openKeys.v1';
+            const STORAGE_SCROLL_TOP = 'hsr.sidebar.scrollTop.v1';
+
+            function readOpenKeys() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_OPEN_KEYS);
+                    const arr = raw ? JSON.parse(raw) : [];
+                    return Array.isArray(arr) ? arr : [];
+                } catch {
+                    return [];
+                }
+            }
+
+            function writeOpenKeys(keys) {
+                const one = Array.isArray(keys) && keys.length > 0 ? [keys[0]] : [];
+                localStorage.setItem(STORAGE_OPEN_KEYS, JSON.stringify(one));
+            }
+
+            function getMenuKey(menuItem, index) {
+                const fromAttr = menuItem.getAttribute('data-menu-key');
+                if (fromAttr) return fromAttr;
+                const text = menuItem.querySelector('.menu-text')?.textContent?.trim() || '';
+                return 'fallback:' + index + ':' + text;
+            }
+
+            function currentOpenKeys() {
+                const keys = [];
+                document.querySelectorAll('.menu-item.has-submenu').forEach(function (item, index) {
+                    if (item.classList.contains('active')) {
+                        keys.push(getMenuKey(item, index));
+                    }
+                });
+                return keys;
+            }
+
+            function restoreOpenKeys() {
+                const keys = readOpenKeys();
+                const only = keys.length > 0 ? keys[0] : null;
+                document.querySelectorAll('.menu-item.has-submenu').forEach(function (item, index) {
+                    const key = getMenuKey(item, index);
+                    if (only && key === only) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            function closeOtherSubmenus(except) {
+                document.querySelectorAll('.sidebar .menu-item.has-submenu').forEach(function (m) {
+                    if (m !== except) m.classList.remove('active');
+                });
+            }
+
+            function markCurrentLinkActiveAndOpenParent() {
+                const currentPath = window.location.pathname.toLowerCase();
+                document.querySelectorAll('.sidebar .menu-link[href]').forEach(function (link) {
+                    const href = link.getAttribute('href');
+                    if (!href || href === '#' || href.startsWith('javascript:')) return;
+                    try {
+                        const url = new URL(href, window.location.origin);
+                        if (url.pathname.toLowerCase() === currentPath) {
+                            link.classList.add('active');
+                            const parentMenu = link.closest('.menu-item.has-submenu');
+                            if (parentMenu) {
+                                closeOtherSubmenus(parentMenu);
+                                parentMenu.classList.add('active');
+                            }
+                        }
+                    } catch {
+                        // ignore malformed URL
+                    }
+                });
+            }
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function () {
+                    sidebar.classList.remove('active');
+                });
+            }
+
+            function runScriptsIn(container) {
+                const scripts = Array.from(container.querySelectorAll('script'));
+                let chain = Promise.resolve();
+                scripts.forEach(function (oldScript) {
+                    chain = chain.then(function () {
+                        return new Promise(function (resolve, reject) {
+                            const s = document.createElement('script');
+                            if (oldScript.src) {
+                                s.src = oldScript.src;
+                                s.onload = function () { s.remove(); resolve(); };
+                                s.onerror = function () { s.remove(); reject(new Error('script load failed: ' + oldScript.src)); };
+                            } else {
+                                s.textContent = oldScript.textContent || '';
+                            }
+                            oldScript.remove();
+                            document.body.appendChild(s);
+                            if (!oldScript.src) {
+                                s.remove();
+                                resolve();
+                            }
+                        });
+                    });
+                });
+                return chain;
+            }
+
+            function loadPageStyles(doc) {
+                doc.querySelectorAll('head link[rel="stylesheet"]').forEach(function (link) {
+                    const href = link.getAttribute('href');
+                    if (!href) return;
+                    const exists = Array.from(document.querySelectorAll('head link[rel="stylesheet"]')).some(function (l) {
+                        return l.getAttribute('href') === href;
+                    });
+                    if (!exists) {
+                        document.head.appendChild(link.cloneNode(true));
+                    }
+                });
+            }
+
+            function syncActiveByPath(pathname) {
+                document.querySelectorAll('.sidebar .menu-link.active').forEach(function (x) {
+                    x.classList.remove('active');
+                });
+                document.querySelectorAll('.sidebar .menu-item.has-submenu').forEach(function (x) {
+                    x.classList.remove('active');
+                });
+                document.querySelectorAll('.sidebar .menu-link[href]').forEach(function (link) {
+                    const href = link.getAttribute('href');
+                    if (!href || href === '#' || href.startsWith('javascript:')) return;
+                    try {
+                        const url = new URL(href, window.location.origin);
+                        if (url.pathname.toLowerCase() === pathname.toLowerCase()) {
+                            link.classList.add('active');
+                            const parentMenu = link.closest('.menu-item.has-submenu');
+                            if (parentMenu) {
+                                closeOtherSubmenus(parentMenu);
+                                parentMenu.classList.add('active');
+                            }
+                        }
+                    } catch { }
+                });
+                writeOpenKeys(currentOpenKeys());
+            }
+
+            async function loadMainContent(url, pushState) {
+                const host = document.getElementById('pageContentHost');
+                if (!host) { window.location.href = url; return; }
+                try {
+                    host.style.opacity = '0.5';
+                    const resp = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                    if (!resp.ok) throw new Error('bad status');
+                    const html = await resp.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newHost = doc.querySelector('#pageContentHost');
+                    if (!newHost) { window.location.href = url; return; }
+                    const curBc = document.querySelector('#breadcrumbHost');
+                    const newBc = doc.querySelector('#breadcrumbHost');
+
+                    if (window.DashBoardPage && window.DashBoardPage.destroy) {
+                        window.DashBoardPage.destroy();
+                    }
+
+                    loadPageStyles(doc);
+                    host.innerHTML = newHost.innerHTML;
+                    await runScriptsIn(host);
+
+                    // 同步面包屑（有则替换，无则移除）
+                    if (newBc && curBc) {
+                        curBc.outerHTML = newBc.outerHTML;
+                    } else if (!newBc && curBc) {
+                        curBc.remove();
+                    } else if (newBc && !curBc) {
+                        const main = document.querySelector('#mainContent');
+                        const insertAfter = main?.querySelector('.navbar');
+                        if (main && insertAfter) {
+                            insertAfter.insertAdjacentHTML('afterend', newBc.outerHTML);
+                        }
+                    }
+
+                    const newTitle = doc.querySelector('title')?.textContent;
+                    if (newTitle) document.title = newTitle;
+                    const newNavbarTitle = doc.querySelector('.navbar-brand.mb-0.h1')?.textContent;
+                    const oldNavbarTitle = document.querySelector('.navbar-brand.mb-0.h1');
+                    if (newNavbarTitle && oldNavbarTitle) oldNavbarTitle.textContent = newNavbarTitle;
+
+                    if (pushState) history.pushState({ url: url }, '', url);
+                    syncActiveByPath(new URL(url, window.location.origin).pathname);
+                } catch {
+                    window.location.href = url;
+                } finally {
+                    host.style.opacity = '';
+                }
+            }
+
+            // 首次恢复状态，再补充当前页面所属父菜单展开
+            restoreOpenKeys();
+            markCurrentLinkActiveAndOpenParent();
+            writeOpenKeys(currentOpenKeys());
+
+            // 恢复滚动位置
+            const savedTop = parseInt(localStorage.getItem(STORAGE_SCROLL_TOP) || '0', 10);
+            const scrollEl = sidebarScroll || sidebar;
+            if (!isNaN(savedTop) && scrollEl) {
+                scrollEl.scrollTop = savedTop;
+            }
+
+            // 子菜单展开/折叠
+            const menuToggles = document.querySelectorAll('.menu-toggle');
+            menuToggles.forEach(function (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const parent = this.parentElement;
+                    const wasOpen = parent.classList.contains('active');
+                    if (wasOpen) {
+                        parent.classList.remove('active');
+                    } else {
+                        closeOtherSubmenus(parent);
+                        parent.classList.add('active');
+                    }
+                    writeOpenKeys(currentOpenKeys());
+                });
+            });
+
+            // 左侧菜单点击：仅刷新右侧内容区，避免左栏重绘跳动
+            document.querySelectorAll('.sidebar .menu-link[href]').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href') || '';
+                    if (!href || href === '#' || href.startsWith('javascript:')) return;
+                    if (href.startsWith('http://') || href.startsWith('https://')) return;
+                    if (this.getAttribute('target') === '_blank') return;
+                    e.preventDefault();
+
+                    // 移动端/窄屏点击菜单后自动收起侧栏（含二级菜单；与 hideLeftMenu 等页内钩子断点一致，≤992）
+                    if (window.innerWidth <= 992) {
+                        sidebar.classList.remove('active');
+                    }
+
+                    loadMainContent(href, true);
+                });
+            });
+
+            window.addEventListener('popstate', function () {
+                loadMainContent(window.location.href, false);
+            });
+
+            // 离开/刷新前保存状态
+            window.addEventListener('beforeunload', function () {
+                writeOpenKeys(currentOpenKeys());
+                const scrollElUnload = sidebarScroll || sidebar;
+                if (scrollElUnload) {
+                    localStorage.setItem(STORAGE_SCROLL_TOP, String(scrollElUnload.scrollTop || 0));
+                }
+            });
+
+            // 列表输入框回车：优先查询/Go，避免误触发“删除”。
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Enter') return;
+                const target = e.target;
+                if (!(target instanceof HTMLInputElement)) return;
+                const name = target.name || '';
+                if (name !== 'searchContent' && name !== 'pageShowNum' && name !== 'intPage') return;
+                const form = target.form;
+                if (!form) return;
+
+                e.preventDefault();
+                const submitButtons = Array.from(form.querySelectorAll('button[type="submit"]:not([disabled])'));
+                const submitInputs = Array.from(form.querySelectorAll('input[type="submit"]:not([disabled])'));
+
+                const submitByButton = function (btn) {
+                    if (!btn) return false;
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit(btn);
+                    } else {
+                        btn.click();
+                    }
+                    return true;
+                };
+
+                const submitByInput = function (inp) {
+                    if (!inp) return false;
+                    inp.click();
+                    return true;
+                };
+
+                if (name === 'searchContent') {
+                    const intPageInput = form.querySelector('input[name="intPage"]');
+                    if (intPageInput) intPageInput.value = '1';
+
+                    const queryButton = submitButtons.find(btn => (btn.textContent || '').trim().includes('查询'));
+                    if (submitByButton(queryButton)) return;
+                    const queryInput = submitInputs.find(inp => ((inp.getAttribute('value') || '').trim().includes('查询')));
+                    if (submitByInput(queryInput)) return;
+                } else {
+                    // 每页显示 / 转到第几页：优先走 Go 分页提交
+                    const goButton = submitButtons.find(btn => {
+                        const txt = (btn.textContent || '').trim();
+                        return txt === 'Go' || txt.toLowerCase() === 'go';
+                    });
+                    if (submitByButton(goButton)) return;
+                    const goInput = submitInputs.find(inp => {
+                        const val = ((inp.getAttribute('value') || '').trim());
+                        return val === 'Go' || val.toLowerCase() === 'go';
+                    });
+                    if (submitByInput(goInput)) return;
+                }
+
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>

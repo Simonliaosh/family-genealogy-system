@@ -1,0 +1,64 @@
+@model FamilyTree.Models.ViewModels.EUserPositionFormVm
+@{
+    var userOptions = ViewBag.UserOptions as List<(string Value, string Text)> ?? new();
+    var deptOptions = ViewBag.DeptOptions as List<(string Value, string Text)> ?? new();
+    var posOptions = ViewBag.PosOptions as List<(string Value, string Text)> ?? new();
+    var bStatusFormOptions = ViewBag.BStatusFormOptions as List<(string Value, string Text)> ?? new();
+}
+
+<input type="hidden" asp-for="DataId" />
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">用户 <span class="text-danger">*</span></label>
+    <div class="col-md-8">
+        <select asp-for="UserId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in userOptions)
+            {
+                if (o.Value == Model.UserId.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="UserId" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">部门 <span class="text-danger">*</span></label>
+    <div class="col-md-8">
+        <select asp-for="DeptId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in deptOptions)
+            {
+                if (o.Value == Model.DeptId.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="DeptId" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">岗位 <span class="text-danger">*</span></label>
+    <div class="col-md-8">
+        <select asp-for="PosId" class="form-select">
+            <option value="0">请选择</option>
+            @foreach (var o in posOptions)
+            {
+                if (o.Value == Model.PosId.ToString()) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="PosId" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">状态 <span class="text-danger">*</span></label>
+    <div class="col-md-8">
+        <select asp-for="BStatus" class="form-select">
+            @foreach (var o in bStatusFormOptions)
+            {
+                if (o.Value == Model.BStatus) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger small"></span>
+    </div>
+</div>

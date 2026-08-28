@@ -1,0 +1,172 @@
+@model FamilyTree.Models.ViewModels.EUsersFormVm
+@{
+    var isEdit = Model.DataId > 0;
+    var customerOptions = ViewBag.CustomerOptions as List<(int DataId, string Text)> ?? new();
+    var supplierOptions = ViewBag.SupplierOptions as List<(int DataId, string Text)> ?? new();
+    var partnerOptions = ViewBag.PartnerOptions as List<(int DataId, string Text)> ?? new();
+    var shareHolderOptions = ViewBag.ShareHolderOptions as List<(string Code, string Text)> ?? new();
+    var userTypeFormOptions = ViewBag.UserTypeFormOptions as List<(string Value, string Text)> ?? new();
+}
+<div class="mb-2" style="display:grid;grid-template-columns:12ch minmax(0,1fr);gap:.35rem .6rem;align-items:center;">
+    <label class="mb-0" asp-for="LoginId"></label>
+    @if (isEdit)
+    {
+        <div>
+            <input asp-for="LoginId" class="form-control form-control-sm" readonly />
+            <input type="hidden" asp-for="LoginId" />
+        </div>
+    }
+    else
+    {
+        <div>
+            <input asp-for="LoginId" class="form-control form-control-sm" maxlength="30" />
+            <span asp-validation-for="LoginId" class="text-danger small"></span>
+        </div>
+    }
+
+    <label class="mb-0" asp-for="RealName"></label>
+    <div>
+        <input asp-for="RealName" class="form-control form-control-sm" maxlength="20" />
+        <span asp-validation-for="RealName" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="UserType"></label>
+    <div>
+        <select asp-for="UserType" class="form-select form-select-sm" style="max-width:18ch;">
+            @foreach (var o in userTypeFormOptions)
+            {
+                <option value="@o.Value">@o.Text</option>
+            }
+        </select>
+        <span asp-validation-for="UserType" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="MaxLoginCount"></label>
+    <div>
+        <input asp-for="MaxLoginCount" type="number" min="1" class="form-control form-control-sm" style="max-width:18ch;" />
+        <span asp-validation-for="MaxLoginCount" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="MaxPwdErrorCount"></label>
+    <div>
+        <input asp-for="MaxPwdErrorCount" type="number" min="1" class="form-control form-control-sm" style="max-width:18ch;" />
+        <span asp-validation-for="MaxPwdErrorCount" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="IsEnabled"></label>
+    <div>
+        <select asp-for="IsEnabled" class="form-select form-select-sm" style="max-width:18ch;">
+            <option value="1">启用</option>
+            <option value="0">停用</option>
+        </select>
+    </div>
+
+    <label class="mb-0" asp-for="IsLocked"></label>
+    <div>
+        <select asp-for="IsLocked" class="form-select form-select-sm" style="max-width:18ch;">
+            <option value="1">打开</option>
+            <option value="0">锁定</option>
+        </select>
+    </div>
+
+    <label class="mb-0" asp-for="BStatus"></label>
+    <div>
+        <select asp-for="BStatus" class="form-select form-select-sm" style="max-width:18ch;">
+            <option value="1">正常</option>
+            <option value="0">录入</option>
+            <option value="9">取消</option>
+        </select>
+        <span asp-validation-for="BStatus" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="CustomerId"></label>
+    <div>
+        <select asp-for="CustomerId" class="form-select form-select-sm">
+            <option value="">-- 无 --</option>
+            @foreach (var o in customerOptions)
+            {
+                if (Model.CustomerId == o.DataId) { <option value="@o.DataId" selected>@o.Text</option> } else { <option value="@o.DataId">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="PartnerId"></label>
+    <div>
+        <select asp-for="PartnerId" class="form-select form-select-sm">
+            <option value="">-- 无 --</option>
+            @foreach (var o in partnerOptions)
+            {
+                if (Model.PartnerId == o.DataId) { <option value="@o.DataId" selected>@o.Text</option> } else { <option value="@o.DataId">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="PartnerId" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="SupplierId"></label>
+    <div>
+        <select asp-for="SupplierId" class="form-select form-select-sm">
+            <option value="">-- 无 --</option>
+            @foreach (var o in supplierOptions)
+            {
+                if (Model.SupplierId == o.DataId) { <option value="@o.DataId" selected>@o.Text</option> } else { <option value="@o.DataId">@o.Text</option> }
+            }
+        </select>
+        <span asp-validation-for="SupplierId" class="text-danger small"></span>
+    </div>
+
+    <label class="mb-0" asp-for="ShareHolderCode"></label>
+    <div>
+        <select asp-for="ShareHolderCode" class="form-select form-select-sm" style="max-width:18ch;">
+            <option value="">-- 无 --</option>
+            @foreach (var o in shareHolderOptions)
+            {
+                if (string.Equals(Model.ShareHolderCode ?? "", o.Code, StringComparison.OrdinalIgnoreCase))
+                {
+                    <option value="@o.Code" selected>@o.Text</option>
+                }
+                else
+                {
+                    <option value="@o.Code">@o.Text</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="ShareHolderCode" class="text-danger small"></span>
+    </div>
+
+    @if (!isEdit)
+    {
+        <label class="mb-0" asp-for="InitialPassword"></label>
+        <div>
+            <input asp-for="InitialPassword" type="password" class="form-control form-control-sm" maxlength="50" style="max-width:18ch;" />
+            <span asp-validation-for="InitialPassword" class="text-danger small"></span>
+        </div>
+    }
+    else
+    {
+        <label class="mb-0">登录次数</label>
+        <input asp-for="LoginCount" class="form-control form-control-sm" style="max-width:18ch;" readonly />
+
+        <label class="mb-0">密码错误次数</label>
+        <input asp-for="PwdErrorCount" class="form-control form-control-sm" style="max-width:18ch;" readonly />
+
+        <label class="mb-0">最后登录时间</label>
+        <input value="@(Model.LastLoginTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-")" class="form-control form-control-sm" style="max-width:22ch;" readonly />
+
+        <label class="mb-0">最后密码错误时间</label>
+        <input value="@(Model.LastPwdErrorTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-")" class="form-control form-control-sm" style="max-width:22ch;" readonly />
+
+        <label class="mb-0" asp-for="ResetPassword"></label>
+        <div>
+            <input asp-for="ResetPassword" type="password" class="form-control form-control-sm" maxlength="50" style="max-width:18ch;" />
+            <span asp-validation-for="ResetPassword" class="text-danger small"></span>
+        </div>
+
+        <label class="mb-0" asp-for="ConfirmResetPassword"></label>
+        <div>
+            <input asp-for="ConfirmResetPassword" type="password" class="form-control form-control-sm" maxlength="50" style="max-width:18ch;" />
+            <span asp-validation-for="ConfirmResetPassword" class="text-danger small"></span>
+        </div>
+    }
+</div>
+

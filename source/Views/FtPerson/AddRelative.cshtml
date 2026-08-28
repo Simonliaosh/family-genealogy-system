@@ -1,0 +1,29 @@
+@model FamilyTree.Models.ViewModels.FtPersonFormVm
+@{
+    var kindText = ViewBag.KindText as string ?? "亲属";
+    var fromName = ViewBag.FromName as string ?? "";
+    var fromId = ViewBag.FromId;
+    var kind = ViewBag.Kind as string ?? "";
+    var polistRt = ViewBag.PolistRt as string;
+    ViewData["Title"] = "添加" + kindText;
+}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">为 @fromName 添加@(kindText)</h5></div>
+    <div class="card-body pm-form-wrap">
+        <p class="text-muted small">保存后会自动挂到 @fromName 的世系上。若继续向上填写，请保存后在新档案上再点「添加父亲/母亲」。</p>
+        <form asp-action="AddRelative" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="fromId" value="@fromId" />
+            <input type="hidden" name="kind" value="@kind" />
+            <input type="hidden" name="polistRt" value="@polistRt" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            @await Html.PartialAsync("_Form", Model)
+            <div class="row mt-2"><div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2 flex-wrap">
+                <button type="submit" name="selectNo" value="1" class="btn btn-primary">保存并打开新档案</button>
+                <button type="submit" name="selectNo" value="0" class="btn btn-primary">保存并返回 @fromName</button>
+                <button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+            </div></div>
+        </form>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

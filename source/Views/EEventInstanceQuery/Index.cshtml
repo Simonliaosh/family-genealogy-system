@@ -1,0 +1,43 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.EEventInstanceListRowVm>
+@{
+    ViewData["Title"] = "事件实例查询";
+    var eventCodeOptions = ViewBag.EventCodeOptions as List<(string Value, string Text)> ?? new();
+}
+
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">事件实例（只读）</h5></div>
+    <div class="card-body py-2">
+        <form method="post" asp-action="Index">
+            @Html.AntiForgeryToken()
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                <select name="appCode1" class="form-select form-select-sm" style="width:8rem" onchange="this.form.submit()">
+                    @foreach (var o in ViewBag.AppCodeOptions as List<(string Value, string Text)> ?? new()) { <option value="@o.Value" selected="@(o.Value==(string?)ViewBag.AppCode1)">@o.Text</option> }
+                </select>
+                <select name="eventCode1" class="form-select form-select-sm" style="width:14rem" onchange="this.form.submit()">
+                    @foreach (var o in eventCodeOptions) { <option value="@o.Value" selected="@(o.Value==(string?)ViewBag.EventCode1)">@o.Text</option> }
+                </select>
+                <select name="eventStatus1" class="form-select form-select-sm" style="width:8rem" onchange="this.form.submit()">
+                    @foreach (var o in ViewBag.StatusOptions as List<(string Value, string Text)> ?? new()) { <option value="@o.Value" selected="@(o.Value==(string?)ViewBag.EventStatus1)">@o.Text</option> }
+                </select>
+                <input name="searchContent" class="form-control form-control-sm" style="width:10rem" value="@ViewBag.SearchContent" />
+                <button type="submit" class="btn btn-sm btn-primary">查询</button>
+            </div>
+            <table class="table table-sm table-bordered">
+                <thead><tr><th>ID</th><th>应用</th><th>事件</th><th>状态</th><th>业务对象</th><th>发生时间</th><th>接收人</th><th>待办</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var x in Model)
+                {
+                    <tr>
+                        <td>@x.DataId</td><td>@x.AppCode</td><td>@x.EventCode</td><td>@x.EventStatus</td>
+                        <td>@x.ObjectRefDisplay</td>
+                        <td>@x.OccurredTime.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@x.ReceiverCount</td><td>@x.TodoCount</td>
+                        <td><a asp-action="Details" asp-route-id="@x.DataId">详情</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <p class="small text-muted">共 @(ViewBag.TotalRecords) 条</p>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+@model FamilyTree.Models.ViewModels.EMemberFormVm
+
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">家庭住址</label>
+    <div class="col-md-8"><input asp-for="HomeAddr" class="form-control" maxlength="100" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">手机</label>
+    <div class="col-md-8"><input asp-for="Mobile" class="form-control" maxlength="20" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">住宅电话</label>
+    <div class="col-md-8"><input asp-for="HomePhone" class="form-control" maxlength="20" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">办公电话</label>
+    <div class="col-md-8"><input asp-for="WorkPhone" class="form-control" maxlength="20" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">微信号</label>
+    <div class="col-md-8"><input asp-for="WxNum" class="form-control" maxlength="30" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">QQ</label>
+    <div class="col-md-8"><input asp-for="QqNum" class="form-control" maxlength="20" /></div>
+</div>
+<div class="mb-3 row">
+    <label class="col-md-2 col-form-label text-md-end">电子邮箱</label>
+    <div class="col-md-8">
+        <input asp-for="EMail" class="form-control" maxlength="80" />
+        <span asp-validation-for="EMail" class="text-danger"></span>
+    </div>
+</div>

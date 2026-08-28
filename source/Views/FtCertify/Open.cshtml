@@ -1,0 +1,38 @@
+@model FamilyTree.Models.FtPerson?
+@{ ViewData["Title"] = "扫码认证"; var can = ViewBag.CanCertify == true; var code = ViewBag.Code as string ?? ""; var err = ViewBag.Err as string; }
+<div class="card mx-auto" style="max-width:36rem;">
+    <div class="card-header"><h5 class="mb-0">族员认证</h5></div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(err))
+        {
+            <div class="alert alert-warning">@err</div>
+        }
+        else if (Model != null)
+        {
+            <p class="mb-1">姓名：<strong>@Model.FullName</strong></p>
+            <p class="mb-1">性别：@(Model.Gender == 0 ? "女" : "男")</p>
+            <p class="mb-1">出生：@(string.IsNullOrWhiteSpace(Model.BirthDate) ? "—" : Model.BirthDate)</p>
+            <p class="mb-3">父亲 / 母亲：@(string.IsNullOrWhiteSpace(Model.FatherName) ? "—" : Model.FatherName) / @(string.IsNullOrWhiteSpace(Model.MotherName) ? "—" : Model.MotherName)</p>
+            @if (Model.IsCertified)
+            {
+                <div class="alert alert-success mb-0">此人已认证。</div>
+            }
+            else if (can)
+            {
+                <form asp-action="Confirm" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="c" value="@code" />
+                    <button type="submit" class="btn btn-success">确认认证</button>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info mb-0">请用<strong>分支管理员或超管</strong>账号登录后再打开此页。</div>
+            }
+        }
+        <div class="mt-3 d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Home","Member")'">返回上一页</a>
+            <a class="btn btn-outline-secondary" asp-controller="Member" asp-action="Home">返回我的任务</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,149 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.ETodoTaskListRowVm>
+@{
+    ViewData["Title"] = "待办任务";
+    var canUp = ViewBag.CanUpdate == true;
+    var status1 = (string?)ViewBag.Status1 ?? "";
+    var eventCode1 = (string?)ViewBag.EventCode1 ?? "";
+    var eventCodeOptions = ViewBag.EventCodeOptions as List<(string Value, string Text)> ?? new();
+    var searchField = (string?)ViewBag.SearchField ?? "TodoTitle";
+    var searchContent = (string?)ViewBag.SearchContent ?? "";
+    var intPage = (int)(ViewBag.IntPage ?? 1);
+    var pageShowNum = (int)(ViewBag.PageShowNum ?? 16);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalRecords = (int)(ViewBag.TotalRecords ?? 0);
+    var selectField = (string?)ViewBag.SelectField ?? "-";
+    var selectFieldArrow = (string?)ViewBag.SelectFieldArrow ?? "0";
+    var statusOptions = ViewBag.StatusOptions as List<(string Value, string Text)> ?? new();
+    string A(string f, string d) => selectField == f && selectFieldArrow == d ? "text-dark" : "text-secondary";
+}
+
+<div class="card polist-wrap">
+    <div class="card-header"><h5 class="mb-0">待办任务</h5></div>
+    <div class="card-body py-2">
+        <form id="f-main" asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="selectField" id="sf" value="@selectField" />
+            <input type="hidden" name="selectFieldArrow" id="sa" value="@selectFieldArrow" />
+            <div class="polist-filter pm-filter-grid mb-2">
+                <div class="d-flex align-items-center gap-1">
+                    <label class="polist-filter-lbl mb-0">状态</label>
+                    <select name="status1" class="form-select form-select-sm" onchange="this.form.submit()">
+                        @foreach (var o in statusOptions)
+                        {
+                            if (o.Value == status1) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                        }
+                    </select>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <label class="polist-filter-lbl mb-0">事件</label>
+                    <select name="eventCode1" class="form-select form-select-sm" style="max-width:22rem;" onchange="this.form.submit()">
+                        @foreach (var o in eventCodeOptions)
+                        {
+                            if (o.Value == eventCode1) { <option value="@o.Value" selected>@o.Text</option> } else { <option value="@o.Value">@o.Text</option> }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-polist table-sm align-middle">
+                    <thead>
+                    <tr>
+                        <th class="text-center">标题</th>
+                        <th class="text-center">归属用户</th>
+                        <th class="text-center">优先级</th>
+                        <th class="text-center"><span class="d-inline-flex align-items-center">状态<span class="polist-sort-stack"><a class="@A("Status","0") text-decoration-none" href="javascript:doSort('Status','0');">▲</a><a class="@A("Status","1") text-decoration-none" href="javascript:doSort('Status','1');">▼</a></span></span></th>
+                        <th class="text-center"><span class="d-inline-flex align-items-center">创建时间<span class="polist-sort-stack"><a class="@A("CreateTime","0") text-decoration-none" href="javascript:doSort('CreateTime','0');">▲</a><a class="@A("CreateTime","1") text-decoration-none" href="javascript:doSort('CreateTime','1');">▼</a></span></span></th>
+                        <th class="text-center">处理时间</th>
+                        <th class="text-center">事件</th>
+                        <th class="text-center">业务对象</th>
+                        <th class="text-center">事件日志</th>
+                        <th class="text-end pm-sticky-col pm-col-detail pm-op-col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var x in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@x.TitleDisplay</td>
+                            <td class="text-center">@x.UserDisplay</td>
+                            <td class="text-center">@x.PriorityText</td>
+                            <td class="text-center">@x.StatusText</td>
+                            <td class="text-center">@x.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="text-center">@x.HandleTimeDisplay</td>
+                            <td class="text-center"><span class="small">@(x.EventCode ?? "-")</span></td>
+                            <td class="text-center">
+                                @x.ObjectRefDisplay
+                                @if (!string.IsNullOrEmpty(x.BusinessUrl))
+                                {
+                                    <div><a href="@x.BusinessUrl">@x.BusinessLinkLabel</a></div>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (x.EventLogId.HasValue)
+                                {
+                                    <a asp-controller="EEventLog" asp-action="Details" asp-route-id="@((long)x.EventLogId.Value)">查看</a>
+                                }
+                                else { <span class="text-muted">-</span> }
+                            </td>
+                            <td class="text-end pm-sticky-col pm-col-detail pm-op-col">
+                                <a class="btn btn-sm btn-outline-primary pm-op-btn" asp-action="Details" asp-route-id="@x.DataId">详情</a>
+                                @if (canUp && x.Status == 0)
+                                {
+                                    <a class="btn btn-sm btn-outline-success pm-op-btn" asp-action="Details" asp-route-id="@x.DataId">处理</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="polist-bottom"></div>
+            <div class="mt-2 d-flex align-items-center justify-content-center flex-wrap pm-pager" style="column-gap:.25rem;row-gap:.35rem;font-size:.88rem;">
+                <div class="pm-pager-group">
+                    <select name="searchField" class="form-select form-select-sm" style="width:16ch;font-size:.8rem;min-height:calc(1.8125rem + 2px);">
+                        @if (searchField == "TodoTitle") { <option value="TodoTitle" selected>标题</option> } else { <option value="TodoTitle">标题</option> }
+                        @if (searchField == "EventCode") { <option value="EventCode" selected>事件编码</option> } else { <option value="EventCode">事件编码</option> }
+                        @if (searchField == "User") { <option value="User" selected>归属用户</option> } else { <option value="User">归属用户</option> }
+                        @if (searchField == "ObjectKey") { <option value="ObjectKey" selected>对象键</option> } else { <option value="ObjectKey">对象键</option> }
+                        @if (searchField == "ObjectType") { <option value="ObjectType" selected>对象类型</option> } else { <option value="ObjectType">对象类型</option> }
+                        @if (searchField == "BusinessID") { <option value="BusinessID" selected>对象键(兼容)</option> } else { <option value="BusinessID">对象键(兼容)</option> }
+                    </select>
+                    <span>包含内容</span>
+                    <input name="searchContent" value="@searchContent" class="form-control form-control-sm" style="width:12ch;font-size:.8rem;padding:0 .25rem;" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(1);">查询</button>
+                </div>
+                <div class="pm-pager-group">
+                    <span>第 @(intPage) 页/总 @(totalPages) 页 总 @(totalRecords) 条</span>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(1);" @(intPage<=1?"disabled":null)>首页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(intPage-1));" @(intPage<=1?"disabled":null)>上页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(intPage+1));" @(intPage>=totalPages?"disabled":null)>下页</button>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary pm-pager-btn" style="font-size:.88rem;padding:.08rem .4rem;" onclick="setPage(@(totalPages));" @(intPage>=totalPages?"disabled":null)>尾页</button>
+                </div>
+                <div class="pm-pager-group">
+                    <span>每页显示</span>
+                    <input name="pageShowNum" value="@(pageShowNum)" class="form-control form-control-sm" style="width:4ch;height:1.2rem;font-size:.8rem;padding:0 .2rem;" />
+                    <span>条</span>
+                    <span>转到第</span>
+                    <input name="intPage" id="intPageInput" value="@(intPage)" class="form-control form-control-sm" style="width:4ch;height:1.2rem;font-size:.8rem;padding:0 .2rem;" />
+                    <span>页</span>
+                    <button type="submit" class="btn btn-sm btn-primary" style="font-size:.88rem;padding:.08rem .4rem;">Go</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function setPage(p){document.getElementById('intPageInput').value=p;}
+    function doSort(f,a){document.getElementById('sf').value=f;document.getElementById('sa').value=a;document.getElementById('f-main').submit();}
+</script>
+
+<style>
+    .pm-sticky-col{position:sticky;background:#fff;z-index:4;}
+    thead .pm-sticky-col{background:#f8f9fa;z-index:5;}
+    .pm-op-col{padding-left:.2rem!important;padding-right:.2rem!important;white-space:nowrap;text-align:right!important;}
+    .pm-col-detail{right:0;min-width:5.5rem;}
+    .pm-op-btn{font-size:.72rem!important;line-height:1.15!important;padding:.05rem .2rem!important;min-height:1.2rem;height:1.2rem;display:inline-flex;align-items:center;justify-content:center;margin-left:.15rem;}
+</style>

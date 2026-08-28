@@ -1,0 +1,15 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtPersonListRowVm>
+@{ ViewData["Title"] = "纳入主谱"; var canUp = ViewBag.CanUpdate == true; var searchContent = (string?)ViewBag.SearchContent ?? ""; }
+<div class="card"><div class="card-header"><h5 class="mb-0">主谱人物</h5></div>
+<div class="card-body">
+<form method="post" class="mb-2 d-flex gap-2">@Html.AntiForgeryToken()
+<input name="searchContent" value="@searchContent" class="form-control form-control-sm" style="width:12rem;" />
+<button class="btn btn-sm btn-outline-primary">查询</button>
+</form>
+<p class="text-muted">从人物详情也可纳入。下表仅列出已在主谱者；移出在本页操作。</p>
+<table class="table table-sm"><thead><tr><th>姓名</th><th>父亲</th><th></th></tr></thead>
+<tbody>@foreach (var x in Model) {
+<tr><td>@x.FullName</td><td>@x.FatherName</td>
+<td>@if (canUp) { <form asp-action="Exclude" method="post" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@x.DataId" /><button class="btn btn-sm btn-outline-warning" onclick="return confirm('移出主谱？');">移出</button></form> }</td></tr>
+}</tbody></table>
+</div></div>

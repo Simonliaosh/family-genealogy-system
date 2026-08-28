@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "外链对接邀请";
+    var code = ViewBag.InviteCode as string ?? "";
+    var url = ViewBag.InviteUrl as string ?? "";
+    var name = ViewBag.PersonName as string ?? "";
+    var expire = ViewBag.Expire as DateTime? ?? DateTime.Now;
+}
+<div class="card mx-auto" style="max-width:36rem;">
+    <div class="card-header"><h5 class="mb-0">外链对接邀请</h5></div>
+    <div class="card-body text-center">
+        <p>共同祖先：<strong>@name</strong></p>
+        <p class="text-muted small">把二维码或链接发给另一房的分支管理员/超管。对方在本系统「接受邀请」中粘贴邀请码并选择他们的同一位祖先。</p>
+        <img src="@Url.Action("InviteQr", new { url })" alt="对接二维码" class="border rounded mb-3" style="width:220px;height:220px;" />
+        <div class="mb-2"><label class="form-label">邀请码</label><input class="form-control text-center fw-bold" value="@code" readonly /></div>
+        <div class="input-group mb-2">
+            <input id="invUrl" class="form-control" value="@url" readonly />
+            <button type="button" class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('invUrl').value);this.innerText='已复制';">复制</button>
+        </div>
+        <p class="text-muted small mb-3">有效期至 @expire.ToString("yyyy-MM-dd HH:mm")</p>
+        <a class="btn btn-outline-primary" asp-action="Index">对接列表</a>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+@model List<FamilyTree.Models.ViewModels.FtClanMemberRowVm>
+@{
+    ViewData["Title"] = "家族成员";
+    var clan = ViewBag.Clan as FamilyTree.Models.FtClan;
+    var isSuper = ViewBag.IsSuper == true;
+    var isClanAdmin = ViewBag.IsClanAdmin == true;
+    var canUpdate = ViewBag.CanUpdate == true;
+    var applies = ViewBag.Applies as List<FamilyTree.Models.ViewModels.FtBranchApplyRowVm> ?? new();
+}
+@if (isClanAdmin && applies.Count > 0)
+{
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0">待审：本家族支链管理员申请</h5></div>
+        <div class="card-body">
+            <p class="text-muted small mb-2">通过后对方可在本家族内上下补录世系。</p>
+            <table class="table table-sm mb-0">
+                <thead><tr><th>登录名</th><th>姓名</th><th>理由</th><th>时间</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var a in applies)
+                {
+                    <tr>
+                        <td>@a.LoginId</td>
+                        <td>@a.RealName</td>
+                        <td>@a.ApplyReason</td>
+                        <td>@a.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            @if (canUpdate)
+                            {
+                                <form asp-action="ApproveBranchApply" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@a.DataId" />
+                                    <input type="hidden" name="clanId" value="@clan?.DataId" />
+                                    <input type="text" name="remark" class="form-control form-control-sm d-inline-block mb-1" style="max-width:10rem;" placeholder="说明（选填）" />
+                                    <button class="btn btn-sm btn-success" name="pass" value="true">通过</button>
+                                    <button class="btn btn-sm btn-outline-danger" name="pass" value="false">驳回</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">@(clan?.ClanName)（ID：@clan?.ClanCode）</h5>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-primary" asp-action="InviteCreate">邀请创建新家族</a>
+            @if (isSuper)
+            {
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Index">返回家族列表</a>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small">
+            @if (isSuper && !isClanAdmin)
+            {
+                <text>超管职责：仅委任本家族的<strong>族谱管理员</strong>。不管理支链管理员，不处理族谱业务。</text>
+            }
+            else
+            {
+                <text>族谱管理员：管理本家族成员，任免<strong>支链管理员</strong>；认证与链入等业务在本家族内处理。</text>
+            }
+        </p>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>登录名</th>
+                    <th>加入时间</th>
+                    <th>角色</th>
+                    @if (canUpdate) { <th></th> }
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.RealName</td>
+                    <td>@m.LoginId</td>
+                    <td>@m.JoinDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @if (m.IsClanAdmin) { <span class="badge text-bg-primary">族谱管理员</span> }
+                        @if (m.IsBranchAdmin) { <span class="badge text-bg-secondary">支链管理员</span> }
+                        @if (!m.IsClanAdmin && !m.IsBranchAdmin) { <span class="text-muted">族人</span> }
+                    </td>
+                    @if (canUpdate)
+                    {
+                        <td class="text-nowrap">
+                            @if (isSuper)
+                            {
+                                <form asp-action="SetClanAdmin" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@m.UserId" />
+                                    <input type="hidden" name="clanId" value="@clan?.DataId" />
+                                    @if (m.IsClanAdmin)
+                                    {
+                                        <button type="submit" name="grant" value="false" class="btn btn-sm btn-outline-secondary">取消族谱管理员</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" name="grant" value="true" class="btn btn-sm btn-outline-primary">设为族谱管理员</button>
+                                    }
+                                </form>
+                            }
+                            @if (isClanAdmin)
+                            {
+                                <form asp-action="SetBranchAdmin" method="post" class="d-inline ms-1">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@m.UserId" />
+                                    <input type="hidden" name="clanId" value="@clan?.DataId" />
+                                    @if (m.IsBranchAdmin)
+                                    {
+                                        <button type="submit" name="grant" value="false" class="btn btn-sm btn-outline-secondary">取消支链</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" name="grant" value="true" class="btn btn-sm btn-outline-primary">设为支链管理员</button>
+                                    }
+                                </form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

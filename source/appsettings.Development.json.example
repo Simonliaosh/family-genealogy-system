@@ -1,0 +1,20 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(local);Database=EFrame;User ID=你的账号;Password=你的密码;MultipleActiveResultSets=True;TrustServerCertificate=True"
+  },
+  "EventFlow": {
+    "PublicBaseUrl": "http://localhost:5070",
+    "CallbackSecret": "请改为随机密钥",
+    "CallApiTimeoutSeconds": 15,
+    "CallApiUrls": {
+      "FLOW_DEMO_SUBMIT_API": "/EventDemo/ApiCallback"
+    }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft.AspNetCore": "Information",
+      "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+    }
+  }
+}

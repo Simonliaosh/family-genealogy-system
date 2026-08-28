@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "仪表盘模块未就绪";
+    var table = ViewData["TableName"] as string ?? "Tbl_Dash_Indicator";
+    var script = ViewData["ScriptHint"] as string ?? "scripts/CreateTbl_Dash_All.sql";
+}
+<div class="container py-4">
+    <div class="alert alert-warning">
+        <h4 class="alert-heading">仪表盘模块数据库未就绪</h4>
+        <p>缺少业务表 <strong>@table</strong>，无法使用仪表盘相关功能。</p>
+        <hr />
+        <p class="mb-0">请在目标库执行：<code>@script</code>，然后重新发布站点并登录。</p>
+    </div>
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">返回首页</a>
+</div>

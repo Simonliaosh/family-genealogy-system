@@ -1,0 +1,79 @@
+@model IReadOnlyList<FamilyTree.Models.ViewModels.FtTreeHealthIssueVm>
+@{
+    ViewData["Title"] = "谱系体检";
+    var canConflict = ViewBag.CanOpenConflict == true;
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">谱系体检</h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">刷新</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">
+            扫描主谱与个人档（已 SameAs 源人除外）：卒年早于生年、父母自环、父/母边断链、子女早于父母、育龄过小（&lt;12）或过大（&gt;70）。
+            仅提示，不自动改数据；可点进人物修改，或开冲突单交超管。
+        </p>
+        @if (Model.Count == 0)
+        {
+            <p class="text-success mb-0">未发现上述问题。</p>
+        }
+        else
+        {
+            <p class="small mb-2">共 <strong>@Model.Count</strong> 条。</p>
+            <table class="table table-sm table-hover">
+                <thead>
+                <tr>
+                    <th>级别</th>
+                    <th>类型</th>
+                    <th>人物</th>
+                    <th>相关</th>
+                    <th>说明</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (i.Severity == "ERROR")
+                            { <span class="badge bg-danger">严重</span> }
+                            else
+                            { <span class="badge bg-warning text-dark">警告</span> }
+                        </td>
+                        <td class="small">@i.Title</td>
+                        <td>
+                            @if (i.PersonId.HasValue)
+                            {
+                                <a asp-controller="FtPerson" asp-action="Edit" asp-route-id="@i.PersonId">@(i.PersonName ?? ("#" + i.PersonId))</a>
+                            }
+                            else { <span>—</span> }
+                        </td>
+                        <td>
+                            @if (i.RelatedPersonId.HasValue)
+                            {
+                                <a asp-controller="FtPerson" asp-action="Edit" asp-route-id="@i.RelatedPersonId">@(i.RelatedPersonName ?? ("#" + i.RelatedPersonId))</a>
+                            }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td class="small text-muted">@i.Detail</td>
+                        <td class="text-nowrap">
+                            @if (canConflict && i.PersonId.HasValue)
+                            {
+                                <form asp-action="OpenConflict" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="personId" value="@i.PersonId" />
+                                    <input type="hidden" name="relatedId" value="@i.RelatedPersonId" />
+                                    <input type="hidden" name="issueType" value="@i.IssueType" />
+                                    <input type="hidden" name="detail" value="@($"{i.Title}: {i.Detail}")" />
+                                    <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('开冲突单？');">开冲突单</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

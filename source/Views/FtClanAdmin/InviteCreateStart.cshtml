@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "邀请创建新家族";
+}
+<div class="card mx-auto" style="max-width:28rem;">
+    <div class="card-header"><h5 class="mb-0">邀请创建新家族</h5></div>
+    <div class="card-body">
+        <p class="text-muted small">生成邀请二维码，发给想建立自己的家族族谱的人。对方可以新建一个新的独立家族链，并成为该族族谱管理员。</p>
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">备注（选填）</label>
+                <input name="remark" class="form-control" maxlength="128" placeholder="例如：给某某房发起" />
+            </div>
+            <button type="submit" class="btn btn-primary">生成邀请二维码</button>
+            <a class="btn btn-outline-secondary" href="javascript:void(0)" onclick="if(history.length>1)history.back();else location.href='@Url.Action("Index")'">返回上一页</a>
+            <a class="btn btn-outline-secondary" asp-action="Index">取消</a>
+        </form>
+    </div>
+</div>

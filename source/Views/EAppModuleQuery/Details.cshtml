@@ -1,0 +1,19 @@
+@model FamilyTree.Models.ViewModels.EAppModuleDetailVm
+@{
+    ViewData["Title"] = "应用模块详情";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h5 class="mb-0">@Model.AppCode</h5>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">返回</a>
+    </div>
+    <div class="card-body pm-form-wrap">
+        <div class="mb-2 row"><div class="col-md-3 text-md-end text-secondary">名称</div><div class="col-md-8">@Model.AppName</div></div>
+        <div class="mb-2 row"><div class="col-md-3 text-md-end text-secondary">类型</div><div class="col-md-8">@Model.AppTypeText <span class="text-muted small">(@Model.AppType)</span></div></div>
+        <div class="mb-2 row"><div class="col-md-3 text-md-end text-secondary">BaseUrl</div><div class="col-md-8">@(Model.BaseUrl ?? "-")</div></div>
+        <div class="mb-2 row"><div class="col-md-3 text-md-end text-secondary">状态</div><div class="col-md-8">@Model.BStatusText</div></div>
+        <div class="mb-2 row"><div class="col-md-3 text-md-end text-secondary">备注</div><div class="col-md-8">@(Model.Remark ?? "-")</div></div>
+        <div class="mb-2 row"><div class="col-md-3 text-md-end text-secondary">维护</div><div class="col-md-8">@Model.AmendDate.ToString("yyyy-MM-dd HH:mm") / @(Model.OperatorName)</div></div>
+    </div>
+</div>

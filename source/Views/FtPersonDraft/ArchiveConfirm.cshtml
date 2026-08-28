@@ -1,0 +1,65 @@
+﻿@model FamilyTree.Models.ViewModels.FtDraftArchiveConfirmVm
+@{
+    ViewData["Title"] = "入档确认";
+    var ex = (string?)ViewBag.ExcludeCsv ?? "";
+    string Lv(int n) => n switch { 1 => "高", 2 => "中", 3 => "低", 4 => "姓名+年", _ => n.ToString() };
+}
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">此人可能已入档</h5></div>
+    <div class="card-body">
+        <p class="mb-2">草稿中的：<strong>@Model.FullName</strong>
+            <span class="text-muted small">@Model.FatherName / @Model.MotherName · @Model.BirthDate · @Model.RelationLabel</span>
+        </p>
+        <p class="mb-3">
+            对照已入档主谱人物后发现相似记录。若是<strong>同一人</strong>，请选择「按此人加入已有家族链」
+            （以该已入档人物为关系依据挂入家族链）；草稿内容不变，只把草稿标为已入档。
+            若不是同一人，可排除该条或选择下方「独立建档」。
+        </p>
+        <table class="table table-sm">
+            <thead>
+            <tr><th>已入档人物</th><th>父母</th><th>出生年月</th><th>对照</th><th>置信</th><th></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var h in Model.Hints)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="FtPerson" asp-action="Edit" asp-route-id="@h.PersonId" target="_blank">@h.FullName</a>
+                    </td>
+                    <td>@h.FatherName / @h.MotherName</td>
+                    <td>@(h.BirthDate ?? h.BirthYear?.ToString() ?? "—")</td>
+                    <td class="small">@h.Reason</td>
+                    <td>@Lv(h.Level)</td>
+                    <td class="text-nowrap">
+                        <form asp-action="ArchiveJoin" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.DraftId" />
+                            <input type="hidden" name="targetId" value="@h.PersonId" />
+                            <input type="hidden" name="level" value="@h.Level" />
+                            <button type="submit" class="btn btn-sm btn-primary"
+                                    onclick="return confirm('确认是同一人，并按此人加入已有家族链？');">按此人加入家族链</button>
+                        </form>
+                        <form asp-action="ArchiveExclude" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.DraftId" />
+                            <input type="hidden" name="targetId" value="@h.PersonId" />
+                            <input type="hidden" name="ex" value="@ex" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">不是同一人</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+            <form asp-action="ArchiveAsNew" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.DraftId" />
+                <button type="submit" class="btn btn-outline-primary"
+                        onclick="return confirm('确认以上都不是同一人，独立写入新档案？');">以上都不是，独立建档</button>
+            </form>
+            <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.DraftId">返回修改草稿</a>
+        </div>
+    </div>
+</div>

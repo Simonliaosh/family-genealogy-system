@@ -1,0 +1,99 @@
+@model FamilyTree.Models.ViewModels.MenuSidebarVm
+
+<ul class="sidebar-menu">
+    @if (Model.MenuGroups.Count > 0)
+    {
+        <li class="menu-item">
+            <a href="/" class="menu-link"><i class="fas fa-home menu-icon"></i><span class="menu-text">首页</span></a>
+        </li>
+        @foreach (var g in Model.MenuGroups)
+        {
+            <li class="menu-item has-submenu" data-menu-key="menu:@g.FunctionType">
+                <a href="javascript:void(0);" class="menu-toggle">
+                    <i class="fas fa-folder menu-icon"></i>
+                    <span class="menu-text">@g.FunctionType</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </a>
+                <ul class="submenu">
+                    @foreach (var it in g.Items)
+                    {
+                        <li>
+                            <a href="@it.Href" class="menu-link" title="@it.Title">
+                                @if (!string.IsNullOrEmpty(it.Icon))
+                                {
+                                    <i class="@it.Icon menu-icon"></i>
+                                }
+                                else
+                                {
+                                    <i class="menu-icon" aria-hidden="true"></i>
+                                }
+                                <span class="menu-text">@it.Title</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    }
+    else if (Model.EcMenus != null && Model.EcMenus.Any())
+    {
+        var topMenus = Model.EcMenus.Where(m => m.ParentMenuId == null || m.ParentMenuId == 0).OrderBy(m => m.SortOrder);
+        foreach (var menu in topMenus)
+        {
+            var childMenus = Model.EcMenus.Where(m => m.ParentMenuId == menu.MenuId).OrderBy(m => m.SortOrder).ToList();
+            var hasChildren = childMenus.Any();
+            if (hasChildren)
+            {
+                <li class="menu-item has-submenu" data-menu-key="ec:@menu.MenuId">
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        @if (!string.IsNullOrEmpty(menu.MenuIcon))
+                        {
+                            <i class="@menu.MenuIcon menu-icon"></i>
+                        }
+                        <span class="menu-text">@menu.MenuName</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        @foreach (var child in childMenus)
+                        {
+                            <li>
+                                <a href="@(string.IsNullOrEmpty(child.MenuUrl) ? "#" : child.MenuUrl)" class="menu-link">
+                                    @if (!string.IsNullOrEmpty(child.MenuIcon))
+                                    {
+                                        <i class="@child.MenuIcon menu-icon"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="menu-icon" aria-hidden="true"></i>
+                                    }
+                                    <span class="menu-text">@child.MenuName</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="menu-item">
+                    <a href="@(string.IsNullOrEmpty(menu.MenuUrl) ? "#" : menu.MenuUrl)" class="menu-link">
+                        @if (!string.IsNullOrEmpty(menu.MenuIcon))
+                        {
+                            <i class="@menu.MenuIcon menu-icon"></i>
+                        }
+                        <span class="menu-text">@menu.MenuName</span>
+                    </a>
+                </li>
+            }
+        }
+    }
+    else
+    {
+        <li class="menu-item">
+            <a href="/" class="menu-link">
+                <i class="fas fa-home menu-icon"></i>
+                <span class="menu-text">首页</span>
+            </a>
+        </li>
+    }
+</ul>

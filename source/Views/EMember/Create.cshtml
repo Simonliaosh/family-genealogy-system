@@ -1,0 +1,54 @@
+@model FamilyTree.Models.ViewModels.EMemberFormVm
+@{
+    ViewData["Title"] = "人员档案录入";
+    ViewBag.IsEdit = false;
+}
+
+<div class="card">
+    <div class="card-header"><h5 class="mb-0">人员档案录入</h5></div>
+    <div class="card-body pm-form-wrap">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <ul class="nav nav-tabs mb-3" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tab-basic-tab" data-bs-toggle="tab" data-bs-target="#tab-basic" type="button" role="tab">基本信息</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-career-tab" data-bs-toggle="tab" data-bs-target="#tab-career" type="button" role="tab">资历信息</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-comm-tab" data-bs-toggle="tab" data-bs-target="#tab-comm" type="button" role="tab">通信信息</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-other-tab" data-bs-toggle="tab" data-bs-target="#tab-other" type="button" role="tab">其他信息</button>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab-basic" role="tabpanel">
+                    @await Html.PartialAsync("_FormBasic", Model)
+                </div>
+                <div class="tab-pane fade" id="tab-career" role="tabpanel">
+                    @await Html.PartialAsync("_FormCareer", Model)
+                </div>
+                <div class="tab-pane fade" id="tab-comm" role="tabpanel">
+                    @await Html.PartialAsync("_FormComm", Model)
+                </div>
+                <div class="tab-pane fade" id="tab-other" role="tabpanel">
+                    @await Html.PartialAsync("_FormOther", Model)
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-10 offset-md-2 d-flex justify-content-center gap-2 flex-wrap">
+                    <button type="submit" name="selectNo" value="1" class="btn btn-primary">保存/继续</button>
+                    <button type="submit" name="selectNo" value="0" class="btn btn-primary">保存/退出</button>
+                    <button type="submit" name="selectNo" value="9" class="btn btn-secondary">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
