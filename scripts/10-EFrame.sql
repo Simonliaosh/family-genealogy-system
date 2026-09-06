@@ -1,81 +1,94 @@
+ï»¿/*
+================================================================================
+  10-EFrame.sql  â€”  æ¡†æ¶åŸºç¡€åº“ï¼ˆ33 å¼ è¡¨ã€72 ä¸ªç´¢å¼•ã€15 ä¸ªå¤–é”®ï¼‰
+
+  ä¸‰å¤„ä¿®æ­£ï¼Œè®©æœ¬è„šæœ¬èƒ½åœ¨ Linux/macOS/Docker ä¸Šçš„ SQL Server ä¸ Azure SQL ä¸Šæ‰§è¡Œï¼š
+  â‘  åº“åç»Ÿä¸€ä¸º FamilyTreeã€‚åŸå…ˆæœ¬è„šæœ¬å»ºçš„æ˜¯ [EFrame]ï¼Œè€Œ 29~50 å·è„šæœ¬ä¸€å¾‹ USE [FamilyTree]ï¼Œ
+     20~27 å·åˆ™å®Œå…¨æ²¡æœ‰ USEï¼Œè½åœ¨ SSMS å½“æ—¶é€‰ä¸­çš„åº“ä¸Šâ€”â€”æŒ‰ README é¡ºåºæ‰§è¡Œå¿…ç„¶åœ¨ 29 æŠ¥
+     "Cannot open database FamilyTree"ï¼Œæˆ–è€…é™é»˜æŠŠæ¡†æ¶ç§è¿›é”™è¯¯çš„åº“ã€‚
+  â‘¡ CREATE DATABASE å»æ‰ç¡¬ç¼–ç çš„ D:\webdata ç»å¯¹è·¯å¾„ï¼Œäº¤ç»™å®ä¾‹çš„é»˜è®¤æ•°æ®ç›®å½•ï¼›
+     å¹¶åŠ å¹‚ç­‰å®ˆå«ï¼Œåº“å·²å­˜åœ¨æ—¶è·³è¿‡ã€‚
+  â‘¢ CREATE USER [pubeasydo] å»æ‰â€”â€”è¯¥æœåŠ¡å™¨ç™»å½•åœ¨åˆ«å¤„ä¸å­˜åœ¨ï¼Œè„šæœ¬ä¼šç›´æ¥å¤±è´¥ã€‚
+     éœ€è¦ç‹¬ç«‹çš„åº”ç”¨ç™»å½•æ—¶å¦è¡ŒæŒ‰ç¯å¢ƒåˆ›å»ºã€‚
+
+  æ‰§è¡Œæ–¹å¼ï¼šsqlcmd -S <server> -i 10-EFrame.sql
+================================================================================
+*/
 USE [master]
 GO
-/****** Object:  Database [EFrame]    Script Date: 06/18/2026 23:13:09 ******/
-CREATE DATABASE [EFrame] ON  PRIMARY 
-( NAME = N'EFrame', FILENAME = N'D:\webdata\EFrame\EFrame.mdf' , SIZE = 4096KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
- LOG ON 
-( NAME = N'EFrame_log', FILENAME = N'D:\webdata\EFrame\EFrame_log.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+IF DB_ID(N'FamilyTree') IS NULL
+    CREATE DATABASE [FamilyTree];
 GO
-ALTER DATABASE [EFrame] SET COMPATIBILITY_LEVEL = 100
+ALTER DATABASE [FamilyTree] SET COMPATIBILITY_LEVEL = 100
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin
-EXEC [EFrame].[dbo].[sp_fulltext_database] @action = 'enable'
+EXEC [FamilyTree].[dbo].[sp_fulltext_database] @action = 'enable'
 end
 GO
-ALTER DATABASE [EFrame] SET ANSI_NULL_DEFAULT OFF
+ALTER DATABASE [FamilyTree] SET ANSI_NULL_DEFAULT OFF
 GO
-ALTER DATABASE [EFrame] SET ANSI_NULLS OFF
+ALTER DATABASE [FamilyTree] SET ANSI_NULLS OFF
 GO
-ALTER DATABASE [EFrame] SET ANSI_PADDING OFF
+ALTER DATABASE [FamilyTree] SET ANSI_PADDING OFF
 GO
-ALTER DATABASE [EFrame] SET ANSI_WARNINGS OFF
+ALTER DATABASE [FamilyTree] SET ANSI_WARNINGS OFF
 GO
-ALTER DATABASE [EFrame] SET ARITHABORT OFF
+ALTER DATABASE [FamilyTree] SET ARITHABORT OFF
 GO
-ALTER DATABASE [EFrame] SET AUTO_CLOSE OFF
+ALTER DATABASE [FamilyTree] SET AUTO_CLOSE OFF
 GO
-ALTER DATABASE [EFrame] SET AUTO_CREATE_STATISTICS ON
+ALTER DATABASE [FamilyTree] SET AUTO_CREATE_STATISTICS ON
 GO
-ALTER DATABASE [EFrame] SET AUTO_SHRINK OFF
+ALTER DATABASE [FamilyTree] SET AUTO_SHRINK OFF
 GO
-ALTER DATABASE [EFrame] SET AUTO_UPDATE_STATISTICS ON
+ALTER DATABASE [FamilyTree] SET AUTO_UPDATE_STATISTICS ON
 GO
-ALTER DATABASE [EFrame] SET CURSOR_CLOSE_ON_COMMIT OFF
+ALTER DATABASE [FamilyTree] SET CURSOR_CLOSE_ON_COMMIT OFF
 GO
-ALTER DATABASE [EFrame] SET CURSOR_DEFAULT  GLOBAL
+ALTER DATABASE [FamilyTree] SET CURSOR_DEFAULT  GLOBAL
 GO
-ALTER DATABASE [EFrame] SET CONCAT_NULL_YIELDS_NULL OFF
+ALTER DATABASE [FamilyTree] SET CONCAT_NULL_YIELDS_NULL OFF
 GO
-ALTER DATABASE [EFrame] SET NUMERIC_ROUNDABORT OFF
+ALTER DATABASE [FamilyTree] SET NUMERIC_ROUNDABORT OFF
 GO
-ALTER DATABASE [EFrame] SET QUOTED_IDENTIFIER OFF
+ALTER DATABASE [FamilyTree] SET QUOTED_IDENTIFIER OFF
 GO
-ALTER DATABASE [EFrame] SET RECURSIVE_TRIGGERS OFF
+ALTER DATABASE [FamilyTree] SET RECURSIVE_TRIGGERS OFF
 GO
-ALTER DATABASE [EFrame] SET  DISABLE_BROKER
+ALTER DATABASE [FamilyTree] SET  DISABLE_BROKER
 GO
-ALTER DATABASE [EFrame] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
+ALTER DATABASE [FamilyTree] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
 GO
-ALTER DATABASE [EFrame] SET DATE_CORRELATION_OPTIMIZATION OFF
+ALTER DATABASE [FamilyTree] SET DATE_CORRELATION_OPTIMIZATION OFF
 GO
-ALTER DATABASE [EFrame] SET TRUSTWORTHY OFF
+ALTER DATABASE [FamilyTree] SET TRUSTWORTHY OFF
 GO
-ALTER DATABASE [EFrame] SET ALLOW_SNAPSHOT_ISOLATION OFF
+ALTER DATABASE [FamilyTree] SET ALLOW_SNAPSHOT_ISOLATION OFF
 GO
-ALTER DATABASE [EFrame] SET PARAMETERIZATION SIMPLE
+ALTER DATABASE [FamilyTree] SET PARAMETERIZATION SIMPLE
 GO
-ALTER DATABASE [EFrame] SET READ_COMMITTED_SNAPSHOT OFF
+ALTER DATABASE [FamilyTree] SET READ_COMMITTED_SNAPSHOT OFF
 GO
-ALTER DATABASE [EFrame] SET HONOR_BROKER_PRIORITY OFF
+ALTER DATABASE [FamilyTree] SET HONOR_BROKER_PRIORITY OFF
 GO
-ALTER DATABASE [EFrame] SET  READ_WRITE
+ALTER DATABASE [FamilyTree] SET  READ_WRITE
 GO
-ALTER DATABASE [EFrame] SET RECOVERY FULL
+ALTER DATABASE [FamilyTree] SET RECOVERY FULL
 GO
-ALTER DATABASE [EFrame] SET  MULTI_USER
+ALTER DATABASE [FamilyTree] SET  MULTI_USER
 GO
-ALTER DATABASE [EFrame] SET PAGE_VERIFY CHECKSUM
+ALTER DATABASE [FamilyTree] SET PAGE_VERIFY CHECKSUM
 GO
-ALTER DATABASE [EFrame] SET DB_CHAINING OFF
+ALTER DATABASE [FamilyTree] SET DB_CHAINING OFF
 GO
-EXEC sys.sp_db_vardecimal_storage_format N'EFrame', N'ON'
+EXEC sys.sp_db_vardecimal_storage_format N'FamilyTree', N'ON'
 GO
-USE [EFrame]
+USE [FamilyTree]
 GO
-/****** Object:  User [pubeasydo]    Script Date: 06/18/2026 23:13:09 ******/
-CREATE USER [pubeasydo] FOR LOGIN [pubeasydo] WITH DEFAULT_SCHEMA=[dbo]
-GO
+/* åŸæœ‰ CREATE USER [pubeasydo] FOR LOGIN [pubeasydo] å·²åˆ é™¤ï¼š
+   è¯¥æœåŠ¡å™¨ç™»å½•åªå­˜åœ¨äºåŸå¼€å‘æœºï¼Œä»»ä½•å…¶ä»–ç¯å¢ƒæ‰§è¡Œåˆ°è¿™é‡Œéƒ½ä¼šå¤±è´¥ã€‚
+   éœ€è¦ç‹¬ç«‹åº”ç”¨ç™»å½•çš„éƒ¨ç½²è¯·æŒ‰è‡ªå·±çš„ç¯å¢ƒå•ç‹¬åˆ›å»ºå¹¶æˆæƒã€‚ */
 /****** Object:  Table [dbo].[Tbl_E_UserHandover]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
 GO
@@ -83,6 +96,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_UserHandover', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_UserHandover](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[SourceUserID] [int] NOT NULL,
@@ -98,40 +113,47 @@ CREATE TABLE [dbo].[Tbl_E_UserHandover](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_UserHandover_Source' AND object_id = OBJECT_ID(N'dbo.Tbl_E_UserHandover'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserHandover_Source] ON [dbo].[Tbl_E_UserHandover] 
 (
 	[SourceUserID] ASC,
 	[HandoverTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_UserHandover_Target' AND object_id = OBJECT_ID(N'dbo.Tbl_E_UserHandover'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserHandover_Target] ON [dbo].[Tbl_E_UserHandover] 
 (
 	[TargetUserID] ASC,
 	[HandoverTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½»³ö·½ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'SourceUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº¤å‡ºæ–¹ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'SourceUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ÓÊÕ·½ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'TargetUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æ”¶æ–¹ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'TargetUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½»½ÓÀàĞÍ£»LEAVE¡¢TRANSFER¡¢RESIGN¡¢TEMP' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'HandoverType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº¤æ¥ç±»å‹ï¼›LEAVEã€TRANSFERã€RESIGNã€TEMP' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'HandoverType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏŞ¶¨Ó¦ÓÃ£»Îª¿Õ±íÊ¾È«²¿Ó¦ÓÃ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é™å®šåº”ç”¨ï¼›ä¸ºç©ºè¡¨ç¤ºå…¨éƒ¨åº”ç”¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏŞ¶¨¶ÔÏóÀàĞÍ£»Îª¿Õ±íÊ¾È«²¿¶ÔÏó' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'ObjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é™å®šå¯¹è±¡ç±»å‹ï¼›ä¸ºç©ºè¡¨ç¤ºå…¨éƒ¨å¯¹è±¡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'ObjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½»½ÓÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'HandoverTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº¤æ¥æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'HandoverTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷ÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'OperatorUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œäººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'OperatorUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§½»½Ó±í£»¼ÇÂ¼ÀëÖ°¡¢µ÷¸Ú¡¢ÁÙÊ±½»½ÓµÈ²Ù×÷¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·äº¤æ¥è¡¨ï¼›è®°å½•ç¦»èŒã€è°ƒå²—ã€ä¸´æ—¶äº¤æ¥ç­‰æ“ä½œã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserHandover'
 GO
 /****** Object:  Table [dbo].[Tbl_E_UserDelegate]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -140,6 +162,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_UserDelegate', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_UserDelegate](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[SourceUserID] [int] NOT NULL,
@@ -164,15 +188,21 @@ CREATE TABLE [dbo].[Tbl_E_UserDelegate](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_UserDelegate_Agent' AND object_id = OBJECT_ID(N'dbo.Tbl_E_UserDelegate'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserDelegate_Agent] ON [dbo].[Tbl_E_UserDelegate] 
 (
 	[AgentUserID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_UserDelegate_SourceTime' AND object_id = OBJECT_ID(N'dbo.Tbl_E_UserDelegate'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserDelegate_SourceTime] ON [dbo].[Tbl_E_UserDelegate] 
 (
 	[SourceUserID] ASC,
@@ -180,44 +210,45 @@ CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserDelegate_SourceTime] ON [dbo].[Tbl_E_Use
 	[EndTime] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ô­´¦ÀíÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'SourceUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŸå¤„ç†äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'SourceUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´úÀí´¦ÀíÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AgentUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä»£ç†å¤„ç†äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AgentUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Î¯ÍĞÀàĞÍ£»TODO¡¢APPROVAL¡¢NOTICE¡¢ALL' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'DelegateType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å§”æ‰˜ç±»å‹ï¼›TODOã€APPROVALã€NOTICEã€ALL' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'DelegateType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏŞ¶¨Ó¦ÓÃ£»Îª¿Õ±íÊ¾²»ÏŞÓ¦ÓÃ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é™å®šåº”ç”¨ï¼›ä¸ºç©ºè¡¨ç¤ºä¸é™åº”ç”¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏŞ¶¨ÊÂ¼ş£»Îª¿Õ±íÊ¾²»ÏŞÊÂ¼ş' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'EventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é™å®šäº‹ä»¶ï¼›ä¸ºç©ºè¡¨ç¤ºä¸é™äº‹ä»¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'EventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Î¯ÍĞ¿ªÊ¼Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'BeginTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å§”æ‰˜å¼€å§‹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'BeginTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Î¯ÍĞ½áÊøÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'EndTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å§”æ‰˜ç»“æŸæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'EndTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Î¯ÍĞÔ­Òò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'Reason'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å§”æ‰˜åŸå› ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'Reason'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§´úÀí/Î¯ÍĞ±í£»ÓÃÓÚÇë¼Ù¡¢³ö²î¡¢ÁÙÊ±´ú°ìµÈ³¡¾°¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·ä»£ç†/å§”æ‰˜è¡¨ï¼›ç”¨äºè¯·å‡ã€å‡ºå·®ã€ä¸´æ—¶ä»£åŠç­‰åœºæ™¯ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserDelegate'
 GO
 /****** Object:  Table [dbo].[Tbl_E_Users]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -226,6 +257,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Users', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Users](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[LoginId] [nvarchar](50) NOT NULL,
@@ -260,78 +293,85 @@ CREATE TABLE [dbo].[Tbl_E_Users](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Users_Status' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Users'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Users_Status] ON [dbo].[Tbl_E_Users] 
 (
 	[BStatus] ASC,
 	[IsEnabled] ASC,
 	[IsLocked] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Users_LoginId' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Users'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Users_LoginId] ON [dbo].[Tbl_E_Users] 
 (
 	[LoginId] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µÇÂ¼ÕËºÅ£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LoginId'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç™»å½•è´¦å·ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LoginId'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§ÏÔÊ¾ĞÕÃû' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'RealName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·æ˜¾ç¤ºå§“å' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'RealName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃÜÂë¹şÏ£Öµ£»¼æÈİ¾É MD5£¬½¨ÒéÖğ²½Éı¼¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PwdHash'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¯†ç å“ˆå¸Œå€¼ï¼›å…¼å®¹æ—§ MD5ï¼Œå»ºè®®é€æ­¥å‡çº§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PwdHash'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃÜÂëÑÎ£¬ĞÂËã·¨Ê¹ÓÃ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PwdSalt'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¯†ç ç›ï¼Œæ–°ç®—æ³•ä½¿ç”¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PwdSalt'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃÜÂëËã·¨£»MD5_16¡¢PBKDF2¡¢BCrypt' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PasswordAlgo'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¯†ç ç®—æ³•ï¼›MD5_16ã€PBKDF2ã€BCrypt' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PasswordAlgo'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃÜÂë°æ±¾£¬ÓÃÓÚ½¥½øÉı¼¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PasswordVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¯†ç ç‰ˆæœ¬ï¼Œç”¨äºæ¸è¿›å‡çº§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PasswordVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§ÀàĞÍ£»EMPLOYEE¡¢CUSTOMER¡¢SUPPLIER¡¢PARTNER' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'UserType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·ç±»å‹ï¼›EMPLOYEEã€CUSTOMERã€SUPPLIERã€PARTNER' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'UserType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÀÛ¼ÆµÇÂ¼´ÎÊı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LoginCount'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç´¯è®¡ç™»å½•æ¬¡æ•°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LoginCount'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×î´óÔÊĞíµÇÂ¼´ÎÊı£¬±£ÁôÀúÊ·×Ö¶Î' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'MaxLoginCount'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€å¤§å…è®¸ç™»å½•æ¬¡æ•°ï¼Œä¿ç•™å†å²å­—æ®µ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'MaxLoginCount'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Á¬ĞøÃÜÂë´íÎó´ÎÊı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PwdErrorCount'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è¿ç»­å¯†ç é”™è¯¯æ¬¡æ•°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'PwdErrorCount'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×î´óÔÊĞí´íÎó´ÎÊı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'MaxPwdErrorCount'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€å¤§å…è®¸é”™è¯¯æ¬¡æ•°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'MaxPwdErrorCount'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñËø¶¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'IsLocked'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦é”å®š' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'IsLocked'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÆôÓÃÕËºÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'IsEnabled'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å¯ç”¨è´¦å·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'IsEnabled'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóµÇÂ¼Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LastLoginTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åç™»å½•æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LastLoginTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóÃÜÂë´íÎóÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LastPwdErrorTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åå¯†ç é”™è¯¯æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LastPwdErrorTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÃÜÂëÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LastPwdChangedTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹å¯†ç æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'LastPwdChangedTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Íâ²¿Éí·İÀàĞÍ£»CUSTOMER¡¢SUPPLIER¡¢PARTNER µÈ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'ExternalRefType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤–éƒ¨èº«ä»½ç±»å‹ï¼›CUSTOMERã€SUPPLIERã€PARTNER ç­‰' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'ExternalRefType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Íâ²¿Éí·İ±êÊ¶£¬±ÜÃâ¿ò¼Ü°ó¶¨¾ßÌåÒµÎñ±í' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'ExternalRefID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤–éƒ¨èº«ä»½æ ‡è¯†ï¼Œé¿å…æ¡†æ¶ç»‘å®šå…·ä½“ä¸šåŠ¡è¡¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'ExternalRefID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§ÕËºÅ±í£»¿ò¼ÜÕËºÅÖ÷Ìå£¬Ö§³ÖÀúÊ· MD5 ÃÜÂë¼æÈİÓëĞÂËã·¨½¥½øÉı¼¶¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·è´¦å·è¡¨ï¼›æ¡†æ¶è´¦å·ä¸»ä½“ï¼Œæ”¯æŒå†å² MD5 å¯†ç å…¼å®¹ä¸æ–°ç®—æ³•æ¸è¿›å‡çº§ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Users'
 GO
 /****** Object:  Table [dbo].[Tbl_E_EventConfig]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -340,6 +380,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_EventConfig', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_EventConfig](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[AppCode] [varchar](50) NOT NULL,
@@ -368,67 +410,74 @@ CREATE TABLE [dbo].[Tbl_E_EventConfig](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventConfig_AppType' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventConfig'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventConfig_AppType] ON [dbo].[Tbl_E_EventConfig] 
 (
 	[AppCode] ASC,
 	[EventType] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_EventConfig_App_Event' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventConfig'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_EventConfig_App_Event] ON [dbo].[Tbl_E_EventConfig] 
 (
 	[AppCode] ASC,
 	[EventCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë£»Èç FRAME¡¢CRM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ï¼›å¦‚ FRAMEã€CRM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş±àÂë£¬½¨ÒéÓ¦ÓÃÄÚÎ¨Ò»£»Èç CRM.QUOTE.SUBMIT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'EventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶ç¼–ç ï¼Œå»ºè®®åº”ç”¨å†…å”¯ä¸€ï¼›å¦‚ CRM.QUOTE.SUBMIT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'EventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'EventName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'EventName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş·ÖÀà£»APPROVAL¡¢NOTICE¡¢TASK¡¢SYSTEM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'EventType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶åˆ†ç±»ï¼›APPROVALã€NOTICEã€TASKã€SYSTEM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'EventType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¬ÈÏÌø×ªÒ³Ãæ£»ÓÅÏÈÊ¹ÓÃÊÂ¼şÊµÀı ObjectUrl' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'PageUrl'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é»˜è®¤è·³è½¬é¡µé¢ï¼›ä¼˜å…ˆä½¿ç”¨äº‹ä»¶å®ä¾‹ ObjectUrl' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'PageUrl'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ËùÊô²Ëµ¥×é' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'MenuGroupCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ‰€å±èœå•ç»„' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'MenuGroupCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö´ĞĞÀàĞÍ£»SYNC¡¢ASYNC¡¢MANUAL' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'ExecType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ‰§è¡Œç±»å‹ï¼›SYNCã€ASYNCã€MANUAL' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'ExecType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÄ¬ÈÏÉú³É´ı°ì' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'IsGenerateTodo'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦é»˜è®¤ç”Ÿæˆå¾…åŠ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'IsGenerateTodo'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ì±êÌâÄ£°å' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'TodoTitle'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠæ ‡é¢˜æ¨¡æ¿' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'TodoTitle'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÄ£Ê½£»SINGLE¡¢ALL¡¢ANY¡¢CLAIM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'HandleMode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†æ¨¡å¼ï¼›SINGLEã€ALLã€ANYã€CLAIM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'HandleMode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¬ÈÏ´¦ÀíÊ±ÏŞ£¬·ÖÖÓ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'DefaultDueMinutes'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é»˜è®¤å¤„ç†æ—¶é™ï¼Œåˆ†é’Ÿ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'DefaultDueMinutes'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÅÅĞò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ’åº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÅäÖÃ±í£»Ö»ÃèÊöÍ¨ÓÃÊÂ¼ş£¬²»Àí½âÒµÎñ±í¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶é…ç½®è¡¨ï¼›åªæè¿°é€šç”¨äº‹ä»¶ï¼Œä¸ç†è§£ä¸šåŠ¡è¡¨ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventConfig'
 GO
 /****** Object:  Table [dbo].[Tbl_E_DutyResourceAction]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -437,6 +486,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_DutyResourceAction', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_DutyResourceAction](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[DutyID] [int] NOT NULL,
@@ -458,47 +509,51 @@ CREATE TABLE [dbo].[Tbl_E_DutyResourceAction](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_DutyResourceAction_Duty_Resource_Action' AND object_id = OBJECT_ID(N'dbo.Tbl_E_DutyResourceAction'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_DutyResourceAction_Duty_Resource_Action] ON [dbo].[Tbl_E_DutyResourceAction] 
 (
 	[DutyID] ASC,
 	[ResourceID] ASC,
 	[ActionCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'DutyID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'DutyID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'ResourceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'ResourceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶¯×÷±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'ActionCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠ¨ä½œç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'ActionCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞí' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'IsAllowed'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'IsAllowed'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'È¨ÏŞÌõ¼ş±í´ïÊ½£¬»ùÓÚÉÏÏÂÎÄÅĞ¶Ï' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æƒé™æ¡ä»¶è¡¨è¾¾å¼ï¼ŒåŸºäºä¸Šä¸‹æ–‡åˆ¤æ–­' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ×ÊÔ´¶¯×÷È¨ÏŞ±í£»ÓÃÓÚ±í´ïÉóÅú¡¢µ¼³ö¡¢ÁìÈ¡¡¢·ÖÅäµÈ·Ç CRUD È¨ÏŞ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£èµ„æºåŠ¨ä½œæƒé™è¡¨ï¼›ç”¨äºè¡¨è¾¾å®¡æ‰¹ã€å¯¼å‡ºã€é¢†å–ã€åˆ†é…ç­‰é CRUD æƒé™ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DutyResourceAction'
 GO
 /****** Object:  Table [dbo].[Tbl_E_Duty]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -507,6 +562,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Duty', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Duty](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[DutyCode] [nvarchar](30) NOT NULL,
@@ -530,55 +587,62 @@ CREATE TABLE [dbo].[Tbl_E_Duty](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Duty_StatusSeq' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Duty'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Duty_StatusSeq] ON [dbo].[Tbl_E_Duty] 
 (
 	[BStatus] ASC,
 	[DutyDispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Duty_DutyCode' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Duty'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Duty_DutyCode] ON [dbo].[Tbl_E_Duty] 
 (
 	[DutyCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°ÔğÖ÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ±àÂë£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ç¼–ç ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°ÔğÖĞÎÄÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyCName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ä¸­æ–‡åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyCName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°ÔğÓ¢ÎÄÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyEName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£è‹±æ–‡åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyEName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ·ÖÀà£»APPROVAL¡¢SALES¡¢SERVICE¡¢FINANCE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyCategory'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£åˆ†ç±»ï¼›APPROVALã€SALESã€SERVICEã€FINANCE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyCategory'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyDispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyDispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°ÔğÃèÊö' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DDescription'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£æè¿°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DDescription'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°ÔğÁ÷³Ì¶¨Òå£¬±£ÁôÀ©Õ¹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyFlow'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£æµç¨‹å®šä¹‰ï¼Œä¿ç•™æ‰©å±•' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'DutyFlow'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ±í£»Ö°ÔğÊÇ¸ÚÎ»³Ğµ£µÄÒµÎñÔğÈÎ£¬¿É¹ØÁª×ÊÔ´È¨ÏŞºÍÊÂ¼ş¶©ÔÄ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£è¡¨ï¼›èŒè´£æ˜¯å²—ä½æ‰¿æ‹…çš„ä¸šåŠ¡è´£ä»»ï¼Œå¯å…³è”èµ„æºæƒé™å’Œäº‹ä»¶è®¢é˜…ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Duty'
 GO
 /****** Object:  Table [dbo].[Tbl_E_DictType]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -587,6 +651,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_DictType', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_DictType](
 	[DictTypeCode] [varchar](50) NOT NULL,
 	[DictTypeName] [nvarchar](100) NOT NULL,
@@ -603,14 +669,18 @@ CREATE TABLE [dbo].[Tbl_E_DictType](
 	[DictTypeCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_DictType_App' AND object_id = OBJECT_ID(N'dbo.Tbl_E_DictType'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_DictType_App] ON [dbo].[Tbl_E_DictType] 
 (
 	[AppCode] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
 /****** Object:  Table [dbo].[Tbl_E_Department]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -619,6 +689,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Department', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Department](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[DeptCode] [nvarchar](30) NOT NULL,
@@ -645,71 +717,84 @@ CREATE TABLE [dbo].[Tbl_E_Department](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Department_Parent' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Department'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Department_Parent] ON [dbo].[Tbl_E_Department] 
 (
 	[ParentDeptID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Department_Path' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Department'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Department_Path] ON [dbo].[Tbl_E_Department] 
 (
 	[DeptPath] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Department_StatusSeq' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Department'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Department_StatusSeq] ON [dbo].[Tbl_E_Department] 
 (
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Department_DeptCode' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Department'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Department_DeptCode] ON [dbo].[Tbl_E_Department] 
 (
 	[DeptCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÖ÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅ±àÂë£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨ç¼–ç ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÖĞÎÄÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptCName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨ä¸­æ–‡åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptCName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÓ¢ÎÄÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptEName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨è‹±æ–‡åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptEName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉÏ¼¶²¿ÃÅ ID£¬×Ô¹ØÁª' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'ParentDeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸Šçº§éƒ¨é—¨ IDï¼Œè‡ªå…³è”' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'ParentDeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅ²ã¼¶£¬¸ù½ÚµãÎª 1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptLevel'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨å±‚çº§ï¼Œæ ¹èŠ‚ç‚¹ä¸º 1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptLevel'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÂ·¾¶£¬Èç /1/3/8/£¬±ãÓÚ²éÏÂ¼¶²¿ÃÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptPath'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨è·¯å¾„ï¼Œå¦‚ /1/3/8/ï¼Œä¾¿äºæŸ¥ä¸‹çº§éƒ¨é—¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptPath'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÀàĞÍ£»COMPANY¡¢DEPT¡¢TEAM¡¢STORE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨ç±»å‹ï¼›COMPANYã€DEPTã€TEAMã€STORE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DeptType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅ¸ºÔğÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'LeaderUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨è´Ÿè´£äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'LeaderUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÃèÊö' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DDescription'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨æè¿°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'DDescription'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅ±í£»Ö§³Ö²¿ÃÅÊ÷¡¢²¿ÃÅÂ·¾¶¡¢²¿ÃÅ¸ºÔğÈË¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨è¡¨ï¼›æ”¯æŒéƒ¨é—¨æ ‘ã€éƒ¨é—¨è·¯å¾„ã€éƒ¨é—¨è´Ÿè´£äººã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Department'
 GO
 /****** Object:  Table [dbo].[Tbl_E_DataScopeRule]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -718,6 +803,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_DataScopeRule', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_DataScopeRule](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[RuleCode] [varchar](100) NOT NULL,
@@ -743,9 +830,12 @@ CREATE TABLE [dbo].[Tbl_E_DataScopeRule](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_DataScopeRule_Subject' AND object_id = OBJECT_ID(N'dbo.Tbl_E_DataScopeRule'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_DataScopeRule_Subject] ON [dbo].[Tbl_E_DataScopeRule] 
 (
 	[SubjectType] ASC,
@@ -754,51 +844,55 @@ CREATE NONCLUSTERED INDEX [IX_Tbl_E_DataScopeRule_Subject] ON [dbo].[Tbl_E_DataS
 	[ObjectType] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_DataScopeRule_RuleCode' AND object_id = OBJECT_ID(N'dbo.Tbl_E_DataScopeRule'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_DataScopeRule_RuleCode] ON [dbo].[Tbl_E_DataScopeRule] 
 (
 	[RuleCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹æÔò±àÂë£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'RuleCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§„åˆ™ç¼–ç ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'RuleCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹æÔòÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'RuleName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§„åˆ™åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'RuleName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÚÈ¨Ö÷ÌåÀàĞÍ£»USER¡¢POSITION¡¢DUTY¡¢DEPT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'SubjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æˆæƒä¸»ä½“ç±»å‹ï¼›USERã€POSITIONã€DUTYã€DEPT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'SubjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÚÈ¨Ö÷Ìå ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'SubjectID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æˆæƒä¸»ä½“ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'SubjectID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÀàĞÍ£¬ÓÉÒµÎñÄ£¿é¶¨Òå' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'ObjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ç±»å‹ï¼Œç”±ä¸šåŠ¡æ¨¡å—å®šä¹‰' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'ObjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'·¶Î§ÀàĞÍ£»SELF¡¢DEPT¡¢DEPT_TREE¡¢TEAM¡¢ALL¡¢CUSTOM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'ScopeType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒƒå›´ç±»å‹ï¼›SELFã€DEPTã€DEPT_TREEã€TEAMã€ALLã€CUSTOM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'ScopeType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×Ô¶¨ÒåÌõ¼ş±í´ïÊ½' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è‡ªå®šä¹‰æ¡ä»¶è¡¨è¾¾å¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÅÏÈ¼¶£¬ÊıÖµÔ½Ğ¡Ô½ÓÅÏÈ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'Priority'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¼˜å…ˆçº§ï¼Œæ•°å€¼è¶Šå°è¶Šä¼˜å…ˆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'Priority'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Êı¾İ·¶Î§¹æÔò±í£»Í³Ò»±í´ï±¾ÈË¡¢±¾²¿ÃÅ¡¢ÏÂ¼¶²¿ÃÅ¡¢ÍÅ¶Ó¡¢¹«º£¡¢×Ô¶¨ÒåÌõ¼şµÈÊı¾İÈ¨ÏŞ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ•°æ®èŒƒå›´è§„åˆ™è¡¨ï¼›ç»Ÿä¸€è¡¨è¾¾æœ¬äººã€æœ¬éƒ¨é—¨ã€ä¸‹çº§éƒ¨é—¨ã€å›¢é˜Ÿã€å…¬æµ·ã€è‡ªå®šä¹‰æ¡ä»¶ç­‰æ•°æ®æƒé™ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_DataScopeRule'
 GO
 /****** Object:  Table [dbo].[Tbl_E_AppModule]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -807,6 +901,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_AppModule', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_AppModule](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[AppCode] [varchar](50) NOT NULL,
@@ -829,53 +925,60 @@ CREATE TABLE [dbo].[Tbl_E_AppModule](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_AppModule_StatusSeq' AND object_id = OBJECT_ID(N'dbo.Tbl_E_AppModule'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_AppModule_StatusSeq] ON [dbo].[Tbl_E_AppModule] 
 (
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_AppModule_AppCode' AND object_id = OBJECT_ID(N'dbo.Tbl_E_AppModule'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_AppModule_AppCode] ON [dbo].[Tbl_E_AppModule] 
 (
 	[AppCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë£¬Î¨Ò»£»Èç FRAME¡¢CRM¡¢OA' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ï¼Œå”¯ä¸€ï¼›å¦‚ FRAMEã€CRMã€OA' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AppName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AppName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃÀàĞÍ£»FRAMEWORK¡¢BUSINESS¡¢PLUGIN' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AppType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç±»å‹ï¼›FRAMEWORKã€BUSINESSã€PLUGIN' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AppType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ»ù´¡µØÖ·£¬ÓÃÓÚ¿çÄ£¿éÌø×ª' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'BaseUrl'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨åŸºç¡€åœ°å€ï¼Œç”¨äºè·¨æ¨¡å—è·³è½¬' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'BaseUrl'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Í¼±ê±êÊ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'Icon'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å›¾æ ‡æ ‡è¯†' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'Icon'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃÄ£¿é×¢²á±í£»ÓÃÓÚ×¢²á½ÓÈë EFrame µÄÒµÎñÄ£¿é£¬¿ò¼Ü²»Àí½âÄ£¿éÄÚ²¿ÒµÎñ±í¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨æ¨¡å—æ³¨å†Œè¡¨ï¼›ç”¨äºæ³¨å†Œæ¥å…¥ EFrame çš„ä¸šåŠ¡æ¨¡å—ï¼Œæ¡†æ¶ä¸ç†è§£æ¨¡å—å†…éƒ¨ä¸šåŠ¡è¡¨ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_AppModule'
 GO
 /****** Object:  Table [dbo].[Tbl_E_EventInstance]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -884,6 +987,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_EventInstance', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_EventInstance](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[AppCode] [varchar](50) NOT NULL,
@@ -909,74 +1014,87 @@ CREATE TABLE [dbo].[Tbl_E_EventInstance](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventInstance_AppEventTime' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventInstance'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventInstance_AppEventTime] ON [dbo].[Tbl_E_EventInstance] 
 (
 	[AppCode] ASC,
 	[EventCode] ASC,
 	[OccurredTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventInstance_Object' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventInstance'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventInstance_Object] ON [dbo].[Tbl_E_EventInstance] 
 (
 	[ObjectType] ASC,
 	[ObjectKey] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventInstance_Status' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventInstance'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventInstance_Status] ON [dbo].[Tbl_E_EventInstance] 
 (
 	[EventStatus] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_EventInstance_IdempotencyKey' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventInstance'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_EventInstance_IdempotencyKey] ON [dbo].[Tbl_E_EventInstance] 
 (
 	[IdempotencyKey] ASC
 )
 WHERE ([IdempotencyKey] IS NOT NULL)
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÊµÀıÖ÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å®ä¾‹ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'EventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'EventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÀàĞÍ£¬ÓÉÒµÎñÄ£¿é¶¨Òå' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ç±»å‹ï¼Œç”±ä¸šåŠ¡æ¨¡å—å®šä¹‰' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÖ÷¼ü×Ö·û´®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectKey'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ä¸»é”®å­—ç¬¦ä¸²' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectKey'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏó±àÂë»òµ¥ºÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ç¼–ç æˆ–å•å·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏó±êÌâ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectTitle'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡æ ‡é¢˜' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectTitle'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÌø×ªµØÖ·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectUrl'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡è·³è½¬åœ°å€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ObjectUrl'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¥·¢ÊÂ¼şµÄÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'TriggerUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§¦å‘äº‹ä»¶çš„ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'TriggerUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¥·¢ÊÂ¼şÊ±µÄ²¿ÃÅ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'TriggerDeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§¦å‘äº‹ä»¶æ—¶çš„éƒ¨é—¨ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'TriggerDeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¥·¢ÊÂ¼şÊ±µÄ¸ÚÎ» ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'TriggerPosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§¦å‘äº‹ä»¶æ—¶çš„å²—ä½ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'TriggerPosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÉÏÏÂÎÄ JSON' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'PayloadJson'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶ä¸Šä¸‹æ–‡ JSON' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'PayloadJson'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃİµÈ¼ü£¬·ÀÖ¹ÖØ¸´ÊÂ¼ş' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'IdempotencyKey'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¹‚ç­‰é”®ï¼Œé˜²æ­¢é‡å¤äº‹ä»¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'IdempotencyKey'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş×´Ì¬£»NEW¡¢PROCESSING¡¢DONE¡¢FAILED¡¢CANCELLED' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'EventStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶çŠ¶æ€ï¼›NEWã€PROCESSINGã€DONEã€FAILEDã€CANCELLED' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'EventStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñÊÂ¼ş·¢ÉúÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'OccurredTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡äº‹ä»¶å‘ç”Ÿæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'OccurredTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş´¦ÀíÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ProcessTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å¤„ç†æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'ProcessTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºó´íÎóĞÅÏ¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'LastError'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åé”™è¯¯ä¿¡æ¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'LastError'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÖØÊÔ´ÎÊı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'RetryCount'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é‡è¯•æ¬¡æ•°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'RetryCount'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ğ´ÈëÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å†™å…¥æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÊµÀı±í£»¼ÇÂ¼Ä³¸öÓ¦ÓÃ·¢ÉúÁËÒ»´ÎÊÂ¼ş£¬ÊÇÊÂ¼ş¶©ÔÄ¼Ü¹¹ºËĞÄ±í¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å®ä¾‹è¡¨ï¼›è®°å½•æŸä¸ªåº”ç”¨å‘ç”Ÿäº†ä¸€æ¬¡äº‹ä»¶ï¼Œæ˜¯äº‹ä»¶è®¢é˜…æ¶æ„æ ¸å¿ƒè¡¨ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventInstance'
 GO
 /****** Object:  Table [dbo].[Tbl_E_EventFlowRule]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -985,6 +1103,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_EventFlowRule', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_EventFlowRule](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[RuleCode] [varchar](100) NOT NULL,
@@ -1017,9 +1137,12 @@ CREATE TABLE [dbo].[Tbl_E_EventFlowRule](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventFlowRule_Current' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventFlowRule'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventFlowRule_Current] ON [dbo].[Tbl_E_EventFlowRule] 
 (
 	[AppCode] ASC,
@@ -1027,65 +1150,69 @@ CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventFlowRule_Current] ON [dbo].[Tbl_E_Event
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_EventFlowRule_RuleCode' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventFlowRule'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_EventFlowRule_RuleCode] ON [dbo].[Tbl_E_EventFlowRule] 
 (
 	[RuleCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹æÔò±àÂë£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'RuleCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§„åˆ™ç¼–ç ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'RuleCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹æÔòÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'RuleName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§„åˆ™åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'RuleName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µ±Ç°ÊÂ¼ş±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'CurrentEvent'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å½“å‰äº‹ä»¶ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'CurrentEvent'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÂÒ»ÊÂ¼ş±àÂë£»¿ÉÎª¿Õ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'NextEvent'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸‹ä¸€äº‹ä»¶ç¼–ç ï¼›å¯ä¸ºç©º' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'NextEvent'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ìõ¼ş±í´ïÊ½£¬»ùÓÚÊÂ¼şĞÅ·âºÍ PayloadJson' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¡ä»¶è¡¨è¾¾å¼ï¼ŒåŸºäºäº‹ä»¶ä¿¡å°å’Œ PayloadJson' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶¯×÷ÀàĞÍ£»CREATE_TODO¡¢SEND_NOTICE¡¢TRIGGER_EVENT¡¢CALL_API' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'ActionType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠ¨ä½œç±»å‹ï¼›CREATE_TODOã€SEND_NOTICEã€TRIGGER_EVENTã€CALL_API' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'ActionType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÈË½âÎö·½Ê½£»DUTY¡¢POSITION¡¢DEPT_MANAGER¡¢OWNER_MANAGER¡¢FIXED_USER' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetResolveType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†äººè§£ææ–¹å¼ï¼›DUTYã€POSITIONã€DEPT_MANAGERã€OWNER_MANAGERã€FIXED_USER' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetResolveType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¿±êÖ°Ôğ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetDutyID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç›®æ ‡èŒè´£ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetDutyID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¿±ê¸ÚÎ» ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetPosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç›®æ ‡å²—ä½ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetPosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¿±ê²¿ÃÅ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetDeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç›®æ ‡éƒ¨é—¨ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetDeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹Ì¶¨Ä¿±êÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å›ºå®šç›®æ ‡ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TargetUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÄ£Ê½£»SINGLE¡¢ALL¡¢ANY¡¢CLAIM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'HandleMode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†æ¨¡å¼ï¼›SINGLEã€ALLã€ANYã€CLAIM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'HandleMode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦Àí³¬Ê±Ê±ÏŞ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TimeoutMinutes'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†è¶…æ—¶æ—¶é™' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'TimeoutMinutes'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'³¬Ê±Éı¼¶ÊÂ¼ş±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'EscalateEventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è¶…æ—¶å‡çº§äº‹ä»¶ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'EscalateEventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÅÅĞò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ’åº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÁ÷×ª¹æÔò±í£»»ùÓÚÊÂ¼şĞÅ·âºÍ PayloadJson ÅĞ¶Ï£¬²»ÒıÓÃÒµÎñ±í¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶æµè½¬è§„åˆ™è¡¨ï¼›åŸºäºäº‹ä»¶ä¿¡å°å’Œ PayloadJson åˆ¤æ–­ï¼Œä¸å¼•ç”¨ä¸šåŠ¡è¡¨ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventFlowRule'
 GO
 /****** Object:  Table [dbo].[Tbl_E_ManagerSubordinate]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1094,6 +1221,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_ManagerSubordinate', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_ManagerSubordinate](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[ManagerUserID] [int] NOT NULL,
@@ -1119,60 +1248,67 @@ CREATE TABLE [dbo].[Tbl_E_ManagerSubordinate](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_ManagerSubordinate_Manager' AND object_id = OBJECT_ID(N'dbo.Tbl_E_ManagerSubordinate'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_ManagerSubordinate_Manager] ON [dbo].[Tbl_E_ManagerSubordinate] 
 (
 	[ManagerUserID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_ManagerSubordinate_Sub' AND object_id = OBJECT_ID(N'dbo.Tbl_E_ManagerSubordinate'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_ManagerSubordinate_Sub] ON [dbo].[Tbl_E_ManagerSubordinate] 
 (
 	[SubUserID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉÏ¼¶ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'ManagerUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸Šçº§ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'ManagerUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÂ¼¶ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'SubUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸‹çº§ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'SubUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉÏ¼¶¸ÚÎ»ÉÏÏÂÎÄ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'ManagerPostID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸Šçº§å²—ä½ä¸Šä¸‹æ–‡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'ManagerPostID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÂ¼¶¸ÚÎ»ÉÏÏÂÎÄ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'SubPostID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸‹çº§å²—ä½ä¸Šä¸‹æ–‡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'SubPostID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹ØÏµËùÊô²¿ÃÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'DeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å…³ç³»æ‰€å±éƒ¨é—¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'DeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹ØÏµÀàĞÍ£»DIRECT¡¢MATRIX¡¢TEMP' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'RelationType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å…³ç³»ç±»å‹ï¼›DIRECTã€MATRIXã€TEMP' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'RelationType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉúĞ§¿ªÊ¼ÈÕÆÚ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'BeginDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”Ÿæ•ˆå¼€å§‹æ—¥æœŸ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'BeginDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉúĞ§½áÊøÈÕÆÚ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'EndDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”Ÿæ•ˆç»“æŸæ—¥æœŸ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'EndDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉÏÏÂ¼¶¹ØÏµ±í£»Ö§³ÖÖ±½Ó»ã±¨¡¢¾ØÕó»ã±¨¡¢ÁÙÊ±»ã±¨¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸Šä¸‹çº§å…³ç³»è¡¨ï¼›æ”¯æŒç›´æ¥æ±‡æŠ¥ã€çŸ©é˜µæ±‡æŠ¥ã€ä¸´æ—¶æ±‡æŠ¥ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ManagerSubordinate'
 GO
 /****** Object:  Table [dbo].[Tbl_E_LoginLog]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1181,6 +1317,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_LoginLog', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_LoginLog](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[LoginId] [varchar](50) NOT NULL,
@@ -1195,37 +1333,44 @@ CREATE TABLE [dbo].[Tbl_E_LoginLog](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_LoginLog_Time' AND object_id = OBJECT_ID(N'dbo.Tbl_E_LoginLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_LoginLog_Time] ON [dbo].[Tbl_E_LoginLog] 
 (
 	[LoginTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_LoginLog_User' AND object_id = OBJECT_ID(N'dbo.Tbl_E_LoginLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_LoginLog_User] ON [dbo].[Tbl_E_LoginLog] 
 (
 	[UserID] ASC,
 	[LoginTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µÇÂ¼ÕËºÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'LoginId'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç™»å½•è´¦å·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'LoginId'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§ ID£»µÇÂ¼Ê§°ÜÊ±¿ÉÎª¿Õ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'UserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ· IDï¼›ç™»å½•å¤±è´¥æ—¶å¯ä¸ºç©º' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'UserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µÇÂ¼×´Ì¬£»³É¹¦/Ê§°Ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'LoginStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç™»å½•çŠ¶æ€ï¼›æˆåŠŸ/å¤±è´¥' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'LoginStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ê§°ÜÔ­Òò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'FailReason'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤±è´¥åŸå› ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'FailReason'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'IP µØÖ·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'IPAddress'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'IP åœ°å€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'IPAddress'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¯ÀÀÆ÷»ò¿Í»§¶ËĞÅÏ¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'UserAgent'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æµè§ˆå™¨æˆ–å®¢æˆ·ç«¯ä¿¡æ¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'UserAgent'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µÇÂ¼Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'LoginTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç™»å½•æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog', @level2type=N'COLUMN',@level2name=N'LoginTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µÇÂ¼ÈÕÖ¾±í£»¼ÇÂ¼³É¹¦ºÍÊ§°ÜµÇÂ¼¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç™»å½•æ—¥å¿—è¡¨ï¼›è®°å½•æˆåŠŸå’Œå¤±è´¥ç™»å½•ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_LoginLog'
 GO
 /****** Object:  Table [dbo].[Tbl_E_HrLeaveRequest]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1234,6 +1379,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_HrLeaveRequest', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_HrLeaveRequest](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[RequestNo] [nvarchar](30) NOT NULL,
@@ -1258,9 +1405,12 @@ CREATE TABLE [dbo].[Tbl_E_HrLeaveRequest](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_HrLeaveRequest_Applicant' AND object_id = OBJECT_ID(N'dbo.Tbl_E_HrLeaveRequest'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_HrLeaveRequest_Applicant] ON [dbo].[Tbl_E_HrLeaveRequest] 
 (
 	[ApplicantUserID] ASC,
@@ -1268,13 +1418,17 @@ CREATE NONCLUSTERED INDEX [IX_Tbl_E_HrLeaveRequest_Applicant] ON [dbo].[Tbl_E_Hr
 )
 WHERE ([IsDeleted]=(0))
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_HrLeaveRequest_No' AND object_id = OBJECT_ID(N'dbo.Tbl_E_HrLeaveRequest'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_HrLeaveRequest_No] ON [dbo].[Tbl_E_HrLeaveRequest] 
 (
 	[RequestNo] ASC
 )
 WHERE ([IsDeleted]=(0))
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
 /****** Object:  Table [dbo].[Tbl_E_Position]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1283,6 +1437,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Position', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Position](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[PostCode] [nvarchar](30) NOT NULL,
@@ -1306,55 +1462,62 @@ CREATE TABLE [dbo].[Tbl_E_Position](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Position_StatusSeq' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Position'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Position_StatusSeq] ON [dbo].[Tbl_E_Position] 
 (
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Position_PostCode' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Position'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Position_PostCode] ON [dbo].[Tbl_E_Position] 
 (
 	[PostCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»±àÂë£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PostCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½ç¼–ç ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PostCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»ÖĞÎÄÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PostCName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½ä¸­æ–‡åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PostCName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»Ó¢ÎÄÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PostEName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½è‹±æ–‡åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PostEName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»ÀàĞÍ£»MANAGER¡¢SALES¡¢SERVICE¡¢FINANCE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PositionType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½ç±»å‹ï¼›MANAGERã€SALESã€SERVICEã€FINANCE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'PositionType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¬ÈÏÊı¾İ·¶Î§£»SELF¡¢DEPT¡¢DEPT_TREE¡¢ALL¡¢CUSTOM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DataScope'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é»˜è®¤æ•°æ®èŒƒå›´ï¼›SELFã€DEPTã€DEPT_TREEã€ALLã€CUSTOM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DataScope'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»ÃèÊö' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DDescription'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½æè¿°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'DDescription'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»±í£»¸ÚÎ»ÊÇÖ°Ôğ¡¢È¨ÏŞ¡¢ÊÂ¼ş¶©ÔÄºÍÊı¾İ·¶Î§µÄÖ÷Òª³ĞÔØ¶ÔÏóÖ®Ò»¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½è¡¨ï¼›å²—ä½æ˜¯èŒè´£ã€æƒé™ã€äº‹ä»¶è®¢é˜…å’Œæ•°æ®èŒƒå›´çš„ä¸»è¦æ‰¿è½½å¯¹è±¡ä¹‹ä¸€ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Position'
 GO
 /****** Object:  Table [dbo].[Tbl_E_OperationLog]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1363,6 +1526,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_OperationLog', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_OperationLog](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[AppCode] [varchar](50) NOT NULL,
@@ -1382,49 +1547,56 @@ CREATE TABLE [dbo].[Tbl_E_OperationLog](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_OperationLog_AppObject' AND object_id = OBJECT_ID(N'dbo.Tbl_E_OperationLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_OperationLog_AppObject] ON [dbo].[Tbl_E_OperationLog] 
 (
 	[AppCode] ASC,
 	[ObjectType] ASC,
 	[ObjectKey] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_OperationLog_UserTime' AND object_id = OBJECT_ID(N'dbo.Tbl_E_OperationLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_OperationLog_UserTime] ON [dbo].[Tbl_E_OperationLog] 
 (
 	[UserID] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷¶ÔÏóÀàĞÍ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ObjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå¯¹è±¡ç±»å‹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ObjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷¶ÔÏóÖ÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ObjectKey'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå¯¹è±¡ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ObjectKey'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷±àÂë£»CREATE¡¢UPDATE¡¢DELETE¡¢APPROVE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ActionCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œç¼–ç ï¼›CREATEã€UPDATEã€DELETEã€APPROVE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ActionCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ãû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ActionName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œåç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'ActionName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'UserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'UserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ê±²¿ÃÅ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'DeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œæ—¶éƒ¨é—¨ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'DeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ê±¸ÚÎ» ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'PosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œæ—¶å²—ä½ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'PosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ç°Êı¾İÕªÒª' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'BeforeJson'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‰æ•°æ®æ‘˜è¦' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'BeforeJson'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷ºóÊı¾İÕªÒª' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'AfterJson'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œåæ•°æ®æ‘˜è¦' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'AfterJson'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'IP µØÖ·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'IPAddress'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'IP åœ°å€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'IPAddress'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷ÈÕÖ¾±í£»°´ AppCode/ObjectType/ObjectKey ¼ÇÂ¼Í¨ÓÃ²Ù×÷Éó¼Æ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œæ—¥å¿—è¡¨ï¼›æŒ‰ AppCode/ObjectType/ObjectKey è®°å½•é€šç”¨æ“ä½œå®¡è®¡ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_OperationLog'
 GO
 /****** Object:  Table [dbo].[Tbl_E_MenuGroup]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1433,6 +1605,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_MenuGroup', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_MenuGroup](
 	[MenuGroupCode] [varchar](50) NOT NULL,
 	[AppCode] [varchar](50) NOT NULL,
@@ -1453,45 +1627,49 @@ CREATE TABLE [dbo].[Tbl_E_MenuGroup](
 	[MenuGroupCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_MenuGroup_App_StatusSeq' AND object_id = OBJECT_ID(N'dbo.Tbl_E_MenuGroup'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_MenuGroup_App_StatusSeq] ON [dbo].[Tbl_E_MenuGroup] 
 (
 	[AppCode] ASC,
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ëµ¥×é±àÂë£¬Ö÷¼ü£»Èç SYS¡¢ORG¡¢CRM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'MenuGroupCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èœå•ç»„ç¼–ç ï¼Œä¸»é”®ï¼›å¦‚ SYSã€ORGã€CRM' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'MenuGroupCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ËùÊôÓ¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ‰€å±åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ëµ¥×éÃû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'MenuGroupName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èœå•ç»„åç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'MenuGroupName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Í¼±ê±êÊ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'Icon'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å›¾æ ‡æ ‡è¯†' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'Icon'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ëµ¥×é±í£»°´Ó¦ÓÃ¹éÊô²Ëµ¥×é£¬Ö÷¼üÎª MenuGroupCode¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èœå•ç»„è¡¨ï¼›æŒ‰åº”ç”¨å½’å±èœå•ç»„ï¼Œä¸»é”®ä¸º MenuGroupCodeã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_MenuGroup'
 GO
 /****** Object:  Table [dbo].[Tbl_E_ResourcePermission]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1500,6 +1678,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_ResourcePermission', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_ResourcePermission](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[DutyID] [int] NOT NULL,
@@ -1524,52 +1704,56 @@ CREATE TABLE [dbo].[Tbl_E_ResourcePermission](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_ResourcePermission_Duty_Resource' AND object_id = OBJECT_ID(N'dbo.Tbl_E_ResourcePermission'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_ResourcePermission_Duty_Resource] ON [dbo].[Tbl_E_ResourcePermission] 
 (
 	[DutyID] ASC,
 	[ResourceID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'DutyID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'DutyID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'ResourceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'ResourceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞíĞÂÔö' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanCreate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸æ–°å¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanCreate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞíĞŞ¸Ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanUpdate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸ä¿®æ”¹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanUpdate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞíÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanDelete'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanDelete'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞí²é¿´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanQuery'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸æŸ¥çœ‹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanQuery'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞíµ¼³ö' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanExport'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸å¯¼å‡º' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanExport'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÔÊĞíµ¼Èë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanImport'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦å…è®¸å¯¼å…¥' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CanImport'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ×ÊÔ´È¨ÏŞ±í£»±£Áô CRUD È¨ÏŞ¼æÈİ£¬¸´ÔÓ¶¯×÷½¨ÒéÊ¹ÓÃ Tbl_E_DutyResourceAction¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£èµ„æºæƒé™è¡¨ï¼›ä¿ç•™ CRUD æƒé™å…¼å®¹ï¼Œå¤æ‚åŠ¨ä½œå»ºè®®ä½¿ç”¨ Tbl_E_DutyResourceActionã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourcePermission'
 GO
 /****** Object:  Table [dbo].[Tbl_E_ResourceAction]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1578,6 +1762,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_ResourceAction', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_ResourceAction](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[ResourceID] [varchar](100) NOT NULL,
@@ -1598,44 +1784,48 @@ CREATE TABLE [dbo].[Tbl_E_ResourceAction](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_ResourceAction_Resource_Action' AND object_id = OBJECT_ID(N'dbo.Tbl_E_ResourceAction'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_ResourceAction_Resource_Action] ON [dbo].[Tbl_E_ResourceAction] 
 (
 	[ResourceID] ASC,
 	[ActionCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'ResourceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'ResourceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶¯×÷±àÂë£»QUERY¡¢CREATE¡¢UPDATE¡¢DELETE¡¢APPROVE¡¢EXPORT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'ActionCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠ¨ä½œç¼–ç ï¼›QUERYã€CREATEã€UPDATEã€DELETEã€APPROVEã€EXPORT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'ActionCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶¯×÷Ãû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'ActionName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠ¨ä½œåç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'ActionName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´¶¯×÷±í£»±í´ï²éÑ¯¡¢ĞÂÔö¡¢ÉóÅú¡¢µ¼³ö¡¢ÁìÈ¡¡¢·ÖÅäµÈ¶¯×÷È¨ÏŞ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºåŠ¨ä½œè¡¨ï¼›è¡¨è¾¾æŸ¥è¯¢ã€æ–°å¢ã€å®¡æ‰¹ã€å¯¼å‡ºã€é¢†å–ã€åˆ†é…ç­‰åŠ¨ä½œæƒé™ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_ResourceAction'
 GO
 /****** Object:  Table [dbo].[Tbl_E_Resource]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1644,6 +1834,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Resource', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Resource](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[AppCode] [varchar](50) NOT NULL,
@@ -1669,67 +1861,77 @@ CREATE TABLE [dbo].[Tbl_E_Resource](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Resource_AppType' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Resource'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Resource_AppType] ON [dbo].[Tbl_E_Resource] 
 (
 	[AppCode] ASC,
 	[ResourceType] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Resource_MenuGroup' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Resource'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Resource_MenuGroup] ON [dbo].[Tbl_E_Resource] 
 (
 	[MenuGroupCode] ASC,
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Resource_ResourceID' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Resource'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Resource_ResourceID] ON [dbo].[Tbl_E_Resource] 
 (
 	[ResourceID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ËùÊôÓ¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ‰€å±åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´±àÂë£¬Î¨Ò»£»Èç RES.CRM.ACCOUNT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ResourceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºç¼–ç ï¼Œå”¯ä¸€ï¼›å¦‚ RES.CRM.ACCOUNT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ResourceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´Ãû³Æ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ResourceName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºåç§°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ResourceName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´ÀàĞÍ£»PAGE¡¢GROUP¡¢MENU¡¢BUTTON¡¢API' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ResourceType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºç±»å‹ï¼›PAGEã€GROUPã€MENUã€BUTTONã€API' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ResourceType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ò³Ãæ»ò½Ó¿ÚÂ·¾¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'MenuPath'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é¡µé¢æˆ–æ¥å£è·¯å¾„' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'MenuPath'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ËùÊô²Ëµ¥×é' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'MenuGroupCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ‰€å±èœå•ç»„' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'MenuGroupCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉÏ¼¶×ÊÔ´±àÂë£¬ÓÃÓÚ²Ëµ¥Ê÷' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ParentResourceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸Šçº§èµ„æºç¼–ç ï¼Œç”¨äºèœå•æ ‘' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'ParentResourceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Í¼±ê±êÊ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'Icon'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å›¾æ ‡æ ‡è¯†' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'Icon'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹¦ÄÜ×ÊÔ´±í£»ÓÃÓÚÒ³Ãæ¡¢²Ëµ¥¡¢°´Å¥¡¢API µÈ×ÊÔ´×¢²á¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠŸèƒ½èµ„æºè¡¨ï¼›ç”¨äºé¡µé¢ã€èœå•ã€æŒ‰é’®ã€API ç­‰èµ„æºæ³¨å†Œã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Resource'
 GO
 /****** Object:  Table [dbo].[Tbl_E_TodoGroup]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1738,6 +1940,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_TodoGroup', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_TodoGroup](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[TenantID] [int] NOT NULL,
@@ -1761,16 +1965,22 @@ CREATE TABLE [dbo].[Tbl_E_TodoGroup](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoGroup_Instance' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoGroup'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoGroup_Instance] ON [dbo].[Tbl_E_TodoGroup] 
 (
 	[EventInstanceID] ASC
 )
 WHERE ([EventInstanceID] IS NOT NULL)
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoGroup_Object' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoGroup'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoGroup_Object] ON [dbo].[Tbl_E_TodoGroup] 
 (
 	[TenantID] ASC,
@@ -1778,19 +1988,26 @@ CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoGroup_Object] ON [dbo].[Tbl_E_TodoGroup]
 	[ObjectType] ASC,
 	[ObjectKey] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoGroup_Status' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoGroup'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoGroup_Status] ON [dbo].[Tbl_E_TodoGroup] 
 (
 	[TenantID] ASC,
 	[GroupStatus] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_TodoGroup_Code' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoGroup'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_TodoGroup_Code] ON [dbo].[Tbl_E_TodoGroup] 
 (
 	[TenantID] ASC,
 	[GroupCode] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
 /****** Object:  Table [dbo].[Tbl_E_TodoCandidate]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1799,6 +2016,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_TodoCandidate', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_TodoCandidate](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[TenantID] [int] NOT NULL,
@@ -1816,27 +2035,37 @@ CREATE TABLE [dbo].[Tbl_E_TodoCandidate](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoCandidate_Group' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoCandidate'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoCandidate_Group] ON [dbo].[Tbl_E_TodoCandidate] 
 (
 	[TodoGroupID] ASC,
 	[CandidateStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoCandidate_User' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoCandidate'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoCandidate_User] ON [dbo].[Tbl_E_TodoCandidate] 
 (
 	[TenantID] ASC,
 	[CandidateUserID] ASC,
 	[CandidateStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_TodoCandidate_Group_User' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoCandidate'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_TodoCandidate_Group_User] ON [dbo].[Tbl_E_TodoCandidate] 
 (
 	[TodoGroupID] ASC,
 	[CandidateUserID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
 /****** Object:  Table [dbo].[Tbl_E_Subscription]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1845,6 +2074,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Subscription', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Subscription](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[DutyID] [int] NOT NULL,
@@ -1872,72 +2103,82 @@ CREATE TABLE [dbo].[Tbl_E_Subscription](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Subscription_Duty' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Subscription'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Subscription_Duty] ON [dbo].[Tbl_E_Subscription] 
 (
 	[DutyID] ASC,
 	[SubType] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Subscription_Event' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Subscription'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Subscription_Event] ON [dbo].[Tbl_E_Subscription] 
 (
 	[AppCode] ASC,
 	[EventCode] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Subscription_Resource' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Subscription'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Subscription_Resource] ON [dbo].[Tbl_E_Subscription] 
 (
 	[ResourceID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DutyID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DutyID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë£»ÊÂ¼ş¶©ÔÄÊ±½¨ÒéÌîĞ´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ï¼›äº‹ä»¶è®¢é˜…æ—¶å»ºè®®å¡«å†™' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶©ÔÄÀàĞÍ£»RESOURCE¡¢EVENT¡¢MIXED' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'SubType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è®¢é˜…ç±»å‹ï¼›RESOURCEã€EVENTã€MIXED' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'SubType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş±àÂë£»SubType=EVENT Ê±±ØÌî' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'EventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶ç¼–ç ï¼›SubType=EVENT æ—¶å¿…å¡«' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'EventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×ÊÔ´±àÂë£»SubType=RESOURCE Ê±±ØÌî' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'ResourceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èµ„æºç¼–ç ï¼›SubType=RESOURCE æ—¶å¿…å¡«' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'ResourceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÏŞ¶¨£»Îª¿Õ±íÊ¾²»ÏŞ²¿ÃÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨é™å®šï¼›ä¸ºç©ºè¡¨ç¤ºä¸é™éƒ¨é—¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÖ÷¶©ÔÄ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'IsPrimary'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦ä¸»è®¢é˜…' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'IsPrimary'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¼æÈİ¾É 6 Î»¹¦ÄÜÏŞÖÆ×Ö·û´®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'FunctionLimit'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å…¼å®¹æ—§ 6 ä½åŠŸèƒ½é™åˆ¶å­—ç¬¦ä¸²' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'FunctionLimit'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶©ÔÄÌõ¼ş±í´ïÊ½£¬»ùÓÚÊÂ¼şÉÏÏÂÎÄ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è®¢é˜…æ¡ä»¶è¡¨è¾¾å¼ï¼ŒåŸºäºäº‹ä»¶ä¸Šä¸‹æ–‡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'ConditionExpr'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Í¨Öª·½Ê½£»TODO¡¢MESSAGE¡¢EMAIL µÈ£¬¿É¶ººÅ·Ö¸ô' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'NotifyMode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é€šçŸ¥æ–¹å¼ï¼›TODOã€MESSAGEã€EMAIL ç­‰ï¼Œå¯é€—å·åˆ†éš”' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'NotifyMode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÅÅĞò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ’åº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ¶©ÔÄ±í£»Ö°Ôğ¶©ÔÄ×ÊÔ´»òÊÂ¼ş£¬²»°üº¬ÈÎºÎÒµÎñ±íÍâ¼ü¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£è®¢é˜…è¡¨ï¼›èŒè´£è®¢é˜…èµ„æºæˆ–äº‹ä»¶ï¼Œä¸åŒ…å«ä»»ä½•ä¸šåŠ¡è¡¨å¤–é”®ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Subscription'
 GO
 /****** Object:  Table [dbo].[Tbl_E_PositionDuty]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -1946,6 +2187,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_PositionDuty', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_PositionDuty](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[PosID] [int] NOT NULL,
@@ -1967,52 +2210,59 @@ CREATE TABLE [dbo].[Tbl_E_PositionDuty](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_PositionDuty_Duty' AND object_id = OBJECT_ID(N'dbo.Tbl_E_PositionDuty'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_PositionDuty_Duty] ON [dbo].[Tbl_E_PositionDuty] 
 (
 	[DutyID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_PositionDuty_Pos' AND object_id = OBJECT_ID(N'dbo.Tbl_E_PositionDuty'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_PositionDuty_Pos] ON [dbo].[Tbl_E_PositionDuty] 
 (
 	[PosID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ» ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'PosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'PosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö°Ôğ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DutyID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'èŒè´£ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DutyID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅÏŞ¶¨£»Îª¿Õ±íÊ¾ËùÓĞ²¿ÃÅÊÊÓÃ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨é™å®šï¼›ä¸ºç©ºè¡¨ç¤ºæ‰€æœ‰éƒ¨é—¨é€‚ç”¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ·¶Î§±ê¼Ç£¬¼æÈİ¾É×Ö¶Î£»¸´ÔÓ·¶Î§½¨ÒéÊ¹ÓÃ Tbl_E_DataScopeRule' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'BusinessLimit'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡èŒƒå›´æ ‡è®°ï¼Œå…¼å®¹æ—§å­—æ®µï¼›å¤æ‚èŒƒå›´å»ºè®®ä½¿ç”¨ Tbl_E_DataScopeRule' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'BusinessLimit'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÏÔÊ¾Ë³Ğò' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DispSeq'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¾ç¤ºé¡ºåº' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'DispSeq'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ»Ö°Ôğ±í£»±í´ïÄ³¸ÚÎ»ÔÚÄ³²¿ÃÅ·¶Î§ÄÚÓµÓĞÄ³Ö°Ôğ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½èŒè´£è¡¨ï¼›è¡¨è¾¾æŸå²—ä½åœ¨æŸéƒ¨é—¨èŒƒå›´å†…æ‹¥æœ‰æŸèŒè´£ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_PositionDuty'
 GO
 /****** Object:  Table [dbo].[Tbl_E_Member]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2021,6 +2271,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_Member', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_Member](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[MemberID] [nvarchar](50) NOT NULL,
@@ -2062,98 +2314,108 @@ CREATE TABLE [dbo].[Tbl_E_Member](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_Member_DefaultDeptPos' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Member'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_Member_DefaultDeptPos] ON [dbo].[Tbl_E_Member] 
 (
 	[DefaultDeptID] ASC,
 	[DefaultPosID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Member_MemberID' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Member'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Member_MemberID] ON [dbo].[Tbl_E_Member] 
 (
 	[MemberID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_Member_UserID_NotNull' AND object_id = OBJECT_ID(N'dbo.Tbl_E_Member'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_Member_UserID_NotNull] ON [dbo].[Tbl_E_Member] 
 (
 	[UserID] ASC
 )
 WHERE ([UserID] IS NOT NULL)
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈËÔ±µµ°¸Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äººå‘˜æ¡£æ¡ˆä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹¤ºÅ£¬Î¨Ò»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'MemberID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å·¥å·ï¼Œå”¯ä¸€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'MemberID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈËÔ±ĞÕÃû' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'MemberName'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äººå‘˜å§“å' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'MemberName'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'°ó¶¨µÄµÇÂ¼ÕËºÅ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'UserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç»‘å®šçš„ç™»å½•è´¦å· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'UserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ĞÔ±ğ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Sex'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ€§åˆ«' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Sex'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ãñ×å' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Nation'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ°‘æ—' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Nation'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¼®¹á' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'NativePlace'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç±è´¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'NativePlace'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö¤¼şºÅÂë£»½¨Òé¼ÓÃÜ»òÍÑÃô' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'IDNo'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è¯ä»¶å·ç ï¼›å»ºè®®åŠ å¯†æˆ–è„±æ•' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'IDNo'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÉúÈÕ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Birthday'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”Ÿæ—¥' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Birthday'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ñ§Àú²ã´Î' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'ELevel'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å­¦å†å±‚æ¬¡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'ELevel'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ñ§Î»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Degree'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å­¦ä½' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Degree'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±ÏÒµÑ§Ğ£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'School'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¯•ä¸šå­¦æ ¡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'School'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×¨Òµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Speciality'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸“ä¸š' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Speciality'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¼ÆËã»úÄÜÁ¦' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'ComputerAbility'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è®¡ç®—æœºèƒ½åŠ›' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'ComputerAbility'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Î¼Ó¹¤×÷ÈÕÆÚ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'WorkDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å‚åŠ å·¥ä½œæ—¥æœŸ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'WorkDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈËÔ±µÈ¼¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'PerGrade'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äººå‘˜ç­‰çº§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'PerGrade'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¬ÈÏ²¿ÃÅ ID£»ÕæÕıÈÎ¸ÚÒÔ Tbl_E_UserPosition Îª×¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'DefaultDeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é»˜è®¤éƒ¨é—¨ IDï¼›çœŸæ­£ä»»å²—ä»¥ Tbl_E_UserPosition ä¸ºå‡†' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'DefaultDeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ä¬ÈÏ¸ÚÎ» ID£»ÕæÕıÈÎ¸ÚÒÔ Tbl_E_UserPosition Îª×¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'DefaultPosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é»˜è®¤å²—ä½ IDï¼›çœŸæ­£ä»»å²—ä»¥ Tbl_E_UserPosition ä¸ºå‡†' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'DefaultPosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¼ÒÍ¥µØÖ·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'HomeAddr'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å®¶åº­åœ°å€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'HomeAddr'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÖ»úºÅ£»½¨ÒéÍÑÃô' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Mobile'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ‰‹æœºå·ï¼›å»ºè®®è„±æ•' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Mobile'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¼ÒÍ¥µç»°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'HomePhone'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å®¶åº­ç”µè¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'HomePhone'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹¤×÷µç»°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'WorkPhone'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å·¥ä½œç”µè¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'WorkPhone'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Î¢ĞÅºÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'WXNum'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾®ä¿¡å·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'WXNum'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'QQ ºÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'QQNum'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'QQ å·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'QQNum'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÊÏä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'EMail'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é‚®ç®±' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'EMail'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½¡¿µ×´¿ö' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Health'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¥åº·çŠ¶å†µ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Health'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈËÔ±µµ°¸±í£»ÓÃÓÚÔ±¹¤×ÔÈ»ÈËĞÅÏ¢£¬UserID Ã÷È·°ó¶¨µÇÂ¼ÕËºÅ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äººå‘˜æ¡£æ¡ˆè¡¨ï¼›ç”¨äºå‘˜å·¥è‡ªç„¶äººä¿¡æ¯ï¼ŒUserID æ˜ç¡®ç»‘å®šç™»å½•è´¦å·ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_Member'
 GO
 /****** Object:  Table [dbo].[Tbl_E_EventReceiver]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2162,6 +2424,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_EventReceiver', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_EventReceiver](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[EventInstanceID] [bigint] NOT NULL,
@@ -2179,43 +2443,50 @@ CREATE TABLE [dbo].[Tbl_E_EventReceiver](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventReceiver_Instance' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventReceiver'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventReceiver_Instance] ON [dbo].[Tbl_E_EventReceiver] 
 (
 	[EventInstanceID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventReceiver_User' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventReceiver'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventReceiver_User] ON [dbo].[Tbl_E_EventReceiver] 
 (
 	[ReceiverUserID] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÊµÀı ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å®ä¾‹ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ÓÊÕÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æ”¶äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ÓÊÕÈËÈËÔ±µµ°¸ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverMemberID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æ”¶äººäººå‘˜æ¡£æ¡ˆ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverMemberID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ÓÊÕÈË²¿ÃÅ¿ìÕÕ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverDeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æ”¶äººéƒ¨é—¨å¿«ç…§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverDeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ÓÊÕÈË¸ÚÎ»¿ìÕÕ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverPosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æ”¶äººå²—ä½å¿«ç…§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverPosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃüÖĞµÄÖ°Ôğ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverDutyID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å‘½ä¸­çš„èŒè´£ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ReceiverDutyID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃüÖĞµÄ¶©ÔÄ¹æÔò ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'SubscriptionID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å‘½ä¸­çš„è®¢é˜…è§„åˆ™ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'SubscriptionID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½âÎö·½Ê½£»DUTY¡¢POSITION¡¢MANAGER¡¢DELEGATE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ResolveType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è§£ææ–¹å¼ï¼›DUTYã€POSITIONã€MANAGERã€DELEGATE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ResolveType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÃüÖĞÔ­ÒòËµÃ÷' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ResolveReason'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å‘½ä¸­åŸå› è¯´æ˜' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'ResolveReason'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş½ÓÊÕÈË½âÎö±í£»¼ÇÂ¼ÊÂ¼şÎªÊ²Ã´·Ö·¢¸øÄ³¸öÓÃ»§¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶æ¥æ”¶äººè§£æè¡¨ï¼›è®°å½•äº‹ä»¶ä¸ºä»€ä¹ˆåˆ†å‘ç»™æŸä¸ªç”¨æˆ·ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventReceiver'
 GO
 /****** Object:  Table [dbo].[Tbl_E_EventLog]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2224,6 +2495,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_EventLog', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_EventLog](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[EventInstanceID] [bigint] NULL,
@@ -2241,44 +2514,51 @@ CREATE TABLE [dbo].[Tbl_E_EventLog](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventLog_Event' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventLog_Event] ON [dbo].[Tbl_E_EventLog] 
 (
 	[AppCode] ASC,
 	[EventCode] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventLog_Instance' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventLog_Instance] ON [dbo].[Tbl_E_EventLog] 
 (
 	[EventInstanceID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÊµÀı ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å®ä¾‹ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'EventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'EventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÀàĞÍ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'ObjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ç±»å‹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'ObjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÖ÷¼ü×Ö·û´®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'ObjectKey'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ä¸»é”®å­—ç¬¦ä¸²' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'ObjectKey'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'UserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'UserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷ÀàĞÍ£»RAISE¡¢RESOLVE¡¢DELIVER¡¢HANDLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'ActionType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œç±»å‹ï¼›RAISEã€RESOLVEã€DELIVERã€HANDLE' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'ActionType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦Àí½á¹û£»³É¹¦¡¢Ê§°Ü¡¢Ìø¹ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'HandleResult'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†ç»“æœï¼›æˆåŠŸã€å¤±è´¥ã€è·³è¿‡' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'HandleResult'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢»ò´íÎóĞÅÏ¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨æˆ–é”™è¯¯ä¿¡æ¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼ş´¦ÀíÈÕÖ¾±í£»¼ÇÂ¼ÊÂ¼ş·¢²¼¡¢½âÎö¡¢Í¶µİ¡¢´¦Àí¹ı³Ì£¬²»³Ğµ£ÒµÎñ¶ÔÏóÍâ¼üÖ°Ôğ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å¤„ç†æ—¥å¿—è¡¨ï¼›è®°å½•äº‹ä»¶å‘å¸ƒã€è§£æã€æŠ•é€’ã€å¤„ç†è¿‡ç¨‹ï¼Œä¸æ‰¿æ‹…ä¸šåŠ¡å¯¹è±¡å¤–é”®èŒè´£ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventLog'
 GO
 /****** Object:  Table [dbo].[Tbl_E_EventDelivery]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2287,6 +2567,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_EventDelivery', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_EventDelivery](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[EventInstanceID] [bigint] NOT NULL,
@@ -2303,43 +2585,50 @@ CREATE TABLE [dbo].[Tbl_E_EventDelivery](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventDelivery_Status' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventDelivery'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventDelivery_Status] ON [dbo].[Tbl_E_EventDelivery] 
 (
 	[DeliveryStatus] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_EventDelivery_User' AND object_id = OBJECT_ID(N'dbo.Tbl_E_EventDelivery'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_EventDelivery_User] ON [dbo].[Tbl_E_EventDelivery] 
 (
 	[ReceiverUserID] ASC,
 	[Channel] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÊµÀı ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å®ä¾‹ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ÓÊÕÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'ReceiverUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æ”¶äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'ReceiverUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Í¶µİÇşµÀ£»TODO¡¢MESSAGE¡¢EMAIL¡¢WECHAT¡¢SMS' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'Channel'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æŠ•é€’æ¸ é“ï¼›TODOã€MESSAGEã€EMAILã€WECHATã€SMS' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'Channel'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Í¶µİ×´Ì¬£»PENDING¡¢SENT¡¢FAILED¡¢READ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'DeliveryStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æŠ•é€’çŠ¶æ€ï¼›PENDINGã€SENTã€FAILEDã€READ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'DeliveryStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÖØÊÔ´ÎÊı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'RetryCount'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'é‡è¯•æ¬¡æ•°' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'RetryCount'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºó´íÎóĞÅÏ¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'LastError'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åé”™è¯¯ä¿¡æ¯' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'LastError'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'·¢ËÍÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'SentTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å‘é€æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'SentTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒÑ¶ÁÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'ReadTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å·²è¯»æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'ReadTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÍ¶µİ±í£»¼ÇÂ¼´ı°ì¡¢Õ¾ÄÚĞÅ¡¢ÓÊ¼ş¡¢ÆóÒµÎ¢ĞÅµÈÍ¶µİ×´Ì¬¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶æŠ•é€’è¡¨ï¼›è®°å½•å¾…åŠã€ç«™å†…ä¿¡ã€é‚®ä»¶ã€ä¼ä¸šå¾®ä¿¡ç­‰æŠ•é€’çŠ¶æ€ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_EventDelivery'
 GO
 /****** Object:  Table [dbo].[Tbl_E_DictItem]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2348,6 +2637,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_DictItem', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_DictItem](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[DictTypeCode] [varchar](50) NOT NULL,
@@ -2368,16 +2659,22 @@ CREATE TABLE [dbo].[Tbl_E_DictItem](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_DictItem_Type_Seq' AND object_id = OBJECT_ID(N'dbo.Tbl_E_DictItem'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_DictItem_Type_Seq] ON [dbo].[Tbl_E_DictItem] 
 (
 	[DictTypeCode] ASC,
 	[BStatus] ASC,
 	[DispSeq] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_E_DictItem_Type_Code' AND object_id = OBJECT_ID(N'dbo.Tbl_E_DictItem'))
+BEGIN
 CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_DictItem_Type_Code] ON [dbo].[Tbl_E_DictItem] 
 (
 	[DictTypeCode] ASC,
@@ -2385,6 +2682,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UQ_Tbl_E_DictItem_Type_Code] ON [dbo].[Tbl_E_D
 )
 WHERE ([IsDeleted]=(0))
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
 /****** Object:  Table [dbo].[Tbl_E_UserPosition]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2393,6 +2691,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_UserPosition', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_UserPosition](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[UserID] [int] NOT NULL,
@@ -2416,58 +2716,65 @@ CREATE TABLE [dbo].[Tbl_E_UserPosition](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_UserPosition_DeptPos' AND object_id = OBJECT_ID(N'dbo.Tbl_E_UserPosition'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserPosition_DeptPos] ON [dbo].[Tbl_E_UserPosition] 
 (
 	[DeptID] ASC,
 	[PosID] ASC,
 	[BStatus] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_UserPosition_User' AND object_id = OBJECT_ID(N'dbo.Tbl_E_UserPosition'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_UserPosition_User] ON [dbo].[Tbl_E_UserPosition] 
 (
 	[UserID] ASC,
 	[BStatus] ASC,
 	[IsPrimary] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'UserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'UserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈËÔ±µµ°¸ ID£¬Âß¼­¹ØÁª Tbl_E_Member.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'MemberID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äººå‘˜æ¡£æ¡ˆ IDï¼Œé€»è¾‘å…³è” Tbl_E_Member.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'MemberID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²¿ÃÅ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'DeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'éƒ¨é—¨ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'DeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¸ÚÎ» ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'PosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å²—ä½ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'PosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÇ·ñÖ÷¸ÚÎ»' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'IsPrimary'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ˜¯å¦ä¸»å²—ä½' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'IsPrimary'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈÎ¸Ú¿ªÊ¼ÈÕÆÚ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'BeginDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä»»å²—å¼€å§‹æ—¥æœŸ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'BeginDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈÎ¸Ú½áÊøÈÕÆÚ£»Îª¿Õ±íÊ¾µ±Ç°ÓĞĞ§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'EndDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä»»å²—ç»“æŸæ—¥æœŸï¼›ä¸ºç©ºè¡¨ç¤ºå½“å‰æœ‰æ•ˆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'EndDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ×´Ì¬£»ĞÂÊı¾İÍ³Ò» 1=ÆôÓÃ¡¢2=Í£ÓÃ£¬·şÎñ²ã¼æÈİ¾ÉÖµ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'BStatus'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡çŠ¶æ€ï¼›æ–°æ•°æ®ç»Ÿä¸€ 1=å¯ç”¨ã€2=åœç”¨ï¼ŒæœåŠ¡å±‚å…¼å®¹æ—§å€¼' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'BStatus'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÈíÉ¾³ı±ê¼Ç£»0=Î´É¾³ı£¬1=ÒÑÉ¾³ı' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'IsDeleted'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'è½¯åˆ é™¤æ ‡è®°ï¼›0=æœªåˆ é™¤ï¼Œ1=å·²åˆ é™¤' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'IsDeleted'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'CreateDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'CreateDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨ÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'CreateUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºäººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'CreateUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'AmendDate'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'AmendDate'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×îºóĞŞ¸ÄÈËÓÃ»§ ID£¬Âß¼­¹ØÁª Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'AmendUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æœ€åä¿®æ”¹äººç”¨æˆ· IDï¼Œé€»è¾‘å…³è” Tbl_E_Users.DataID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'AmendUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'²Ù×÷Ô±´úºÅ£»¼æÈİÔ­ Operator ×Ö¶Î£¬³¤¶ÈÓÉ 8 ½¨ÒéÀ©Õ¹Îª 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'Operator'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ“ä½œå‘˜ä»£å·ï¼›å…¼å®¹åŸ Operator å­—æ®µï¼Œé•¿åº¦ç”± 8 å»ºè®®æ‰©å±•ä¸º 30' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'Operator'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server ĞĞ°æ±¾ºÅ£¬ÓÃÓÚ²¢·¢¿ØÖÆ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'RowVersion'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SQL Server è¡Œç‰ˆæœ¬å·ï¼Œç”¨äºå¹¶å‘æ§åˆ¶' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition', @level2type=N'COLUMN',@level2name=N'RowVersion'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÃ»§ÈÎ¸Ú±í£»Ö§³ÖÒ»ÈË¶à¸Ú¡¢Ö÷¸Ú¡¢¼æ¸Ú¡¢ÀúÊ·×·Ëİ¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç”¨æˆ·ä»»å²—è¡¨ï¼›æ”¯æŒä¸€äººå¤šå²—ã€ä¸»å²—ã€å…¼å²—ã€å†å²è¿½æº¯ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_UserPosition'
 GO
 /****** Object:  Table [dbo].[Tbl_E_TodoTask]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2476,6 +2783,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_TodoTask', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_TodoTask](
 	[DataID] [int] IDENTITY(1,1) NOT NULL,
 	[EventInstanceID] [bigint] NULL,
@@ -2509,76 +2818,89 @@ CREATE TABLE [dbo].[Tbl_E_TodoTask](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoTask_EventInstance' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTask'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoTask_EventInstance] ON [dbo].[Tbl_E_TodoTask] 
 (
 	[EventInstanceID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoTask_Group' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTask'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoTask_Group] ON [dbo].[Tbl_E_TodoTask] 
 (
 	[TodoGroupID] ASC
 )
 WHERE ([TodoGroupID] IS NOT NULL)
 WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoTask_Object' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTask'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoTask_Object] ON [dbo].[Tbl_E_TodoTask] 
 (
 	[AppCode] ASC,
 	[ObjectType] ASC,
 	[ObjectKey] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoTask_UserStatus' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTask'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoTask_UserStatus] ON [dbo].[Tbl_E_TodoTask] 
 (
 	[UserID] ASC,
 	[Status] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ìÖ÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÊÂ¼şÊµÀı ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'äº‹ä»¶å®ä¾‹ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'EventInstanceID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¹ØÁªÊÂ¼şÈÕÖ¾ ID£»ÀàĞÍÓë Tbl_E_EventLog.DataID Ò»ÖÂ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'EventLogID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å…³è”äº‹ä»¶æ—¥å¿— IDï¼›ç±»å‹ä¸ Tbl_E_EventLog.DataID ä¸€è‡´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'EventLogID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ó¦ÓÃ±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'AppCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åº”ç”¨ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'AppCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'À´Ô´ÊÂ¼ş±àÂë' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'EventCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ¥æºäº‹ä»¶ç¼–ç ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'EventCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µ±Ç°´ı°ì´¦ÀíÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'UserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å½“å‰å¾…åŠå¤„ç†äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'UserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÀàĞÍ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ç±»å‹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏóÖ÷¼ü×Ö·û´®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectKey'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ä¸»é”®å­—ç¬¦ä¸²' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectKey'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏó±àÂë»òµ¥ºÅ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectCode'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡ç¼–ç æˆ–å•å·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectCode'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÒµÎñ¶ÔÏó±êÌâ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectTitle'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸šåŠ¡å¯¹è±¡æ ‡é¢˜' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectTitle'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'µã»÷´ı°ìÊ±Ìø×ªµØÖ·' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectUrl'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ç‚¹å‡»å¾…åŠæ—¶è·³è½¬åœ°å€' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'ObjectUrl'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'×´Ì¬£»0´ı´¦Àí¡¢1ÒÑ´¦Àí¡¢2ÒÑ¹Ø±Õ¡¢3ÒÑ×ª½»¡¢4ÒÑ³·»Ø' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'Status'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'çŠ¶æ€ï¼›0å¾…å¤„ç†ã€1å·²å¤„ç†ã€2å·²å…³é—­ã€3å·²è½¬äº¤ã€4å·²æ’¤å›' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'Status'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ì±êÌâ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'TodoTitle'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠæ ‡é¢˜' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'TodoTitle'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ìÄÚÈİ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'TodoContent'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠå†…å®¹' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'TodoContent'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÈË²¿ÃÅ¿ìÕÕ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'HandlerDeptID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†äººéƒ¨é—¨å¿«ç…§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'HandlerDeptID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÈË¸ÚÎ»¿ìÕÕ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'HandlerPosID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†äººå²—ä½å¿«ç…§' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'HandlerPosID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'½ØÖ¹´¦ÀíÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'DueTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æˆªæ­¢å¤„ç†æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'DueTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ÓÅÏÈ¼¶£»LOW¡¢NORMAL¡¢HIGH¡¢URGENT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'Priority'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¼˜å…ˆçº§ï¼›LOWã€NORMALã€HIGHã€URGENT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'Priority'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÊ±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'HandleTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†æ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask', @level2type=N'COLUMN',@level2name=N'HandleTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ìÈÎÎñ±í£»Ê¹ÓÃ AppCode/ObjectType/ObjectKey ±íÊ¾ÒµÎñ¶ÔÏó£¬²»ÒıÓÃÒµÎñ±í¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠä»»åŠ¡è¡¨ï¼›ä½¿ç”¨ AppCode/ObjectType/ObjectKey è¡¨ç¤ºä¸šåŠ¡å¯¹è±¡ï¼Œä¸å¼•ç”¨ä¸šåŠ¡è¡¨ã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTask'
 GO
 /****** Object:  Table [dbo].[Tbl_E_TodoTaskLog]    Script Date: 06/18/2026 23:13:11 ******/
 SET ANSI_NULLS ON
@@ -2587,6 +2909,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
+IF OBJECT_ID(N'dbo.Tbl_E_TodoTaskLog', N'U') IS NULL
+BEGIN
 CREATE TABLE [dbo].[Tbl_E_TodoTaskLog](
 	[DataID] [bigint] IDENTITY(1,1) NOT NULL,
 	[TodoTaskID] [int] NOT NULL,
@@ -2601,32 +2925,36 @@ CREATE TABLE [dbo].[Tbl_E_TodoTaskLog](
 	[DataID] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 SET ANSI_PADDING OFF
 GO
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Tbl_E_TodoTaskLog_Task' AND object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTaskLog'))
+BEGIN
 CREATE NONCLUSTERED INDEX [IX_Tbl_E_TodoTaskLog_Task] ON [dbo].[Tbl_E_TodoTaskLog] 
 (
 	[TodoTaskID] ASC,
 	[CreateTime] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+END
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ö÷¼ü' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'DataID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ä¸»é”®' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'DataID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ìÈÎÎñ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'TodoTaskID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠä»»åŠ¡ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'TodoTaskID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶¯×÷ÀàĞÍ£»CREATE¡¢CLAIM¡¢TRANSFER¡¢RETURN¡¢FINISH¡¢CLOSE¡¢REVOKE¡¢REMIND' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'ActionType'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠ¨ä½œç±»å‹ï¼›CREATEã€CLAIMã€TRANSFERã€RETURNã€FINISHã€CLOSEã€REVOKEã€REMIND' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'ActionType'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ô­´¦ÀíÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'FromUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŸå¤„ç†äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'FromUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ĞÂ´¦ÀíÈËÓÃ»§ ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'ToUserID'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'æ–°å¤„ç†äººç”¨æˆ· ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'ToUserID'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'¶¯×÷½á¹û' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'ActionResult'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åŠ¨ä½œç»“æœ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'ActionResult'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´¦ÀíÒâ¼û»ò±¸×¢' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'Remark'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¤„ç†æ„è§æˆ–å¤‡æ³¨' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'Remark'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´´½¨Ê±¼ä' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'CreateTime'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'åˆ›å»ºæ—¶é—´' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog', @level2type=N'COLUMN',@level2name=N'CreateTime'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'´ı°ì´¦ÀíÈÕÖ¾±í£»¼ÇÂ¼´´½¨¡¢ÁìÈ¡¡¢×ª½»¡¢ÍË»Ø¡¢Íê³É¡¢¹Ø±Õ¡¢³·»Ø¡¢´ß°ìµÈ¶¯×÷¡£' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'å¾…åŠå¤„ç†æ—¥å¿—è¡¨ï¼›è®°å½•åˆ›å»ºã€é¢†å–ã€è½¬äº¤ã€é€€å›ã€å®Œæˆã€å…³é—­ã€æ’¤å›ã€å‚¬åŠç­‰åŠ¨ä½œã€‚' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Tbl_E_TodoTaskLog'
 GO
 /****** Object:  Default [DF_Tbl_E_UserHandover_HandoverTime]    Script Date: 06/18/2026 23:13:11 ******/
 ALTER TABLE [dbo].[Tbl_E_UserHandover] ADD  CONSTRAINT [DF_Tbl_E_UserHandover_HandoverTime]  DEFAULT (getdate()) FOR [HandoverTime]
@@ -3112,92 +3440,161 @@ GO
 ALTER TABLE [dbo].[Tbl_E_TodoTaskLog] ADD  CONSTRAINT [DF_Tbl_E_TodoTaskLog_CreateTime]  DEFAULT (getdate()) FOR [CreateTime]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_Department_Parent]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_Department_Parent' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_Department'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_Department]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_Department_Parent] FOREIGN KEY([ParentDeptID])
 REFERENCES [dbo].[Tbl_E_Department] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_Department] CHECK CONSTRAINT [FK_Tbl_E_Department_Parent]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_TodoCandidate_Group]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_TodoCandidate_Group' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_TodoCandidate'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_TodoCandidate]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_TodoCandidate_Group] FOREIGN KEY([TodoGroupID])
 REFERENCES [dbo].[Tbl_E_TodoGroup] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_TodoCandidate] CHECK CONSTRAINT [FK_Tbl_E_TodoCandidate_Group]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_Subscription_Duty]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_Subscription_Duty' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_Subscription'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_Subscription]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_Subscription_Duty] FOREIGN KEY([DutyID])
 REFERENCES [dbo].[Tbl_E_Duty] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_Subscription] CHECK CONSTRAINT [FK_Tbl_E_Subscription_Duty]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_PositionDuty_Duty]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_PositionDuty_Duty' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_PositionDuty'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_PositionDuty]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_PositionDuty_Duty] FOREIGN KEY([DutyID])
 REFERENCES [dbo].[Tbl_E_Duty] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_PositionDuty] CHECK CONSTRAINT [FK_Tbl_E_PositionDuty_Duty]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_PositionDuty_Pos]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_PositionDuty_Pos' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_PositionDuty'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_PositionDuty]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_PositionDuty_Pos] FOREIGN KEY([PosID])
 REFERENCES [dbo].[Tbl_E_Position] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_PositionDuty] CHECK CONSTRAINT [FK_Tbl_E_PositionDuty_Pos]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_Member_User]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_Member_User' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_Member'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_Member]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_Member_User] FOREIGN KEY([UserID])
 REFERENCES [dbo].[Tbl_E_Users] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_Member] CHECK CONSTRAINT [FK_Tbl_E_Member_User]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_EventReceiver_Instance]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_EventReceiver_Instance' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_EventReceiver'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_EventReceiver]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_EventReceiver_Instance] FOREIGN KEY([EventInstanceID])
 REFERENCES [dbo].[Tbl_E_EventInstance] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_EventReceiver] CHECK CONSTRAINT [FK_Tbl_E_EventReceiver_Instance]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_EventLog_Instance]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_EventLog_Instance' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_EventLog'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_EventLog]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_EventLog_Instance] FOREIGN KEY([EventInstanceID])
 REFERENCES [dbo].[Tbl_E_EventInstance] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_EventLog] CHECK CONSTRAINT [FK_Tbl_E_EventLog_Instance]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_EventDelivery_Instance]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_EventDelivery_Instance' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_EventDelivery'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_EventDelivery]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_EventDelivery_Instance] FOREIGN KEY([EventInstanceID])
 REFERENCES [dbo].[Tbl_E_EventInstance] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_EventDelivery] CHECK CONSTRAINT [FK_Tbl_E_EventDelivery_Instance]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_DictItem_Type]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_DictItem_Type' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_DictItem'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_DictItem]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_DictItem_Type] FOREIGN KEY([DictTypeCode])
 REFERENCES [dbo].[Tbl_E_DictType] ([DictTypeCode])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_DictItem] CHECK CONSTRAINT [FK_Tbl_E_DictItem_Type]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_UserPosition_Dept]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_UserPosition_Dept' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_UserPosition'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_UserPosition]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_UserPosition_Dept] FOREIGN KEY([DeptID])
 REFERENCES [dbo].[Tbl_E_Department] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_UserPosition] CHECK CONSTRAINT [FK_Tbl_E_UserPosition_Dept]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_UserPosition_Pos]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_UserPosition_Pos' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_UserPosition'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_UserPosition]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_UserPosition_Pos] FOREIGN KEY([PosID])
 REFERENCES [dbo].[Tbl_E_Position] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_UserPosition] CHECK CONSTRAINT [FK_Tbl_E_UserPosition_Pos]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_UserPosition_User]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_UserPosition_User' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_UserPosition'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_UserPosition]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_UserPosition_User] FOREIGN KEY([UserID])
 REFERENCES [dbo].[Tbl_E_Users] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_UserPosition] CHECK CONSTRAINT [FK_Tbl_E_UserPosition_User]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_TodoTask_Instance]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_TodoTask_Instance' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTask'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_TodoTask]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_TodoTask_Instance] FOREIGN KEY([EventInstanceID])
 REFERENCES [dbo].[Tbl_E_EventInstance] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_TodoTask] CHECK CONSTRAINT [FK_Tbl_E_TodoTask_Instance]
 GO
 /****** Object:  ForeignKey [FK_Tbl_E_TodoTaskLog_Task]    Script Date: 06/18/2026 23:13:11 ******/
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE name = N'FK_Tbl_E_TodoTaskLog_Task' AND parent_object_id = OBJECT_ID(N'dbo.Tbl_E_TodoTaskLog'))
+BEGIN
 ALTER TABLE [dbo].[Tbl_E_TodoTaskLog]  WITH CHECK ADD  CONSTRAINT [FK_Tbl_E_TodoTaskLog_Task] FOREIGN KEY([TodoTaskID])
 REFERENCES [dbo].[Tbl_E_TodoTask] ([DataID])
+END
 GO
 ALTER TABLE [dbo].[Tbl_E_TodoTaskLog] CHECK CONSTRAINT [FK_Tbl_E_TodoTaskLog_Task]
+GO
+
+USE [FamilyTree];
+GO
+
+/* ---------- è„šæœ¬æ‰§è¡Œå°è´¦ ----------
+   ä»“åº“åŸå…ˆæ²¡æœ‰ä»»ä½•è¿ç§»æœºåˆ¶ï¼šæ–‡ä»¶åæ˜¯å”¯ä¸€çš„é¡ºåºä¾æ®ï¼Œè€Œç¼–å·å·²ç»åœ¨ç¢°æ’
+   ï¼ˆ20-Seed_Foundation / 20-Seed_README åŒå·ï¼‰ï¼Œä¹Ÿæ²¡æœ‰åŠæ³•é—®ä¸€ä¸ªæ•°æ®åº“ã€Œä½ è·‘è¿‡å“ªäº›è„šæœ¬ã€ã€‚
+   è¿™æ®µè‡ªå»ºè¡¨ + è®°å½•ï¼Œå¹‚ç­‰ï¼Œå¯åœ¨ä»»æ„è„šæœ¬å•ç‹¬æ‰§è¡Œã€‚ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'10-EFrame.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'10-EFrame.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'10-EFrame.sql');
 GO

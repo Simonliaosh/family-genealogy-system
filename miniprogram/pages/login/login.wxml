@@ -1,25 +1,29 @@
 <view class="card">
   <view class="title">家族族谱</view>
-  <view class="muted" style="margin-top:12rpx;">微信 OpenID 或登录名登录，共用同一套族谱服务。</view>
+  <view class="muted" style="margin-top:12rpx;">微信或登录名登录，共用同一套族谱服务。</view>
 </view>
 
-<view class="card" wx:if="{{wechatEnabled || allowDevMock}}">
-  <button class="btn" bindtap="onWxLogin">微信登录</button>
-  <view class="muted" wx:if="{{allowDevMock && !wechatEnabled}}" style="margin-top:12rpx;">当前为开发模拟（未配 AppId）。</view>
+<view class="card" wx:if="{{wechatEnabled}}">
+  <button class="btn" bindtap="onWxLogin" disabled="{{busy}}">微信登录</button>
+</view>
+
+<view class="card" wx:if="{{configError}}">
+  <view class="muted">暂时无法连接服务器：{{configError}}</view>
+  <button class="btn btn-ghost" bindtap="onRetryConfig" style="margin-top:16rpx;">重试</button>
 </view>
 
 <view class="card">
   <view class="title">登录名登录</view>
-  <input class="input" placeholder="登录名（手机号或拼音）" value="{{idCard}}" bindinput="onId" />
-  <input class="input" password placeholder="密码" value="{{password}}" bindinput="onPwd" />
-  <button class="btn" bindtap="onIdLogin">登录</button>
+  <input class="input" placeholder="登录名（手机号或拼音）或 18 位身份证号" value="{{idCard}}" bindinput="onId" maxlength="32" />
+  <input class="input" password placeholder="密码（至少 6 位）" value="{{password}}" bindinput="onPwd" maxlength="64" />
+  <button class="btn" bindtap="onIdLogin" disabled="{{busy}}">登录</button>
 </view>
 
 <view class="card">
   <view class="title">首次注册</view>
-  <input class="input" placeholder="登录名（≥6位字母或数字）" value="{{regId}}" bindinput="onRegId" />
-  <input class="input" placeholder="姓名" value="{{realName}}" bindinput="onName" />
-  <input class="input" password placeholder="密码至少6位" value="{{regPwd}}" bindinput="onRegPwd" />
-  <input class="input" password placeholder="再输一次密码" value="{{regPwd2}}" bindinput="onRegPwd2" />
-  <button class="btn btn-ghost" bindtap="onRegister">注册并登录</button>
+  <input class="input" placeholder="登录名（≥6 位字母或数字）" value="{{regId}}" bindinput="onRegId" maxlength="32" />
+  <input class="input" placeholder="姓名" value="{{realName}}" bindinput="onName" maxlength="50" />
+  <input class="input" password placeholder="密码至少 6 位" value="{{regPwd}}" bindinput="onRegPwd" maxlength="64" />
+  <input class="input" password placeholder="再输一次密码" value="{{regPwd2}}" bindinput="onRegPwd2" maxlength="64" />
+  <button class="btn btn-ghost" bindtap="onRegister" disabled="{{busy}}">注册并登录</button>
 </view>

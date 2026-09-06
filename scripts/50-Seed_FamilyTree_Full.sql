@@ -1,7 +1,7 @@
--- =============================================
+﻿-- =============================================
 -- 家族族谱 — 完整岗位职责/菜单/事件种子（v2.0）
 -- 前置：EFrame 基础表 + docs/04-数据结构.sql
--- 种子用户：仅 cfadmin + FT_SUPER_ADMIN 岗（密码 123456）
+-- 种子用户：仅 cfadmin + FT_SUPER_ADMIN 岗（口令由 sqlcmd -v AdminPassword 传入）
 -- 可重复执行
 -- =============================================
 USE [FamilyTree];
@@ -10,7 +10,19 @@ GO
 DECLARE @Now DATETIME = GETDATE();
 DECLARE @Op VARCHAR(30) = 'SEED-FT-FULL';
 DECLARE @App VARCHAR(50) = 'FamilyTree';
-DECLARE @Pwd NVARCHAR(200) = N'49ba59abbe56e057'; -- MD5_16(123456)
+/* 初始口令不写在脚本里，用 sqlcmd 变量传入：
+       sqlcmd -S <server> -d <db> -v AdminPassword="你的强口令" -i 50-Seed_FamilyTree_Full.sql
+   （SSMS 需先打开 SQLCMD 模式。）存 MD5_16 兼容格式，首次登录透明升级为 PBKDF2。 */
+DECLARE @AdminPwdPlain VARCHAR(200) = '$(AdminPassword)';
+/* 非 SQLCMD 模式（普通 SSMS 查询窗口）下 $(AdminPassword) 不会被替换，
+   会原样留下字面量——必须一并拦掉，否则会静默把这串字面量当口令种进去。 */
+IF LTRIM(RTRIM(@AdminPwdPlain)) = '' OR @AdminPwdPlain = '$' + '(AdminPassword)'
+BEGIN
+    RAISERROR(N'请用 -v AdminPassword="..." 传入初始管理员口令后再执行本脚本。', 16, 1);
+    SET NOEXEC ON;
+END
+DECLARE @Pwd NVARCHAR(200) =
+    LOWER(SUBSTRING(sys.fn_VarBinToHexStr(HASHBYTES('MD5', @AdminPwdPlain)), 11, 16));
 
 /* ========== 0. 最小组织与用户（仅超管） ========== */
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'FT_ROOT' AND IsDeleted=0)
@@ -21,9 +33,7 @@ IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'cfadmin' AND IsDele
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType,
         LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
     VALUES (N'cfadmin', N'超级管理员', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
-ELSE
-    UPDATE dbo.Tbl_E_Users SET PwdHash=@Pwd, IsEnabled=1, IsLocked=0, BStatus='1', AmendDate=@Now, Operator=@Op
-    WHERE LoginId=N'cfadmin' AND IsDeleted=0;
+/* 原先这里是 ELSE UPDATE：重跑即把已存在的超管口令重置、解锁、重新启用。已删除，口令只在首次插入时设置。 */
 
 /* ========== 1. 职责 Duty ========== */
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'FT_MEMBER' AND IsDeleted=0)
@@ -293,4 +303,25 @@ BEGIN
 END
 
 PRINT N'50-Seed_FamilyTree_Full: duties, menus, events, cfadmin super-only done.';
+GO
+
+/* ---------- 脚本执行台账 ----------
+   仓库原先没有任何迁移机制：文件名是唯一的顺序依据，而编号已经在碰撞
+   （20-Seed_Foundation / 20-Seed_README 同号），也没有办法问一个数据库「你跑过哪些脚本」。
+   这段自建表 + 记录，幂等，可在任意脚本单独执行。 */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'50-Seed_FamilyTree_Full.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'50-Seed_FamilyTree_Full.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'50-Seed_FamilyTree_Full.sql');
 GO

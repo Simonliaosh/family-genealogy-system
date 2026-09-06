@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 
 namespace FamilyTree.Services;
 
@@ -38,14 +39,28 @@ public static class PasswordHasher
         if (plain.Length == 0 || stored.Length == 0) return false;
 
         var algo = (passwordAlgo ?? "").Trim();
-        if (algo.Length == 0 || string.Equals(algo, AlgoMd5_16, StringComparison.OrdinalIgnoreCase))
-            return string.Equals(HashMd5_16(plain), stored, StringComparison.OrdinalIgnoreCase);
 
+        // PBKDF2 优先：算法字段声明 PBKDF2，或存储串自带 PBKDF2 前缀（算法字段缺失的历史行）
         if (string.Equals(algo, AlgoPbkdf2, StringComparison.OrdinalIgnoreCase)
             || stored.StartsWith($"{AlgoPbkdf2}|", StringComparison.Ordinal))
             return VerifyPbkdf2(plain, stored);
 
-        return string.Equals(HashMd5_16(plain), stored, StringComparison.OrdinalIgnoreCase);
+        // MD5_16 仅保留登录时校验一次并立即升级的兼容路径（AccountController 调 ShouldUpgrade）
+        if (algo.Length == 0 || string.Equals(algo, AlgoMd5_16, StringComparison.OrdinalIgnoreCase))
+            return VerifyMd5_16(plain, stored);
+
+        // 未知算法一律失败，不再回落到 MD5_16
+        return false;
+    }
+
+    private static bool VerifyMd5_16(string plain, string stored)
+    {
+        string computed;
+        try { computed = HashMd5_16(plain); }
+        catch (NotSupportedException) { return false; }   // 非 ASCII 口令不可能是 MD5_16 种子哈希
+        var a = Encoding.UTF8.GetBytes(computed.ToLowerInvariant());
+        var b = Encoding.UTF8.GetBytes(stored.ToLowerInvariant());
+        return a.Length == b.Length && CryptographicOperations.FixedTimeEquals(a, b);
     }
 
     private static bool VerifyPbkdf2(string plain, string stored)

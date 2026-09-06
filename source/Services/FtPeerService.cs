@@ -1,4 +1,6 @@
+using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -156,7 +158,8 @@ public sealed class FtPeerService
         var raw = await resp.Content.ReadAsStringAsync(ct);
         var pack = TryParseApi(raw);
         if (!resp.IsSuccessStatusCode || pack == null || !pack.Value.Ok)
-            throw new InvalidOperationException(pack?.Msg ?? ("对方拒绝：" + (int)resp.StatusCode));
+            // 不回显远端响应体：否则本接口就是一个带错误回显的半盲探测器
+            throw new InvalidOperationException("对方站点拒绝了本次对接请求（HTTP " + (int)resp.StatusCode + "）。");
 
         var data = pack.Value.Data;
         if (data.ValueKind is JsonValueKind.Undefined or JsonValueKind.Null)
@@ -284,15 +287,17 @@ public sealed class FtPeerService
             .FirstOrDefaultAsync(x => x.DataId == bridgeId && !x.IsDeleted && x.BridgeStatus == "ACTIVE", ct)
             ?? throw new InvalidOperationException("对接不存在或已取消。");
 
+        // 历史行可能存着 http:// 或内网地址，出站前再过一次白名单/内网校验
+        var peerBase = NormalizeBaseUrl(bridge.PeerBaseUrl);
         var client = _http.CreateClient("FtPeer");
-        var url = $"{bridge.PeerBaseUrl.TrimEnd('/')}/api/FtPeer/Children?personId={remotePersonId}";
+        var url = $"{peerBase}/api/FtPeer/Children?personId={remotePersonId}";
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
         req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bridge.InToken);
         using var resp = await client.SendAsync(req, ct);
         var raw = await resp.Content.ReadAsStringAsync(ct);
         var pack = TryParseApi(raw);
         if (!resp.IsSuccessStatusCode || pack == null || !pack.Value.Ok)
-            throw new InvalidOperationException(pack?.Msg ?? "对方站点无法展开（可能已取消互通）。");
+            throw new InvalidOperationException("对方站点无法展开（可能已取消互通）。");
 
         var list = new List<FtTreeNodeVm>();
         if (pack.Value.Data.ValueKind == JsonValueKind.Array)
@@ -470,14 +475,73 @@ public sealed class FtPeerService
         return false;
     }
 
-    private static string NormalizeBaseUrl(string? url)
+    /// <summary>
+    /// 归一化并<strong>校验</strong>对端站点地址。原实现在无 scheme 时主动补 <c>http://</c> 且不做任何限制，
+    /// 于是「对端地址」这个表单字段成了服务端可控的出站请求目标（SSRF）：
+    /// 可探测云元数据 169.254.169.254、127.0.0.1 上的内部服务与管理端口，且响应体会被回显。
+    /// 现在：必须是 https、必须显式带 scheme、主机名必须在 <c>FamilyTree:PeerAllowedHosts</c> 白名单内、
+    /// 且不得解析到私有/环回/链路本地地址。
+    /// </summary>
+    private string NormalizeBaseUrl(string? url)
     {
         var u = (url ?? "").Trim().TrimEnd('/');
         if (u.Length == 0) return "";
-        if (!u.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
-            && !u.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-            u = "http://" + u;
-        return u.TrimEnd('/');
+
+        if (!u.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("对端站点地址必须以 https:// 开头。");
+        if (!Uri.TryCreate(u, UriKind.Absolute, out var uri))
+            throw new InvalidOperationException("对端站点地址格式无效。");
+        if (!string.IsNullOrEmpty(uri.PathAndQuery.TrimEnd('/')) && uri.PathAndQuery.TrimEnd('/').Length > 0)
+            throw new InvalidOperationException("对端站点地址只填到域名，不要带路径。");
+
+        var allowed = _opt.PeerAllowedHosts ?? new List<string>();
+        if (allowed.Count == 0)
+            throw new InvalidOperationException("尚未配置联邦对端白名单 FamilyTree:PeerAllowedHosts，外链对接已禁用。");
+        if (!allowed.Any(h => string.Equals(h?.Trim(), uri.Host, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException("对端站点不在白名单内，请先由管理员加入 FamilyTree:PeerAllowedHosts。");
+
+        EnsureNotInternalHost(uri.Host);
+        return $"{uri.Scheme}://{uri.Authority}";
+    }
+
+    /// <summary>拒绝解析到私有网段 / 环回 / 链路本地（云元数据）的目标主机。</summary>
+    private static void EnsureNotInternalHost(string host)
+    {
+        IPAddress[] addrs;
+        if (IPAddress.TryParse(host, out var literal)) addrs = new[] { literal };
+        else
+        {
+            try { addrs = Dns.GetHostAddresses(host); }
+            catch (Exception ex) when (ex is SocketException or ArgumentException)
+            {
+                throw new InvalidOperationException("无法解析对端站点域名。");
+            }
+        }
+        if (addrs.Length == 0) throw new InvalidOperationException("无法解析对端站点域名。");
+        if (addrs.Any(IsInternal))
+            throw new InvalidOperationException("对端站点解析到内网地址，已拒绝。");
+    }
+
+    private static bool IsInternal(IPAddress ip)
+    {
+        if (IPAddress.IsLoopback(ip)) return true;
+        if (ip.IsIPv6LinkLocal || ip.IsIPv6SiteLocal) return true;
+        if (ip.AddressFamily == AddressFamily.InterNetworkV6)
+        {
+            if (ip.IsIPv4MappedToIPv6) return IsInternal(ip.MapToIPv4());
+            return ip.Equals(IPAddress.IPv6Any) || ip.Equals(IPAddress.IPv6None);
+        }
+        var b = ip.GetAddressBytes();
+        if (b.Length != 4) return false;
+        return b[0] == 0                                   // 0.0.0.0/8
+            || b[0] == 10                                  // 10/8
+            || b[0] == 127                                 // 环回
+            || (b[0] == 100 && b[1] >= 64 && b[1] <= 127)   // CGNAT 100.64/10
+            || (b[0] == 169 && b[1] == 254)                 // 链路本地 / 云元数据
+            || (b[0] == 172 && b[1] >= 16 && b[1] <= 31)    // 172.16/12
+            || (b[0] == 192 && b[1] == 168)                 // 192.168/16
+            || (b[0] == 192 && b[1] == 0 && b[2] == 0)      // IETF 保留
+            || b[0] >= 224;                                 // 组播 / 保留
     }
 
     private static string NewCode(int bytes)

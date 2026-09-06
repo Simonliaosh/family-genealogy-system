@@ -12,11 +12,13 @@ public class FtTreeController : Controller
     private readonly FtTreeService _tree;
     private readonly FtPeerService _peers;
     private readonly FtPersonService _persons;
-    public FtTreeController(FtTreeService tree, FtPeerService peers, FtPersonService persons)
+    private readonly FtOpLogService _log;
+    public FtTreeController(FtTreeService tree, FtPeerService peers, FtPersonService persons, FtOpLogService log)
     {
         _tree = tree;
         _peers = peers;
         _persons = persons;
+        _log = log;
     }
 
     [HttpGet, HttpPost]
@@ -24,7 +26,9 @@ public class FtTreeController : Controller
     {
         if (!CanView()) return Forbid();
         var uid = FtClaims.UserId(User) ?? 0;
-        await _persons.ClearInMainOnPendingLinkSourcesAsync(ct);
+        // 原先这里在 GET 上调 ClearInMainOnPendingLinkSourcesAsync（写 + SaveChanges）
+        // 和 HealParentEdgesAsync（批量重写父边），无防伪令牌、无事务、无审计日志——
+        // 爬虫、预加载、双击都会重复触发。两者已移到显式的 POST 动作 Maintain 上。
 
         var isStaff = await _persons.IsStaffAsync(uid, ct);
         var joinedMain = await _persons.UserHasJoinedMainAsync(uid, ct);
@@ -65,12 +69,7 @@ public class FtTreeController : Controller
         }
 
         var (roots, allowIds, mainMode) = await _tree.ResolveScopeAsync(uid, _persons, ct);
-        if (mainMode)
-        {
-            var healed = await _tree.HealParentEdgesAsync(allowIds, ct);
-            if (healed > 0)
-                (roots, allowIds, mainMode) = await _tree.ResolveScopeAsync(uid, _persons, ct);
-        }
+        ViewBag.CanMaintain = mainMode && isStaff;
         var preferredMain = await _tree.PickDefaultRootAsync(uid, roots, allowIds, ct);
         var forestRoots = roots.ToList();
         var displayRoots = await _tree.PreferPersonalRootInListAsync(uid, roots.ToList(), allowIds, preferredMain, ct);
@@ -119,6 +118,31 @@ public class FtTreeController : Controller
             }
         }
         return View(single);
+    }
+
+    /// <summary>
+    /// 主谱维护：清理待审链入源人的主谱占位 + 按姓名补挂父边。
+    /// 这两件事都会写库，因此改为管理岗显式触发的 POST（带防伪令牌 + 审计日志），不再挂在页面浏览上。
+    /// </summary>
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Maintain(int? rootId, string? scope, CancellationToken ct)
+    {
+        if (!CanView()) return Forbid();
+        var uid = FtClaims.UserId(User) ?? 0;
+        if (!await _persons.IsStaffAsync(uid, ct))
+        {
+            TempData["ErrorMessage"] = "仅族谱管理员、支链管理员或超管可执行主谱维护。";
+            return RedirectToAction(nameof(Index), new { rootId, scope });
+        }
+
+        var cleared = await _persons.ClearInMainOnPendingLinkSourcesAsync(ct);
+        var (_, allowIds, mainMode) = await _tree.ResolveScopeAsync(uid, _persons, ct);
+        var healed = mainMode ? await _tree.HealParentEdgesAsync(allowIds, ct) : 0;
+
+        await _log.WriteAsync("TREE_MAINTAIN", "Tree", "0", uid, FtClaims.Operator(User),
+            $"清理待审占位 {cleared} 条，补挂父边 {healed} 条", null, null, ct);
+        TempData["SuccessMessage"] = $"主谱维护完成：清理待审占位 {cleared} 条，补挂父边 {healed} 条。";
+        return RedirectToAction(nameof(Index), new { rootId, scope });
     }
 
     private static void MarkMainRefNodes(FtTreeNodeVm node, HashSet<int> mineIds)
@@ -337,7 +361,8 @@ public class FtOpLogController : Controller
         int? intPage, int? pageShowNum, CancellationToken ct)
     {
         if (!CanView()) return Forbid();
-        var (rows, total, pages, p) = await _service.GetIndexPageAsync(searchField ?? "OpType", searchContent ?? "",
+        var uid = FtClaims.UserId(User) ?? 0;
+        var (rows, total, pages, p) = await _service.GetIndexPageAsync(uid, searchField ?? "OpType", searchContent ?? "",
             selectField ?? "CreateDate", selectFieldArrow ?? "1", intPage.GetValueOrDefault(1), pageShowNum.GetValueOrDefault(16), ct);
         ViewBag.SearchField = searchField ?? "OpType";
         ViewBag.SearchContent = searchContent ?? "";

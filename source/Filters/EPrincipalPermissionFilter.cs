@@ -45,6 +45,24 @@ public sealed class EPrincipalPermissionFilter : IAsyncActionFilter
         var ctrl = cad.ControllerName;
         var act = cad.ActionName;
 
+        // 已认证但缺 PrincipalKind=EUsers claim 的主体：原先直接落到末尾的 await next()，
+        // 且 PubFunctionLimit 未设——不查该值的 action 会照常执行（fail-open）。
+        // 当前两条登录路径都会写这个 claim，所以这是防御性收口，不是可达路径。
+        if (!string.Equals(
+                user.FindFirst(FrameworkClaimTypes.AuthPrincipalKind)?.Value,
+                FrameworkClaimTypes.KindEUsers,
+                StringComparison.OrdinalIgnoreCase)
+            || user.FindFirst(FrameworkClaimTypes.EUserId)?.Value is not { Length: > 0 } kindProbe
+            || !int.TryParse(kindProbe, out _))
+        {
+            if (!string.Equals(ctrl, "Account", StringComparison.OrdinalIgnoreCase)
+                && !_opt.SkipPermissionControllers.Contains(ctrl))
+            {
+                context.Result = new ForbidResult();
+                return;
+            }
+        }
+
         if (string.Equals(
                 user.FindFirst(FrameworkClaimTypes.AuthPrincipalKind)?.Value,
                 FrameworkClaimTypes.KindEUsers,

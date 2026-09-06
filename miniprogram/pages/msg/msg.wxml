@@ -1,20 +1,30 @@
-<view class="card">
-  <view class="title">待办</view>
-  <view class="row" wx:for="{{todos}}" wx:key="id">
-    <view>
-      <view>{{item.title}}</view>
-      <view class="muted">{{item.eventCode}} · {{item.status}}</view>
-    </view>
-  </view>
-  <view class="muted" wx:if="{{todos.length===0}}">暂无待办。</view>
+<view class="card muted" wx:if="{{loading}}">加载中…</view>
+
+<view class="card" wx:elif="{{loadError}}">
+  <view class="muted">加载失败：{{loadError}}</view>
+  <button class="btn btn-ghost" bindtap="onRetry" style="margin-top:16rpx;">重试</button>
 </view>
-<view class="card">
-  <view class="title">链入申请</view>
-  <view class="row" wx:for="{{links}}" wx:key="id">
-    <view>
-      <view>{{item.sourceName}} → {{item.targetName}}</view>
-      <view class="muted">{{item.status}} · 匹配级 {{item.level}}</view>
+
+<block wx:else>
+  <view class="card">
+    <view class="title">待办</view>
+    <view class="row" wx:for="{{todos}}" wx:key="id">
+      <view>
+        <view>{{item.title}}</view>
+        <view class="muted">{{item.eventCode}} · {{item.status}}</view>
+      </view>
     </view>
+    <view class="muted" wx:if="{{todos.length===0}}">暂无待办。</view>
   </view>
-  <view class="muted" wx:if="{{links.length===0}}">暂无链入单。</view>
-</view>
+
+  <view class="card">
+    <view class="title">链入申请</view>
+    <view class="row" wx:for="{{links}}" wx:key="id">
+      <view>
+        <view>{{item.sourceName}} → {{item.targetName}}</view>
+        <view class="muted">{{item.status}} · 匹配级 {{item.level}}</view>
+      </view>
+    </view>
+    <view class="muted" wx:if="{{links.length===0}}">暂无链入单。</view>
+  </view>
+</block>

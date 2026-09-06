@@ -1,4 +1,4 @@
--- =============================================
+﻿-- =============================================
 -- 清理「被占用」但已失效的家族相关记录
 --
 -- 典型场景（如跑过 48-Clean_DefaultClan_Data.sql 之后）：
@@ -163,4 +163,25 @@ BEGIN CATCH
     DECLARE @Msg NVARCHAR(4000) = ERROR_MESSAGE();
     RAISERROR(N'清理失败，已回滚：%s', 16, 1, @Msg);
 END CATCH
+GO
+
+/* ---------- 脚本执行台账 ----------
+   仓库原先没有任何迁移机制：文件名是唯一的顺序依据，而编号已经在碰撞
+   （20-Seed_Foundation / 20-Seed_README 同号），也没有办法问一个数据库「你跑过哪些脚本」。
+   这段自建表 + 记录，幂等，可在任意脚本单独执行。 */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'49-Clean_OccupiedClan_Records.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'49-Clean_OccupiedClan_Records.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'49-Clean_OccupiedClan_Records.sql');
 GO

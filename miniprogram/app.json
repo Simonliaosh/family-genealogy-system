@@ -13,20 +13,48 @@
     "navigationBarTitleText": "家族族谱",
     "navigationBarBackgroundColor": "#2c3e50",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#f4f5f7"
+    "backgroundColor": "#f4f5f7",
+    "enablePullDownRefresh": true
   },
   "tabBar": {
     "color": "#666666",
     "selectedColor": "#2c3e50",
     "backgroundColor": "#ffffff",
     "list": [
-      { "pagePath": "pages/home/home", "text": "首页" },
-      { "pagePath": "pages/draft/list", "text": "录入" },
-      { "pagePath": "pages/tree/tree", "text": "族谱" },
-      { "pagePath": "pages/profile/profile", "text": "档案" },
-      { "pagePath": "pages/msg/msg", "text": "消息" }
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/draft/list",
+        "text": "录入"
+      },
+      {
+        "pagePath": "pages/tree/tree",
+        "text": "族谱"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "档案"
+      },
+      {
+        "pagePath": "pages/msg/msg",
+        "text": "消息"
+      }
     ]
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout": {
+    "request": 12000,
+    "uploadFile": 36000,
+    "downloadFile": 36000
+  },
+  "__usePrivacyCheck__": true,
+  "requiredPrivateInfos": [],
+  "permission": {
+    "scope.userInfo": {
+      "desc": "用于在族谱中显示你的昵称与头像"
+    }
+  }
 }

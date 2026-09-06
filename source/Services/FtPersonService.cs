@@ -187,10 +187,20 @@ public sealed class FtPersonService
     public async Task<FtPerson?> GetAsync(int id, CancellationToken ct) =>
         await _db.FtPersons.FirstOrDefaultAsync(x => x.DataId == id && !x.IsDeleted, ct);
 
+    /// <summary>
+    /// 详情可见性。口径与 <see cref="VisiblePersonsAsync"/> 的列表一致：先比家族，再比角色。
+    /// 原实现里管理岗和已入主谱的普通族人都是跨族放行的，等于详情页可枚举全库人物。
+    /// </summary>
     public async Task<bool> CanViewAsync(int userId, FtPerson p, CancellationToken ct)
     {
-        if (await _duty.IsSuperAsync(userId, ct) || await _duty.IsBranchAdminAsync(userId, ct)) return true;
+        // 超管保留全局可见：CorrectKeysAsync / TransferOwnerAsync / 解链等纠错路径依赖它
+        if (await _duty.IsSuperAsync(userId, ct)) return true;
         if (p.OwnerUserId == userId || p.BindUserId == userId) return true;
+
+        var clanId = await _clans.GetUserClanIdAsync(userId, ct);
+        if (clanId == null || p.ClanId != clanId) return false;
+
+        if (await _duty.IsBranchAdminAsync(userId, ct)) return true;
         if (!p.InMainGenealogy) return false;
         // 主谱人物：仅当自己已链入生效/纳入后才可见
         return await UserHasJoinedMainAsync(userId, ct);
@@ -272,8 +282,13 @@ public sealed class FtPersonService
     public async Task<bool> IsStaffAsync(int userId, CancellationToken ct) =>
         await _duty.IsBranchAdminAsync(userId, ct);
 
+    /// <summary>是否具备「认证」这个角色能力（只用于渲染按钮，不作为授权判据）。</summary>
     public async Task<bool> CanCertifyAsync(int userId, CancellationToken ct) =>
         await _duty.IsBranchAdminAsync(userId, ct);
+
+    /// <summary>授权判据：既要有管理岗，人物又要在自己族内。错误文案本来就写着「仅本家族」。</summary>
+    public async Task<bool> CanCertifyAsync(int userId, FtPerson p, CancellationToken ct) =>
+        await _duty.IsBranchAdminAsync(userId, ct) && await _clans.UserSharesClanAsync(userId, p, ct);
 
     public async Task<bool> MemberCanApplyMainAsync(int userId, CancellationToken ct)
     {
@@ -360,7 +375,9 @@ public sealed class FtPersonService
         var row = await GetAsync(id, ct) ?? throw new InvalidOperationException("人物不存在。");
         if (!await CanEditAsync(userId, row, ct))
             throw new InvalidOperationException("无权修改该人物。");
-        if (await WouldCycleAsync(id, row.FatherPersonId, row.MotherPersonId, ct))
+        // 原先传的是实体当前的父 id 而不是表单里的值——该行已以合法状态持久化，
+        // 所以这个检查恒为 false，代价是每次白白全表加载一次。改为校验表单提出的边。
+        if (await WouldCycleAsync(id, m.FatherPersonId ?? row.FatherPersonId, m.MotherPersonId ?? row.MotherPersonId, ct))
             throw new InvalidOperationException("父母关系形成环路，已拒绝。");
 
         var nameLocked = !await CanChangeNameAsync(userId, row, ct);
@@ -635,14 +652,15 @@ public sealed class FtPersonService
 
     public async Task<bool> CanSetMainAsync(int userId, FtPerson p, CancellationToken ct)
     {
-        if (await _duty.IsBranchAdminAsync(userId, ct)) return true;
-        return p.OwnerUserId == userId;
+        if (p.OwnerUserId == userId) return true;
+        // 管理岗只能对本族人物纳入/移出主谱
+        return await _duty.IsBranchAdminAsync(userId, ct) && await _clans.UserSharesClanAsync(userId, p, ct);
     }
 
     public async Task SetCertifiedAsync(int id, bool certified, int userId, string op, CancellationToken ct)
     {
         var row = await GetAsync(id, ct) ?? throw new InvalidOperationException("人物不存在。");
-        if (!await CanCertifyAsync(userId, ct))
+        if (!await CanCertifyAsync(userId, row, ct))
             throw new InvalidOperationException("仅本家族的族谱管理员或支链管理员可认证。");
         if (!certified && row.InMainGenealogy)
             throw new InvalidOperationException("已在主谱中，须先退出主谱才能取消认证。");
@@ -658,11 +676,18 @@ public sealed class FtPersonService
     public Task<FtPerson?> GetSelfPersonAsync(int userId, CancellationToken ct) =>
         _db.FtPersons.FirstOrDefaultAsync(x => x.BindUserId == userId && !x.IsDeleted, ct);
 
-    public async Task<FtPerson?> FindByCertCodeAsync(string? code, CancellationToken ct)
+    /// <summary>
+    /// 按认证码解析人物。<paramref name="forUserId"/> 给定时只在该用户所属家族内解析——
+    /// 否则认证码是全局命名空间，任一族的管理员扫到别族的码即可跨族认证。
+    /// </summary>
+    public async Task<FtPerson?> FindByCertCodeAsync(string? code, CancellationToken ct, int? forUserId = null)
     {
         var c = (code ?? "").Trim().ToUpperInvariant();
         if (c.Length < 6) return null;
-        return await _db.FtPersons.FirstOrDefaultAsync(x => !x.IsDeleted && x.CertCode == c, ct);
+        var row = await _db.FtPersons.FirstOrDefaultAsync(x => !x.IsDeleted && x.CertCode == c, ct);
+        if (row == null) return null;
+        if (forUserId is int uid && !await _clans.UserSharesClanAsync(uid, row, ct)) return null;
+        return row;
     }
 
     public async Task<FtPerson> EnsureSelfPersonAsync(int userId, string? realName, string? idCard, CancellationToken ct)
@@ -715,7 +740,8 @@ public sealed class FtPersonService
 
     public async Task SetCertifiedByCodeAsync(string? code, int userId, string op, CancellationToken ct)
     {
-        var row = await FindByCertCodeAsync(code, ct) ?? throw new InvalidOperationException("认证码无效或已过期。");
+        var row = await FindByCertCodeAsync(code, ct, userId)
+            ?? throw new InvalidOperationException("认证码无效或已过期。");
         await SetCertifiedAsync(row.DataId, true, userId, op, ct);
     }
 
@@ -914,6 +940,9 @@ public sealed class FtPersonService
             throw new InvalidOperationException("仅分支管理员或超管可向上补父辈、向下补子女。");
 
         var from = await GetAsync(fromId, ct) ?? throw new InvalidOperationException("人物不存在。");
+        // 只有角色校验是不够的：管理岗还必须与该人物同族，否则可给他族人物挂上伪造的父母子女
+        if (!await CanViewAsync(userId, from, ct))
+            throw new InvalidOperationException("无权为该人物添加亲属（不在您所属的家族内）。");
         if (kind == "FATHER" && from.FatherPersonId.HasValue)
         {
             var exist = await GetAsync(from.FatherPersonId.Value, ct);

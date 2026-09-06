@@ -68,7 +68,14 @@ public sealed class FtDutyAccess
 public sealed class FtOpLogService
 {
     private readonly FrameworkDbContext _db;
-    public FtOpLogService(FrameworkDbContext db) => _db = db;
+    private readonly FtDutyAccess _duty;
+    // 不注入 FtClanService：它自己依赖 FtOpLogService，注进来就是循环依赖。
+    // 这里只需要一次「用户属于哪个族」的查询，直接走 DbContext。
+    public FtOpLogService(FrameworkDbContext db, FtDutyAccess duty)
+    {
+        _db = db;
+        _duty = duty;
+    }
 
     public async Task WriteAsync(string opType, string objectType, string objectKey, int userId, string opName,
         string? remark, string? before, string? after, CancellationToken ct)
@@ -91,28 +98,54 @@ public sealed class FtOpLogService
         await _db.SaveChangesAsync(ct);
     }
 
+    /// <summary>
+    /// 操作日志分页。两处修正：
+    /// ① 过滤、排序、分页全部下推到数据库——原先是把整张<strong>只增不减</strong>的审计表
+    ///    <c>ToListAsync</c> 进内存再切页，这是确定会发生的 OOM；
+    /// ② 按调用者所属家族过滤——原先返回全库日志，含他族改动的 BeforeJson/AfterJson。
+    /// </summary>
     public async Task<(IReadOnlyList<FamilyTree.Models.ViewModels.FtOpLogListRowVm> page, int total, int pages, int pageOut)>
-        GetIndexPageAsync(string searchField, string searchContent, string sortField, string sortArrow, int page, int pageSize, CancellationToken ct)
+        GetIndexPageAsync(int userId, string searchField, string searchContent, string sortField, string sortArrow,
+            int page, int pageSize, CancellationToken ct)
     {
-        var rows = await _db.FtOpLogs.AsNoTracking().Where(x => !x.IsDeleted).ToListAsync(ct);
+        var q = _db.FtOpLogs.AsNoTracking().Where(x => !x.IsDeleted);
+
+        if (!await _duty.IsSuperAsync(userId, ct))
+        {
+            var clanId = await _db.FtUserClans.AsNoTracking()
+                .Where(u => !u.IsDeleted && u.UserId == userId && u.BStatus == "1")
+                .Select(u => (int?)u.ClanId)
+                .FirstOrDefaultAsync(ct);
+            if (clanId == null)
+                return (Array.Empty<FamilyTree.Models.ViewModels.FtOpLogListRowVm>(), 0, 0, 1);
+            // 日志表没有 ClanId 列，按「操作人是否同族」收敛
+            var clanUserIds = _db.FtUserClans.AsNoTracking()
+                .Where(u => !u.IsDeleted && u.BStatus == "1" && u.ClanId == clanId)
+                .Select(u => u.UserId);
+            q = q.Where(x => clanUserIds.Contains(x.OpUserId));
+        }
+
         var kw = (searchContent ?? "").Trim();
         if (kw.Length > 0)
         {
-            rows = (searchField ?? "") switch
+            // EF 可翻译的 Contains 重载（原来用的是带 StringComparison 的重载，只能在内存里跑）
+            q = (searchField ?? "") switch
             {
-                "OpType" => rows.Where(x => x.OpType.Contains(kw, StringComparison.OrdinalIgnoreCase)).ToList(),
-                "ObjectType" => rows.Where(x => x.ObjectType.Contains(kw, StringComparison.OrdinalIgnoreCase)).ToList(),
-                _ => rows.Where(x => (x.Remark ?? "").Contains(kw, StringComparison.OrdinalIgnoreCase)).ToList()
+                "OpType" => q.Where(x => x.OpType.Contains(kw)),
+                "ObjectType" => q.Where(x => x.ObjectType.Contains(kw)),
+                _ => q.Where(x => x.Remark != null && x.Remark.Contains(kw))
             };
         }
-        rows = (sortField, sortArrow) switch
+
+        q = (sortField, sortArrow) switch
         {
-            ("OpType", "1") => rows.OrderByDescending(x => x.OpType).ToList(),
-            ("OpType", _) => rows.OrderBy(x => x.OpType).ToList(),
-            _ => rows.OrderByDescending(x => x.CreateDate).ToList()
+            ("OpType", "1") => q.OrderByDescending(x => x.OpType).ThenByDescending(x => x.DataId),
+            ("OpType", _) => q.OrderBy(x => x.OpType).ThenByDescending(x => x.DataId),
+            _ => q.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.DataId)
         };
-        var (slice, total, pages, p) = FamilyTree.Helpers.FtPaging.Page(rows, page, pageSize);
-        var vm = slice.Select(x => new FamilyTree.Models.ViewModels.FtOpLogListRowVm
+
+        var (rows, total, pages, p) = await FamilyTree.Helpers.FtPaging.PageAsync(q, page, pageSize, ct);
+        var vm = rows.Select(x => new FamilyTree.Models.ViewModels.FtOpLogListRowVm
         {
             DataId = x.DataId,
             OpType = x.OpType,

@@ -32,10 +32,12 @@ public sealed class FtApiAuthFilter : IAsyncActionFilter
             return;
         }
 
+        // 只认 Authorization 头。原先还接受 ?access_token=，令牌会进 Web 服务器访问日志、
+        // 代理日志和 Referer 头——而这些令牌 30 天有效且没有吊销接口。
         var header = context.HttpContext.Request.Headers.Authorization.ToString();
         var token = header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
             ? header["Bearer ".Length..].Trim()
-            : (context.HttpContext.Request.Query["access_token"].ToString() ?? "").Trim();
+            : "";
         var userId = await _auth.ValidateTokenAsync(token, context.HttpContext.RequestAborted);
         if (userId == null)
         {

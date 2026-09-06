@@ -137,6 +137,21 @@ public class FtPersonController : Controller
         if (!CanView()) return Forbid();
         var uid = FtClaims.UserId(User) ?? 0;
         _service.NormalizeFormForSave(model);
+        // Create / AddRelative 都做了这一步，只有 Edit 漏了：ClipReq 对空输入返回 ""，
+        // TryUpdateAsync 又不复校验，于是已存在的人物可以被保存成空 FullName，
+        // 此后所有按姓名索引的路径都会把它当不存在。
+        foreach (var (k, msg) in _service.GetSaveValidationErrors(model))
+            ModelState.AddModelError(k, msg);
+        if (!ModelState.IsValid)
+        {
+            var cur = await _service.GetAsync(id, ct);
+            if (cur != null)
+            {
+                model.NameLocked = !await _service.CanChangeNameAsync(uid, cur, ct);
+                await FillPersonEditBagsAsync(uid, cur, polistRt, ct);
+            }
+            return View(model);
+        }
         try
         {
             var hints = await _service.TryUpdateAsync(id, model, uid, FtClaims.Operator(User), ct);

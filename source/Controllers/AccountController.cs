@@ -54,12 +54,14 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting(FamilyTree.Configuration.RateLimitPolicies.Login)]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
-        _logger.LogInformation("尝试登录: {LoginName}", model.LoginName);
+        // 身份证登录是一等流程，日志里不能出现完整号码
+        _logger.LogInformation("尝试登录: {LoginName}", FtText.MaskLoginId(model.LoginName));
         var loginName = (model.LoginName ?? "").Trim();
         var plainPassword = model.Password ?? "";
         var fromIp = GetClientIp() ?? "";
@@ -131,29 +133,21 @@ public class AccountController : Controller
 
         if (!_eUsersService.VerifyPassword(plainPassword, user))
         {
-            user.PwdErrorCount++;
-            user.LastPwdErrorTime = DateTime.Now;
-            user.AmendDate = DateTime.Now;
-            if (user.PwdErrorCount >= user.MaxPwdErrorCount)
-                user.IsLocked = true;
+            LoginAttempts.MarkFailure(user);
             await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
-            return await FailAsync("密码错误", "密码输入有误！");
+            return await FailAsync("密码错误", "用户名有误或密码出错次数太多！");
         }
 
         if (PasswordHasher.ShouldUpgrade(user.PasswordAlgo))
             _eUsersService.ApplyStoredPassword(user, plainPassword);
 
-        user.PwdErrorCount = 0;
-        user.LastPwdErrorTime = null;
-        user.LoginCount++;
-        user.LastLoginTime = DateTime.Now;
-        user.AmendDate = DateTime.Now;
+        LoginAttempts.MarkSuccess(user);
         await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
         await AppendELoginLogAsync(loginName, user.DataId, "成功", null, fromIp);
         await _auditService.LogLoginAsync(loginName, loginName, true, fromIp, ua, null);
-        _logger.LogInformation("登录成功(E 账号): {LoginId}", user.LoginId);
+        _logger.LogInformation("登录成功(E 账号): {LoginId}", FtText.MaskLoginId(user.LoginId));
 
         HttpContext.Session.Remove("mypost");
         HttpContext.Session.Remove("mySubpost");
@@ -321,9 +315,10 @@ public class AccountController : Controller
     {
         try
         {
+            var masked = FtText.MaskLoginId(loginId);
             _context.ELoginLogs.Add(new ELoginLog
             {
-                LoginId = loginId.Length > 30 ? loginId[..30] : loginId,
+                LoginId = masked.Length > 30 ? masked[..30] : masked,
                 UserId = userId,
                 LoginStatus = status.Length > 10 ? status[..10] : status,
                 FailReason = string.IsNullOrWhiteSpace(failReason) ? null : (failReason.Length > 100 ? failReason[..100] : failReason),
@@ -334,7 +329,7 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "写入 Tbl_E_LoginLog 失败: {LoginId}", loginId);
+            _logger.LogError(ex, "写入 Tbl_E_LoginLog 失败: {LoginId}", FtText.MaskLoginId(loginId));
         }
     }
 

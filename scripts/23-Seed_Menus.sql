@@ -1,12 +1,16 @@
+ï»¿/* åº“åç»Ÿä¸€ä¸º FamilyTreeï¼šæœ¬è„šæœ¬åŸå…ˆæ²¡æœ‰ USEï¼Œä¼šè½åœ¨æ‰§è¡Œå·¥å…·å½“æ—¶é€‰ä¸­çš„åº“ä¸Šã€‚ */
+USE [FamilyTree];
+GO
+
 /*
 ==============================================================================
-  EFrame ÖÖ×Ó 04 - ²Ëµ¥×ÊÔ´/¶©ÔÄ/°´Å¥È¨ÏŞ
+  EFrame ç§å­ 04 - èœå•èµ„æº/è®¢é˜…/æŒ‰é’®æƒé™
 ==============================================================================
-  À´Ô´£ºEFrame.xls + EFrame ¼Ü¹¹¶ÔÆë£¨ÃİµÈ MERGE / IF NOT EXISTS£©
-  Ç°ÖÃ£ºdocs/EFrame_CreateTables.sql¡¢docs/EFrame_v2_supplement.sql
-  ÒÀÀµ£º22-Seed_Users.sql
-  Ë³Ğò£ºµÚ 4 ²½
-  ±àÂë£ºANSI (GBK)
+  æ¥æºï¼šEFrame.xls + EFrame æ¶æ„å¯¹é½ï¼ˆå¹‚ç­‰ MERGE / IF NOT EXISTSï¼‰
+  å‰ç½®ï¼šdocs/EFrame_CreateTables.sqlã€docs/EFrame_v2_supplement.sql
+  ä¾èµ–ï¼š22-Seed_Users.sql
+  é¡ºåºï¼šç¬¬ 4 æ­¥
+  ç¼–ç ï¼šANSI (GBK)
 ==============================================================================
 */
 SET NOCOUNT ON;
@@ -16,43 +20,43 @@ GO
 DECLARE @Now DATETIME = GETDATE();
 DECLARE @Op VARCHAR(30) = 'SEED-EFRAME';
 
-/* ----- ²Ëµ¥×ÊÔ´ ----- */
+/* ----- èœå•èµ„æº ----- */
 
 IF OBJECT_ID('tempdb..#ResSeed') IS NOT NULL DROP TABLE #ResSeed;
 CREATE TABLE #ResSeed (ResourceID VARCHAR(50) NOT NULL PRIMARY KEY, ResourceName NVARCHAR(100) NOT NULL, MenuPath NVARCHAR(300) NOT NULL, MenuGroupCode VARCHAR(50) NOT NULL, DispSeq INT NOT NULL, Remark NVARCHAR(200) NULL);
 INSERT INTO #ResSeed (ResourceID, ResourceName, MenuPath, MenuGroupCode, DispSeq, Remark) VALUES
-('RES.CF.Home', N'Ê×Ò³', N'/Home/Index', 'SYS', 10, NULL),
-('RES.CF.EUsers', N'ÓÃ»§ÕËºÅ', N'/EUsers/Index', 'SYS', 25, NULL),
-('RES.CF.EDept', N'²¿ÃÅ¹ÜÀí', N'/EDepartment/Index', 'ORG', 110, NULL),
-('RES.CF.EDictQuery', N'×Öµä²éÑ¯', N'/EDictQuery/Index', 'SYS', 40, NULL),
-('RES.CF.EDictType', N'×ÖµäÎ¬»¤', N'/EDictType/Index', 'SYS', 42, NULL),
-('RES.CF.EAppModule', N'Ó¦ÓÃÄ£¿é²éÑ¯', N'/EAppModuleQuery/Index', 'SYS', 50, NULL),
-('RES.CF.EAppModuleMnt', N'Ó¦ÓÃÄ£¿éÎ¬»¤', N'/EAppModule/Index', 'SYS', 52, NULL),
-('RES.CF.EEventInst', N'ÊÂ¼şÊµÀı', N'/EEventInstanceQuery/Index', 'EVT', 230, NULL),
-('RES.CF.EventDemo', N'ÊÂ¼ş·¢²¼ Demo', N'/EventDemo/Index', 'EVT', 260, NULL),
-('RES.CF.EMenuGroup', N'²Ëµ¥×é¹ÜÀí', N'/EMenuGroup/Index', 'SYS', 15, NULL),
-('RES.CF.EResource', N'×ÊÔ´¹ÜÀí', N'/EResource/Index', 'SYS', 20, NULL),
-('RES.CF.ESubscription', N'¶©ÔÄ¹ÜÀí', N'/ESubscription/Index', 'SYS', 30, NULL),
-('RES.CF.EResourcePermission', N'×ÊÔ´È¨ÏŞ', N'/EResourcePermission/Index', 'SYS', 35, NULL),
-('RES.CF.EPosition', N'¸ÚÎ»¹ÜÀí', N'/EPosition/Index', 'ORG', 120, NULL),
-('RES.CF.EDuty', N'Ö°Ôğ¹ÜÀí', N'/EDuty/Index', 'ORG', 130, NULL),
-('RES.CF.EUserPosition', N'ÓÃ»§¸ÚÎ»', N'/EUserPosition/Index', 'ORG', 140, NULL),
-('RES.CF.EPositionDuty', N'¸ÚÎ»Ö°Ôğ', N'/EPositionDuty/Index', 'ORG', 150, NULL),
-('RES.CF.EManagerSubordinate', N'ÉÏÏÂ¼¶¹ØÏµ', N'/EManagerSubordinate/Index', 'ORG', 160, NULL),
-('RES.CF.EUserHandover', N'ÓÃ»§½»½Ó', N'/EUserHandover/Index', 'ORG', 170, NULL),
-('RES.CF.EMember', N'ÈËÔ±µµ°¸', N'/EMember/Index', 'ORG', 180, NULL),
-('RES.CF.EEventConfig', N'ÊÂ¼şÅäÖÃ', N'/EEventConfig/Index', 'EVT', 210, NULL),
-('RES.CF.EEventFlowRule', N'ÊÂ¼şÁ÷×ª¹æÔò', N'/EEventFlowRule/Index', 'EVT', 220, NULL),
-('RES.CF.EEventLog', N'ÊÂ¼şÈÕÖ¾', N'/EEventLog/Index', 'EVT', 240, NULL),
-('RES.CF.ETodoTask', N'´ı°ìÈÎÎñ', N'/ETodoTask/Index', 'EVT', 250, NULL),
-('RES.CF.ELoginLog', N'µÇÂ¼ÈÕÖ¾', N'/ELoginLog/Index', 'LOG', 310, NULL),
-('RES.HR.Home', N'ÈËÊÂ¹¤×÷Ì¨', N'/HrHome/Index', 'HR', 10, NULL),
-('RES.HR.LeaveApply', N'Çë¼ÙÉêÇë', N'/HrLeave/Create', 'HR', 20, NULL),
-('RES.HR.LeaveApproval', N'Çë¼ÙÉóÅú', N'/HrLeave/Approval', 'HR', 40, NULL),
-('RES.HR.LeaveEvents', N'Çë¼ÙÊÂ¼ş²éÑ¯', N'/EEventInstanceQuery/Index', 'HR', 70, NULL),
-('RES.HR.Member', N'ÈËÔ±µµ°¸', N'/EMember/Index', 'HR', 60, NULL),
-('RES.HR.MyLeave', N'ÎÒµÄÇë¼Ù', N'/HrLeave/Index', 'HR', 30, NULL),
-('RES.HR.MyTodo', N'ÎÒµÄ´ı°ì', N'/ETodoTask/Index', 'HR', 50, NULL)
+('RES.CF.Home', N'é¦–é¡µ', N'/Home/Index', 'SYS', 10, NULL),
+('RES.CF.EUsers', N'ç”¨æˆ·è´¦å·', N'/EUsers/Index', 'SYS', 25, NULL),
+('RES.CF.EDept', N'éƒ¨é—¨ç®¡ç†', N'/EDepartment/Index', 'ORG', 110, NULL),
+('RES.CF.EDictQuery', N'å­—å…¸æŸ¥è¯¢', N'/EDictQuery/Index', 'SYS', 40, NULL),
+('RES.CF.EDictType', N'å­—å…¸ç»´æŠ¤', N'/EDictType/Index', 'SYS', 42, NULL),
+('RES.CF.EAppModule', N'åº”ç”¨æ¨¡å—æŸ¥è¯¢', N'/EAppModuleQuery/Index', 'SYS', 50, NULL),
+('RES.CF.EAppModuleMnt', N'åº”ç”¨æ¨¡å—ç»´æŠ¤', N'/EAppModule/Index', 'SYS', 52, NULL),
+('RES.CF.EEventInst', N'äº‹ä»¶å®ä¾‹', N'/EEventInstanceQuery/Index', 'EVT', 230, NULL),
+('RES.CF.EventDemo', N'äº‹ä»¶å‘å¸ƒ Demo', N'/EventDemo/Index', 'EVT', 260, NULL),
+('RES.CF.EMenuGroup', N'èœå•ç»„ç®¡ç†', N'/EMenuGroup/Index', 'SYS', 15, NULL),
+('RES.CF.EResource', N'èµ„æºç®¡ç†', N'/EResource/Index', 'SYS', 20, NULL),
+('RES.CF.ESubscription', N'è®¢é˜…ç®¡ç†', N'/ESubscription/Index', 'SYS', 30, NULL),
+('RES.CF.EResourcePermission', N'èµ„æºæƒé™', N'/EResourcePermission/Index', 'SYS', 35, NULL),
+('RES.CF.EPosition', N'å²—ä½ç®¡ç†', N'/EPosition/Index', 'ORG', 120, NULL),
+('RES.CF.EDuty', N'èŒè´£ç®¡ç†', N'/EDuty/Index', 'ORG', 130, NULL),
+('RES.CF.EUserPosition', N'ç”¨æˆ·å²—ä½', N'/EUserPosition/Index', 'ORG', 140, NULL),
+('RES.CF.EPositionDuty', N'å²—ä½èŒè´£', N'/EPositionDuty/Index', 'ORG', 150, NULL),
+('RES.CF.EManagerSubordinate', N'ä¸Šä¸‹çº§å…³ç³»', N'/EManagerSubordinate/Index', 'ORG', 160, NULL),
+('RES.CF.EUserHandover', N'ç”¨æˆ·äº¤æ¥', N'/EUserHandover/Index', 'ORG', 170, NULL),
+('RES.CF.EMember', N'äººå‘˜æ¡£æ¡ˆ', N'/EMember/Index', 'ORG', 180, NULL),
+('RES.CF.EEventConfig', N'äº‹ä»¶é…ç½®', N'/EEventConfig/Index', 'EVT', 210, NULL),
+('RES.CF.EEventFlowRule', N'äº‹ä»¶æµè½¬è§„åˆ™', N'/EEventFlowRule/Index', 'EVT', 220, NULL),
+('RES.CF.EEventLog', N'äº‹ä»¶æ—¥å¿—', N'/EEventLog/Index', 'EVT', 240, NULL),
+('RES.CF.ETodoTask', N'å¾…åŠä»»åŠ¡', N'/ETodoTask/Index', 'EVT', 250, NULL),
+('RES.CF.ELoginLog', N'ç™»å½•æ—¥å¿—', N'/ELoginLog/Index', 'LOG', 310, NULL),
+('RES.HR.Home', N'äººäº‹å·¥ä½œå°', N'/HrHome/Index', 'HR', 10, NULL),
+('RES.HR.LeaveApply', N'è¯·å‡ç”³è¯·', N'/HrLeave/Create', 'HR', 20, NULL),
+('RES.HR.LeaveApproval', N'è¯·å‡å®¡æ‰¹', N'/HrLeave/Approval', 'HR', 40, NULL),
+('RES.HR.LeaveEvents', N'è¯·å‡äº‹ä»¶æŸ¥è¯¢', N'/EEventInstanceQuery/Index', 'HR', 70, NULL),
+('RES.HR.Member', N'äººå‘˜æ¡£æ¡ˆ', N'/EMember/Index', 'HR', 60, NULL),
+('RES.HR.MyLeave', N'æˆ‘çš„è¯·å‡', N'/HrLeave/Index', 'HR', 30, NULL),
+('RES.HR.MyTodo', N'æˆ‘çš„å¾…åŠ', N'/ETodoTask/Index', 'HR', 50, NULL)
 
 ;
 MERGE dbo.Tbl_E_Resource AS t
@@ -67,19 +71,19 @@ DROP TABLE #ResSeed;
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_MenuGroup WHERE MenuGroupCode='DASH')
     INSERT INTO dbo.Tbl_E_MenuGroup (MenuGroupCode, AppCode, MenuGroupName, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('DASH','FRAME',N'ÒÇ±íÅÌÅäÖÃ',35,'1',0,@Now,@Now,@Op);
+    VALUES ('DASH','FRAME',N'ä»ªè¡¨ç›˜é…ç½®',35,'1',0,@Now,@Now,@Op);
 ;MERGE dbo.Tbl_E_Resource AS t USING (VALUES
-    ('RES.DASH.Board',       N'ÎÒµÄ¹¤×÷Ì¨',       '/EDashBoard/Index',              'DASH', 10),
-    ('RES.DASH.Indicator',   N'ÒµÎñÖ¸±ê¿â',       '/EDashIndicator/Index',          'DASH', 20),
-    ('RES.DASH.PosPerm',     N'¸ÚÎ»Ö¸±êÊÚÈ¨',     '/EDashPosIndicatorPerm/Index',   'DASH', 30),
-    ('RES.DASH.PosTemplate', N'¸ÚÎ»ÒÇ±íÅÌÄ£°å', '/EDashPosTemplate/Index',        'DASH', 40)
+    ('RES.DASH.Board',       N'æˆ‘çš„å·¥ä½œå°',       '/EDashBoard/Index',              'DASH', 10),
+    ('RES.DASH.Indicator',   N'ä¸šåŠ¡æŒ‡æ ‡åº“',       '/EDashIndicator/Index',          'DASH', 20),
+    ('RES.DASH.PosPerm',     N'å²—ä½æŒ‡æ ‡æˆæƒ',     '/EDashPosIndicatorPerm/Index',   'DASH', 30),
+    ('RES.DASH.PosTemplate', N'å²—ä½ä»ªè¡¨ç›˜æ¨¡æ¿', '/EDashPosTemplate/Index',        'DASH', 40)
 ) AS s(ResourceID, ResourceName, MenuPath, MenuGroupCode, DispSeq)
 ON t.ResourceID=s.ResourceID
 WHEN NOT MATCHED THEN INSERT (AppCode,ResourceID,ResourceName,ResourceType,MenuPath,MenuGroupCode,DispSeq,BStatus,IsDeleted,CreateDate,AmendDate,Operator)
     VALUES ('FRAME',s.ResourceID,s.ResourceName,'MENU',s.MenuPath,s.MenuGroupCode,s.DispSeq,'1',0,@Now,@Now,@Op)
 WHEN MATCHED THEN UPDATE SET ResourceName=s.ResourceName,MenuPath=s.MenuPath,MenuGroupCode=s.MenuGroupCode,DispSeq=s.DispSeq,BStatus='1',IsDeleted=0,AmendDate=@Now,Operator=@Op;
 
-/* ----- Ö°Ôğ¶©ÔÄ ----- */
+/* ----- èŒè´£è®¢é˜… ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_Subscription s
@@ -573,7 +577,7 @@ IF NOT EXISTS (
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'CF_DASH_ADMIN' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_DASH_ADMIN', N'ÒÇ±íÅÌÅäÖÃÖ°Ôğ', 'SERVICE', 20, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_DASH_ADMIN', N'ä»ªè¡¨ç›˜é…ç½®èŒè´£', 'SERVICE', 20, '1', 0, @Now, @Now, @Op);
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_PositionDuty pd INNER JOIN dbo.Tbl_E_Position p ON p.DataID=pd.PosID INNER JOIN dbo.Tbl_E_Duty d ON d.DataID=pd.DutyID WHERE p.PostCode=N'CF_ADMIN' AND d.DutyCode=N'CF_DASH_ADMIN' AND pd.IsDeleted=0)
     INSERT INTO dbo.Tbl_E_PositionDuty (PosID, DutyID, BusinessLimit, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
     SELECT p.DataID, d.DataID, N'111111', 8, '1', 0, @Now, @Now, @Op FROM dbo.Tbl_E_Position p CROSS JOIN dbo.Tbl_E_Duty d WHERE p.PostCode=N'CF_ADMIN' AND d.DutyCode=N'CF_DASH_ADMIN';
@@ -598,7 +602,7 @@ IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Subscription s INNER JOIN dbo.Tbl_E_Duty 
     INSERT INTO dbo.Tbl_E_Subscription (DutyID, AppCode, SubType, ResourceID, IsPrimary, FunctionLimit, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
     SELECT d.DataID, 'FRAME', 'RESOURCE', 'RES.DASH.Board', 1, '110000', 50, '1', 0, @Now, @Now, @Op FROM dbo.Tbl_E_Duty d WHERE d.DutyCode=N'CF_VIEWER';
 
-/* ----- ×ÊÔ´°´Å¥È¨ÏŞ ----- */
+/* ----- èµ„æºæŒ‰é’®æƒé™ ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_ResourcePermission rp INNER JOIN dbo.Tbl_E_Duty d ON d.DataID=rp.DutyID
@@ -1073,5 +1077,26 @@ ELSE
     FROM dbo.Tbl_E_ResourcePermission rp INNER JOIN dbo.Tbl_E_Duty d ON d.DataID=rp.DutyID
     WHERE d.DutyCode=N'CF_HR_EMP' AND rp.ResourceID='RES.HR.MyTodo';
 
-PRINT N'23-Seed_Menus Íê³É¡£';
+PRINT N'23-Seed_Menus å®Œæˆã€‚';
+GO
+
+/* ---------- è„šæœ¬æ‰§è¡Œå°è´¦ ----------
+   ä»“åº“åŸå…ˆæ²¡æœ‰ä»»ä½•è¿ç§»æœºåˆ¶ï¼šæ–‡ä»¶åæ˜¯å”¯ä¸€çš„é¡ºåºä¾æ®ï¼Œè€Œç¼–å·å·²ç»åœ¨ç¢°æ’
+   ï¼ˆ20-Seed_Foundation / 20-Seed_README åŒå·ï¼‰ï¼Œä¹Ÿæ²¡æœ‰åŠæ³•é—®ä¸€ä¸ªæ•°æ®åº“ã€Œä½ è·‘è¿‡å“ªäº›è„šæœ¬ã€ã€‚
+   è¿™æ®µè‡ªå»ºè¡¨ + è®°å½•ï¼Œå¹‚ç­‰ï¼Œå¯åœ¨ä»»æ„è„šæœ¬å•ç‹¬æ‰§è¡Œã€‚ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'23-Seed_Menus.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'23-Seed_Menus.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'23-Seed_Menus.sql');
 GO

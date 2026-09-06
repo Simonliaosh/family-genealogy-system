@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(local);Database=EFrame;User ID=你的账号;Password=你的密码;MultipleActiveResultSets=True;TrustServerCertificate=True"
+    "DefaultConnection": "Server=(local);Database=FamilyTree;User ID=你的账号;Password=你的密码;MultipleActiveResultSets=True;TrustServerCertificate=True"
   },
   "EventFlow": {
     "PublicBaseUrl": "http://localhost:5070",

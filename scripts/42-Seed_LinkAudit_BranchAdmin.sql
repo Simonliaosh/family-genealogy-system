@@ -1,4 +1,4 @@
--- =============================================
+﻿-- =============================================
 -- 链入审批：待办发给超管；分支管也可审批
 -- 可重复执行。
 -- =============================================
@@ -40,4 +40,25 @@ IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode='FLOW_FT_LIN
     FROM dbo.Tbl_E_Duty d WHERE d.DutyCode=N'FT_BRANCH_ADMIN' AND d.IsDeleted=0;
 
 PRINT N'RES.FT.LinkAudit + FT.LINK.APPLY for branch admin ready.';
+GO
+
+/* ---------- 脚本执行台账 ----------
+   仓库原先没有任何迁移机制：文件名是唯一的顺序依据，而编号已经在碰撞
+   （20-Seed_Foundation / 20-Seed_README 同号），也没有办法问一个数据库「你跑过哪些脚本」。
+   这段自建表 + 记录，幂等，可在任意脚本单独执行。 */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'42-Seed_LinkAudit_BranchAdmin.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'42-Seed_LinkAudit_BranchAdmin.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'42-Seed_LinkAudit_BranchAdmin.sql');
 GO

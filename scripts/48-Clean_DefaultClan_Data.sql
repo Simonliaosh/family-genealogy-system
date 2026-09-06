@@ -1,4 +1,4 @@
--- =============================================
+﻿-- =============================================
 -- 清理「默认家族」（ClanCode = DEFAULT）业务数据
 -- 来源：scripts/43-Clan.sql 迁入的历史/测试数据
 --
@@ -18,9 +18,18 @@ GO
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
 
-DECLARE @ClanCode NVARCHAR(16) = N'DEFAULT';
-DECLARE @PurgeMemberUsers BIT = 0;       -- 改为 1 则同时软删该族测试用户（保留 cfadmin）
-DECLARE @IncludeOrphanPersons BIT = 0;   -- 改为 1 则一并清理 ClanId IS NULL 的历史人物
+/* 开关全部走 sqlcmd 变量，不必改文件。示例：
+     sqlcmd -S <server> -d FamilyTree -v ClanCode="DEFAULT" PurgeMemberUsers=0 ^
+            IncludeOrphanPersons=0 PurgeGenerationWords=0 -i 48-Clean_DefaultClan_Data.sql
+   （SSMS 需先打开 SQLCMD 模式。未传入时取下面 ISNULL 的默认值，全部为「最保守」。） */
+DECLARE @ClanCode NVARCHAR(16) = ISNULL(NULLIF(N'$(ClanCode)', N'$' + N'(ClanCode)'), N'DEFAULT');
+-- 1 = 同时软删该族测试用户（保留 cfadmin）
+DECLARE @PurgeMemberUsers BIT = ISNULL(TRY_CAST(NULLIF('$(PurgeMemberUsers)', '$' + '(PurgeMemberUsers)') AS BIT), 0);
+-- 1 = 一并清理 ClanId IS NULL 的历史人物。注意：43-Clan.sql:67 回填之后，
+--     这批就是「历史数据」而不是「孤儿测试数据」，打开前务必先看第 28~88 行的预览计数。
+DECLARE @IncludeOrphanPersons BIT = ISNULL(TRY_CAST(NULLIF('$(IncludeOrphanPersons)', '$' + '(IncludeOrphanPersons)') AS BIT), 0);
+-- 1 = 清空全库共用的字辈表。默认 0，见下方第 5 段说明。
+DECLARE @PurgeGenerationWords BIT = ISNULL(TRY_CAST(NULLIF('$(PurgeGenerationWords)', '$' + '(PurgeGenerationWords)') AS BIT), 0);
 DECLARE @Op VARCHAR(30) = 'CLEAN-DEFAULT';
 DECLARE @Now DATETIME = GETDATE();
 
@@ -245,13 +254,24 @@ BEGIN TRY
         WHERE o.OpUserId IN (SELECT UserId FROM #FtUser)
            OR o.ObjectKey IN (SELECT CAST(PersonId AS VARCHAR(64)) FROM #FtPerson);
 
-    /* ----- 5. 字辈（全库共用表；仅默认族时清空） ----- */
+    /* ----- 5. 字辈 -----
+       原先这里是 DELETE FROM dbo.FamilyTree_GenerationWord;（无 WHERE）——
+       守卫只检查「不存在其他族」，而那恰好就是单租户生产环境的常态，
+       于是这条语句在最典型的部署上会清空整张字辈表。
+       字辈表没有 ClanId 列、确实是全库共用的，因此改为：默认不动，
+       只有把 @PurgeGenerationWords 显式设为 1 才清，且清之前打印行数。 */
     IF OBJECT_ID(N'dbo.FamilyTree_GenerationWord', N'U') IS NOT NULL
-       AND NOT EXISTS (
-           SELECT 1 FROM dbo.FamilyTree_Clan c
-           WHERE c.IsDeleted = 0 AND c.DataID <> @ClanId
-       )
-        DELETE FROM dbo.FamilyTree_GenerationWord;
+    BEGIN
+        IF @PurgeGenerationWords = 1
+        BEGIN
+            DECLARE @GwCount INT;
+            SELECT @GwCount = COUNT(*) FROM dbo.FamilyTree_GenerationWord;
+            PRINT N'即将清空 FamilyTree_GenerationWord，行数 = ' + CAST(@GwCount AS NVARCHAR(20));
+            DELETE FROM dbo.FamilyTree_GenerationWord;
+        END
+        ELSE
+            PRINT N'跳过 FamilyTree_GenerationWord（全库共用表）。如确需清空，请设 @PurgeGenerationWords = 1。';
+    END
 
     /* ----- 6. 支链（TopPerson / Admin 关联默认族人物） ----- */
     IF OBJECT_ID(N'dbo.FamilyTree_Branch', N'U') IS NOT NULL
@@ -324,4 +344,25 @@ BEGIN CATCH
     DECLARE @Msg NVARCHAR(4000) = ERROR_MESSAGE();
     RAISERROR(N'清理失败，已回滚：%s', 16, 1, @Msg);
 END CATCH
+GO
+
+/* ---------- 脚本执行台账 ----------
+   仓库原先没有任何迁移机制：文件名是唯一的顺序依据，而编号已经在碰撞
+   （20-Seed_Foundation / 20-Seed_README 同号），也没有办法问一个数据库「你跑过哪些脚本」。
+   这段自建表 + 记录，幂等，可在任意脚本单独执行。 */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'48-Clean_DefaultClan_Data.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'48-Clean_DefaultClan_Data.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'48-Clean_DefaultClan_Data.sql');
 GO

@@ -1,3 +1,4 @@
+@model FamilyTree.Models.ErrorViewModel
 @{
     ViewData["Title"] = "错误";
     Layout = "_Layout";
@@ -11,10 +12,14 @@
         <p>抱歉，处理您的请求时发生了错误。</p>
         <p>请稍后重试，或联系系统管理员。</p>
         
-        @if (Context.Request.Query.ContainsKey("message"))
+        @* 原先这里把 ?message= 原样回显到页面。Razor 会 HTML 编码所以不是 XSS，
+           但足以在可信域上渲染任意文案（「你的账号已冻结，请拨打…」）做钓鱼话术。
+           改为只显示可用于排查的错误 ID。 *@
+        @if (Model is { ShowRequestId: true } evm)
         {
-            <div class="alert alert-danger">
-                <strong>错误信息：</strong> @Context.Request.Query["message"]
+            <div class="alert alert-secondary">
+                <strong>错误编号：</strong> <code>@evm.RequestId</code>
+                <div class="small text-muted mt-1">联系管理员时请提供该编号。</div>
             </div>
         }
         

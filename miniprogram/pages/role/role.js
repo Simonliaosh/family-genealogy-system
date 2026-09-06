@@ -1,4 +1,5 @@
 const api = require('../../utils/request');
+const page = require('../../utils/page');
 
 Page({
   data: {
@@ -7,10 +8,7 @@ Page({
     reason: ''
   },
   onShow() {
-    if (!wx.getStorageSync('ft_token')) {
-      wx.reLaunch({ url: '/pages/login/login' });
-      return;
-    }
+    if (!page.requireLogin()) return;
     this.load();
   },
   load() {

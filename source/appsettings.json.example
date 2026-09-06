@@ -1,0 +1,83 @@
+{
+  "//": "复制为 appsettings.json 后填写。该文件被 .gitignore 忽略，不会进仓库。",
+
+  "ConnectionStrings": {
+    "//": "库名统一为 FamilyTree（10-EFrame.sql 建的就是这个库）。生产环境不要用 TrustServerCertificate=True——它关闭 SQL Server 的 TLS 证书校验，而这条通道承载全部口令哈希与身份证哈希；请为服务器配好可信证书后删掉该参数。",
+    "DefaultConnection": "Server=你的服务器;Database=FamilyTree;User ID=你的账号;Password=你的密码;MultipleActiveResultSets=True;Encrypt=True"
+  },
+
+  "App": {
+    "SiteName": "家族族谱系统",
+    "CompanyDisplayName": "",
+    "CopyrightLine": "2026 FamilyTree."
+  },
+
+  "Database": {
+    "//": "SQL Server 兼容级别：100=2008，110=2012，120=2014，130=2016，140=2017，150=2019，160=2022。",
+    "CompatibilityLevel": 100
+  },
+
+  "Hosting": {
+    "//": "非 Development 环境默认开启 HTTPS 跳转。仅在前置反向代理已负责 TLS 时才设为 false。",
+    "EnableHttpsRedirection": true
+  },
+
+  "FamilyTree": {
+    "//IdCardHashSalt": "【必改】全部身份证号都用这个盐做 SHA-256 哈希。生产环境若仍是默认值，应用会拒绝启动。换盐会让已有哈希全部失配，请一次性定好。",
+    "IdCardHashSalt": "请替换为本部署专属的随机长字符串",
+
+    "//SiteId": "本站唯一编号（GUID）。联邦对接时写入邀请与接点。",
+    "SiteId": "",
+
+    "//PublicBaseUrl": "对外可访问的根地址，邀请二维码依赖它。生产必须是 https。",
+    "PublicBaseUrl": "https://example.com",
+
+    "//ApiTokenDays": "小程序 API 令牌有效期（天）。",
+    "ApiTokenDays": 30,
+
+    "//PeerInviteDays": "联邦邀请码有效期（天）。",
+    "PeerInviteDays": 7,
+
+    "//PeerAllowedHosts": "联邦对端主机白名单。外链对接只会向这些主机发出站请求；留空即禁用联邦外呼。不填的话对端地址就是一个服务端可控的出站目标（SSRF）。",
+    "PeerAllowedHosts": [],
+
+    "WeChat": {
+      "//AppId": "小程序 AppId / AppSecret（jscode2session）。",
+      "AppId": "",
+      "AppSecret": "",
+
+      "//MpAppId": "公众号 AppId / AppSecret（网页授权 oauth2），通常与小程序不同。",
+      "MpAppId": "",
+      "MpAppSecret": "",
+
+      "//PublicBaseUrl": "微信侧回调用的根地址；留空则回退到 FamilyTree:PublicBaseUrl。",
+      "PublicBaseUrl": "",
+
+      "//AllowDevMock": "【仅开发】开启后可用任意 openid 冒名登录，等于完整的认证绕过。非 Development 环境检测到 true 会拒绝启动。",
+      "AllowDevMock": false
+    }
+  },
+
+  "Dashboard": {
+    "//AllowRawCalcSql": "看板指标的自由 SQL 通道。默认关闭；开启后 CalcRule.sqlText 会以应用的 SQL 身份执行（仅放行单条只读 SELECT）。族谱业务不需要它。",
+    "AllowRawCalcSql": false
+  },
+
+  "FrameworkRbac": {
+    "PreferEUsersLogin": true,
+    "SkipPermissionControllers": [ "Home", "Member", "MemberGuide" ]
+  },
+
+  "EventFlow": {
+    "PublicBaseUrl": "https://example.com",
+    "CallbackSecret": "请改为随机密钥",
+    "CallApiTimeoutSeconds": 15
+  },
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}

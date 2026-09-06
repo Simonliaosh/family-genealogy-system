@@ -17,11 +17,45 @@ public sealed class DashCalcRuleExecutor
         AllowTrailingCommas = true
     };
 
-    private readonly FrameworkDbContext _db;
+    /// <summary>
+    /// <c>CalcRule.sqlText</c> 是存储在 <c>Tbl_Dash_Indicator</c> 里、由后台可编辑的自由 SQL，
+    /// 执行时用的是应用自身的 SQL 身份——任何拿到指标增改权的中层账号都能借此读写全库。
+    /// 该模块与族谱业务零引用，因此默认<strong>关闭</strong>自由 SQL 通道；
+    /// 确需启用的部署必须显式配置 <c>Dashboard:AllowRawCalcSql=true</c>，且 SQL 仍须通过下面的只读白名单校验。
+    /// </summary>
+    public const string AllowRawSqlConfigKey = "Dashboard:AllowRawCalcSql";
 
-    public DashCalcRuleExecutor(FrameworkDbContext db)
+    private static readonly string[] ForbiddenSqlTokens =
+    {
+        "insert", "update", "delete", "merge", "drop", "alter", "create", "truncate",
+        "exec", "execute", "sp_", "xp_", "grant", "revoke", "deny", "backup", "restore",
+        "shutdown", "openrowset", "opendatasource", "openquery", "bulk", "waitfor", "into"
+    };
+
+    private readonly FrameworkDbContext _db;
+    private readonly bool _allowRawSql;
+
+    public DashCalcRuleExecutor(FrameworkDbContext db, IConfiguration config)
     {
         _db = db;
+        _allowRawSql = config.GetValue(AllowRawSqlConfigKey, false);
+    }
+
+    /// <summary>
+    /// 自由 SQL 只允许单条只读 SELECT：不得含分号（阻断批处理）、不得含注释、
+    /// 不得出现任何写入/执行类关键字。这是补丁式加固，不是安全边界——正确做法是把该模块整块删掉。
+    /// </summary>
+    internal static bool IsReadOnlySelect(string? sqlText)
+    {
+        var sql = (sqlText ?? "").Trim();
+        if (sql.Length == 0) return false;
+        if (sql.Contains(';') || sql.Contains("--") || sql.Contains("/*")) return false;
+        if (!sql.TrimStart().StartsWith("select", StringComparison.OrdinalIgnoreCase)) return false;
+
+        foreach (var tok in ForbiddenSqlTokens)
+            if (Regex.IsMatch(sql, $@"(?<![\w@#]){Regex.Escape(tok)}", RegexOptions.IgnoreCase))
+                return false;
+        return true;
     }
 
     public DashCalcRuleModel? ParseCalcRule(string? calcRuleJson)
@@ -71,7 +105,14 @@ public sealed class DashCalcRuleExecutor
             return null;
 
         if (!string.IsNullOrWhiteSpace(rule.SqlText))
+        {
+            if (!_allowRawSql)
+                throw new InvalidOperationException(
+                    $"指标自由 SQL 通道已停用。如确需使用，请在配置里显式打开 {AllowRawSqlConfigKey}。");
+            if (!IsReadOnlySelect(rule.SqlText))
+                throw new InvalidOperationException("指标 SQL 只允许单条只读 SELECT，且不得含分号、注释或写入类语句。");
             return await ExecuteSqlAsync(rule.SqlText, userId, deptId, timeType, ct);
+        }
 
         if (indicator.ChartType == 8 && rule.MenuList is { Count: > 0 })
             return BuildQuickMenuData(rule.MenuList, userId, deptId, timeType);
@@ -121,32 +162,37 @@ public sealed class DashCalcRuleExecutor
         byte timeType,
         CancellationToken ct)
     {
-        await using var conn = _db.Database.GetDbConnection();
-        if (conn.State != System.Data.ConnectionState.Open)
-            await conn.OpenAsync(ct);
-
-        await using var cmd = conn.CreateCommand();
-        cmd.CommandText = sqlText;
-
-        AddParam(cmd, "@userId", userId);
-        AddParam(cmd, "@deptId", deptId);
-        AddParam(cmd, "@timeType", timeType);
-
-        await using var reader = await cmd.ExecuteReaderAsync(ct);
-        if (!await reader.ReadAsync(ct))
-            return null;
-
-        var values = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
-        for (var i = 0; i < reader.FieldCount; i++)
+        // 这里拿到的是 DbContext 自己的连接，不能 await using——那会在方法结束时把它处置掉，
+        // 破坏同一个 scoped context 上后续的所有数据库访问。开是我们开的，就由我们关。
+        var conn = _db.Database.GetDbConnection();
+        var openedHere = conn.State != System.Data.ConnectionState.Open;
+        if (openedHere) await conn.OpenAsync(ct);
+        try
         {
-            var name = reader.GetName(i);
-            values[name] = reader.IsDBNull(i) ? null : reader.GetValue(i);
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = sqlText;
+
+            AddParam(cmd, "@userId", userId);
+            AddParam(cmd, "@deptId", deptId);
+            AddParam(cmd, "@timeType", timeType);
+
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            if (!await reader.ReadAsync(ct))
+                return null;
+
+            var values = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < reader.FieldCount; i++)
+            {
+                var name = reader.GetName(i);
+                values[name] = reader.IsDBNull(i) ? null : reader.GetValue(i);
+            }
+
+            return values.Count == 1 ? values.Values.First() : values;
         }
-
-        if (values.Count == 1)
-            return values.Values.First();
-
-        return values;
+        finally
+        {
+            if (openedHere) await conn.CloseAsync();
+        }
     }
 
     public static string ReplaceRoutePlaceholders(string? routePath, IReadOnlyDictionary<string, string?> parameters)

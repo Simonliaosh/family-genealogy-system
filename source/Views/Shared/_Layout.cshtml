@@ -15,6 +15,13 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    @* 基础库必须在 #pageContentHost 之前加载：Scripts 段现在渲染在该容器<em>之内</em>
+       （见下方注释），而 _ValidationScriptsPartial 之类依赖 jQuery。
+       放在 body 顶部而不是底部，才能保证「整页加载」和「AJAX 导航」两种路径下顺序都正确。 *@
+    <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
     <!-- 侧边栏 -->
     <div class="sidebar" id="sidebar">
         <!-- 移动端关闭按钮 -->
@@ -35,7 +42,7 @@
         <div class="sidebar-guide-footer">
             <ul class="sidebar-menu">
                 <li class="menu-item">
-                    <a href="/guide/system-implement-flow.html"
+                    <a href="/Guide/ImplementFlow"
                        class="menu-link sidebar-guide-link"
                        target="_blank"
                        rel="noopener noreferrer"
@@ -105,23 +112,19 @@
             </div>
         </nav>
 
-        <!-- 面包屑导航（可选） -->
-        @if (ViewData["Breadcrumb"] != null)
-        {
-            <nav aria-label="breadcrumb" class="p-3 bg-light" id="breadcrumbHost">
-                <ol class="breadcrumb mb-0">
-                    @Html.Raw(ViewData["Breadcrumb"])
-                </ol>
-            </nav>
-        }
-
         <!-- 页面内容 -->
+        @* Scripts 段必须渲染在 #pageContentHost 之内：左侧菜单走的是 AJAX 导航，
+           loadMainContent() 只把 #pageContentHost 的 innerHTML 搬过来再 runScriptsIn()，
+           容器外面的东西永远不会被搬运。原先 Scripts 渲染在容器外，于是
+           _ValidationScriptsPartial、_PeerTreeScripts 等 48 个视图的脚本在菜单导航时从不执行，
+           只有硬刷新才生效。基础库已上移到 body 顶部，保证这里的段脚本能拿到 jQuery。 *@
         <div class="container-fluid p-4" id="pageContentHost">
             @if (TempData["SuccessMessage"] is string sm && sm.Length > 0)
             { <div class="alert alert-success">@sm</div> }
             @if (TempData["ErrorMessage"] is string em && em.Length > 0)
             { <div class="alert alert-danger">@em</div> }
             @RenderBody()
+            @await RenderSectionAsync("Scripts", required: false)
         </div>
 
         <!-- 页脚 -->
@@ -131,12 +134,6 @@
             </div>
         </footer>
     </div>
-
-    <!-- JavaScript -->
-    <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
 
     <script>
         // 侧边栏状态持久化：刷新后保持菜单展开与滚动位置
@@ -311,8 +308,6 @@
                     const doc = parser.parseFromString(html, 'text/html');
                     const newHost = doc.querySelector('#pageContentHost');
                     if (!newHost) { window.location.href = url; return; }
-                    const curBc = document.querySelector('#breadcrumbHost');
-                    const newBc = doc.querySelector('#breadcrumbHost');
 
                     if (window.DashBoardPage && window.DashBoardPage.destroy) {
                         window.DashBoardPage.destroy();
@@ -321,19 +316,6 @@
                     loadPageStyles(doc);
                     host.innerHTML = newHost.innerHTML;
                     await runScriptsIn(host);
-
-                    // 同步面包屑（有则替换，无则移除）
-                    if (newBc && curBc) {
-                        curBc.outerHTML = newBc.outerHTML;
-                    } else if (!newBc && curBc) {
-                        curBc.remove();
-                    } else if (newBc && !curBc) {
-                        const main = document.querySelector('#mainContent');
-                        const insertAfter = main?.querySelector('.navbar');
-                        if (main && insertAfter) {
-                            insertAfter.insertAdjacentHTML('afterend', newBc.outerHTML);
-                        }
-                    }
 
                     const newTitle = doc.querySelector('title')?.textContent;
                     if (newTitle) document.title = newTitle;

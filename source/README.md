@@ -1,80 +1,51 @@
-# EFrame 管理框架（CFramework.Web）
+# source/ — ASP.NET Core 8 服务端
 
-本目录为 **EFrame 新架构** 的 ASP.NET Core 8 MVC 应用，与上级 `docs/`、`scripts/` 配套使用。
+建库、配置、运行与发布见仓库根目录的 [README.md](../README.md)。这里只记服务端自身的结构。
 
-## 1. 首次配置
+## 目录
 
-```powershell
-cd d:\work\NewSys\EFrame\prg
-copy appsettings.Development.json.example appsettings.Development.json
-```
+| 目录 | 内容 |
+|---|---|
+| `Controllers/` | MVC 控制器；`Controllers/Api/` 是供小程序调用的 `api/Ft*` |
+| `Services/` | 业务服务。`Ft*` 是族谱域，`E*` / `Dash*` / `Hr*` 是企业框架脚手架 |
+| `Models/` | EF 实体与 `FrameworkDbContext`；`Models/ViewModels/` 是表单与列表 VM |
+| `Views/` | Razor 视图 |
+| `Filters/` | 全局过滤器：RBAC 鉴权、表存在性探测、API 异常转 JSON |
+| `Helpers/` | 文本归一化、分页、二维码、Claims 读取等 |
+| `Configuration/` | 强类型配置项与限流策略名 |
+| `wwwroot/` | 静态资源；`wwwroot/uploads/person/` 是用户上传的照片 |
 
-编辑 `appsettings.Development.json`（可选，仅覆盖本机端口与日志）：
+## 权限模型
 
-- **EventFlow:PublicBaseUrl** → 与 `dotnet run` 端口一致（默认 `http://localhost:5070`）
+两层，缺一不可：
 
-> 数据库连接串在 **`appsettings.json`**，开发与 IIS 生产共用；改库只改这一处。
+1. **资源位**（`FunctionLimit` 六位串，来自 RBAC 订阅）——决定按钮和菜单渲染，
+   由 `EPrincipalPermissionFilter` 写进 `HttpContext.Items["PubFunctionLimit"]`。
+2. **族 / 对象归属**——决定这条数据是不是你的。`FtClanService.UserSharesClanAsync`
+   是统一入口，`CanViewAsync` / `CanCertifyAsync` / `CanSetMainAsync` / `ApproveAsync` 都走它。
 
-## 2. 数据库（空库顺序）
+第 2 层不能只放在视图里。视图层的判断只应影响显示，服务层必须自己再判一次。
 
-**目标库：SQL Server 2008（兼容级别 100）**。`appsettings.json` 中 `Database:CompatibilityLevel` 默认为 **100**，与 `scripts\10-EFrame.sql` 一致；若使用更高版本 SQL Server 可改为 110/120 等。
+## 口令
 
-在 SSMS 对目标库依次执行：
+`PasswordHasher`：新口令一律 PBKDF2-SHA256 / 10 万轮 / 16 字节 CSPRNG 盐 / `FixedTimeEquals` 比较。
 
-1. `..\scripts\10-EFrame.sql`（或 `..\docs\EFrame_CreateTables.sql` + `..\docs\EFrame_v2_supplement.sql`）
-2. `..\scripts\11-CreateTbl_Dash_All.sql`（仪表盘，可选）
-3. **框架种子（推荐，按序）**  
-   - `..\scripts\20-Seed_Foundation.sql` → `21` → `22` → `23` → `24` → `25-Seed_Dashboard.sql`（可选）  
-   - 说明见 `..\scripts\20-Seed_README.sql`  
-   - 账号：`cfadmin` / `frameop` / `testuser` / `hrstaff` / `hrmgr`，密码均为 **123456**
-4. 旧版一键种子仍可用：`..\scripts\old\SeedTestData_Complete.sql`（SQLCMD）
-5. 若登录异常：`..\scripts\Patch_ResetTestUsers_Login.sql`
-6. 待办页报「列名 ClaimTime 无效」等：`..\scripts\Patch_Tbl_E_TodoTask_ModuleC.sql`
-7. 权限诊断：`..\scripts\Diag_Login_And_Permission_Full.sql`
+`MD5_16` 只保留一条兼容路径——历史行登录时校验一次，随即由
+`ShouldUpgrade` + `ApplyStoredPassword` 透明升级为 PBKDF2。未知算法一律返回 false，
+不再回落到 MD5。批量导入也一律写 PBKDF2。
 
-## 3. 运行与发布
+## 时间
 
-### 本机开发（无需 web.config）
+全代码使用 `DateTime.Now`（服务器本地时间）。夏令时回拨时会出现歧义时间戳；
+迁移到 .NET 8 的 `TimeProvider` 是待办项。
 
+## 已知待办
 
-```powershell
-dotnet build
-dotnet run
-```
-
-| 地址 | 说明 |
-|------|------|
-| 控制台显示的 URL（默认 http://localhost:5070） | 登录页 |
-| `/health` | 数据库连通探活 |
-
-### 发布到 IIS（需要 web.config）
-
-```powershell
-dotnet publish -c Release -o D:\website\EFrame\pub
-# 或一键（含 Views 同步到 source）：..\scripts\Deploy_Publish_To_IIS.ps1
-```
-
-编辑页列表回传已改为 `@Html.PolistReturnHidden(...)`（`Helpers/PolistReturnHtmlExtensions.cs`），**不再依赖** `_PolistReturnHidden.cshtml`。若仍报该 partial 找不到，说明运行的仍是旧 DLL/旧 Views，请务必从 **prg** 执行 `dotnet publish` 到 `pub` 并重启 IIS；若从 `source` 编译，请把 prg 下 `Views` 与 `Helpers` 同步到 source 后重新生成。
-
-发布目录会包含自动生成的 `web.config`；仓库内 `prg\web.config` 为模板（入口 `CFramework.Web.dll`）。IIS 站点需安装 **.NET 8 Hosting Bundle**。
-
-发布后确认 **`pub\appsettings.json`** 含 `ConnectionStrings:DefaultConnection`（与源码 `prg\appsettings.json` 一致）。IIS 生产环境会直接读该文件。
-
-对外站点可将 `EventFlow:PublicBaseUrl` 改为实际域名（如 `http://hc.easydo88.cn`），可写在 `appsettings.json` 或单独 `appsettings.Production.json` 覆盖。
-
-**测试账号**（种子默认）：
-
-| 登录名 | 密码 |
-|--------|------|
-| cfadmin | 123456 |
-| frameop | 123456 |
-| testuser | 123456 |
-
-种子密码 `123456` 对应 `PwdHash`：`49ba59abbe56e057`（首次登录成功后可升级为 PBKDF2）。
-
-## 4. 相关文档
-
-- **[框架系统使用说明书.md](../docs/框架系统使用说明书.md)**（从零登录、新事件/订阅/流转配置，推荐实施与用户培训）
-- [环境搭建_v2.md](../docs/环境搭建_v2.md)
-- [联调与验收.md](../docs/联调与验收.md)
-- [新架构实施清单.md](../docs/新架构实施清单.md)
+- 列表仍是「全表 `ToListAsync` 后在内存里过滤分页」。`FtOpLogService` 与 `FtConflictService`
+  已改为库侧分页（`FtPaging.PageAsync`），其余 28 个 `GetIndexPageAsync` 待逐个迁移。
+- `OnModelCreating` 只配了索引，没有配外键。加外键之前须先跑一次 `FtTreeHealthService`
+  清掉已有的悬空父边。
+- `Ft*` 控制器的 `ModelState` 检查仍不完整，`FtPersonDraftController` / `FtPersonLinkController`
+  等仍未逐个补齐。
+- 视图层有大量复制粘贴（分页工具条、内联 `<style>`、`onchange="this.form.submit()"`），
+  收敛之前 CSP 无法去掉 `'unsafe-inline'`。

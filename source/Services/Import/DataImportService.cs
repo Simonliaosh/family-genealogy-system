@@ -367,27 +367,22 @@ public sealed class DataImportService
         }
     }
 
+    /// <summary>Excel 未提供初始口令时生成的一次性随机口令（不写进报告，需带外分发）。</summary>
+    private static string NewInitialPassword() =>
+        System.Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(9))
+            .Replace('+', 'a').Replace('/', 'z').TrimEnd('=');
+
     private async Task ImportUsersAsync(ExcelSheetReader x, ImportFileResult r, SqlTransaction? tx, CancellationToken ct)
     {
         foreach (var row in x.DataRows())
         {
             if (x.IsRowEmpty(row, "LoginId")) { r.Skipped++; continue; }
             var login = x.GetString(row, "LoginId");
-            var plainPwd = ImportParse.Or(x.GetString(row, "InitialPassword"), "123456");
-            var algoIn = x.GetString(row, "PasswordAlgo");
-            string hash;
-            string algo;
-            int ver;
-            if (string.Equals(algoIn, PasswordHasher.AlgoMd5_16, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(algoIn))
-            {
-                hash = PasswordHasher.HashMd5_16(plainPwd);
-                algo = PasswordHasher.AlgoMd5_16;
-                ver = 1;
-            }
-            else
-            {
-                (hash, algo, ver) = PasswordHasher.HashForStore(plainPwd);
-            }
+            // Excel 未给初始口令时生成随机口令，不再落到固定的 123456
+            var pwdIn = x.GetString(row, "InitialPassword");
+            var plainPwd = string.IsNullOrWhiteSpace(pwdIn) ? NewInitialPassword() : pwdIn;
+            // 导入一律 PBKDF2；Excel 里写 MD5_16 也不再照办（弱哈希只保留登录时的兼容校验）
+            var (hash, algo, ver) = PasswordHasher.HashForStore(plainPwd);
 
             var exists = await ExistsAsync("SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=@l", tx,
                 c => c.Parameters.AddWithValue("@l", login), ct);
@@ -414,7 +409,7 @@ public sealed class DataImportService
                 cmd.Parameters.AddWithValue("@BStatus", ImportParse.Or(x.GetString(row, "BStatus"), "1"));
                 cmd.Parameters.AddWithValue("@Op", _opt.Operator);
             }, ct);
-            _issuedAccounts.Add((login, plainPwd));
+            _issuedAccounts.Add((login, plainPwd));   // 仅用于统计条数，报告不再回显明文
             Track(r, row, login, exists ? "UPDATE" : "INSERT");
         }
         await _cache.ReloadUsersAsync(ct);
@@ -850,9 +845,9 @@ public sealed class DataImportService
         if (accounts.Count > 0)
         {
             sb.AppendLine();
-            sb.AppendLine("--- 账号发放清单（07 表 InitialPassword）---");
-            foreach (var (login, pwd) in accounts)
-                sb.AppendLine($"  {login}\t{pwd}");
+            sb.AppendLine($"--- 已为 {accounts.Count} 个账号生成初始口令 ---");
+            sb.AppendLine("  口令不在此处显示。请通过带外渠道（短信/当面）分发，或让用户走「忘记密码」流程。");
+            sb.AppendLine("  涉及账号：" + string.Join("、", accounts.Select(a => a.LoginId)));
         }
         sb.AppendLine("=========================================");
         return sb.ToString();

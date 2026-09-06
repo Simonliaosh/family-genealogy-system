@@ -14,10 +14,11 @@ public class FtCertifyController : Controller
     [HttpGet]
     public async Task<IActionResult> Open(string? c, CancellationToken ct)
     {
-        var row = await _persons.FindByCertCodeAsync(c, ct);
         var uid = FtClaims.UserId(User) ?? 0;
+        // 认证码只在扫码人所属家族内解析，避免跨族认证与「码是否存在」的枚举
+        var row = await _persons.FindByCertCodeAsync(c, ct, uid);
         ViewBag.Code = (c ?? "").Trim();
-        ViewBag.CanCertify = await _persons.CanCertifyAsync(uid, ct);
+        ViewBag.CanCertify = row != null && await _persons.CanCertifyAsync(uid, row, ct);
         if (row == null)
             ViewBag.Err = "认证码无效。请让族员重新打开「申请认证」再扫一次。";
         return View(row);

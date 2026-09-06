@@ -6,6 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>FamilyTree</RootNamespace>
     <AssemblyName>FamilyTree.Web</AssemblyName>
+    <!-- 项目本来就没有任何 NoWarn / pragma 抑制，把编译器警告提成错误的代价是零，
+         能防止可空性纪律随时间漂回去。
+         注意：AnalysisLevel=latest-recommended 不适合现在打开——它会一次点亮约 30 条 CA 规则
+         （CA1707 要求重命名 Md5_16 这类公开成员、CA1848 要求全部日志改 LoggerMessage 委托、
+         CA1305 要求所有 ToString 显式传 IFormatProvider），那是一次独立的重构，不是顺手加一行。 -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <!-- tools 为独立小工具，勿参与主 Web 编译（避免顶级语句冲突、AssemblyInfo 重复） -->
@@ -14,6 +20,11 @@
     <Content Remove="tools/**" />
     <None Remove="tools/**" />
     <EmbeddedResource Remove="tools/**" />
+  </ItemGroup>
+
+  <!-- 单元测试工程需要访问 internal 成员（如 DashCalcRuleExecutor.IsReadOnlySelect） -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="FamilyTree.Tests" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

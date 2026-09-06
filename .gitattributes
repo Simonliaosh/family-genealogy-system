@@ -1,0 +1,37 @@
+# 仓库混用 Windows/macOS，且 SQL 脚本历史上一半 GBK 一半 UTF-8。
+# 统一：文本自动归一化为 LF 入库，SQL 保持 UTF-8（BOM 由文件本身携带，SSMS 需要它才能正确识别中文）。
+* text=auto eol=lf
+
+*.sql        text eol=crlf working-tree-encoding=UTF-8
+*.cs         text diff=csharp
+*.cshtml     text
+*.csproj     text eol=crlf
+*.sln        text eol=crlf
+*.config     text eol=crlf
+*.ps1        text eol=crlf
+*.md         text
+*.json       text
+*.js         text
+*.css        text
+*.wxml       text
+*.wxss       text
+*.yml        text
+
+# 二进制
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.ico        binary
+*.pdf        binary
+*.docx       binary
+*.xls        binary
+*.xlsx       binary
+*.zip        binary
+*.woff       binary
+*.woff2      binary
+*.ttf        binary
+*.eot        binary
+
+# 第三方压缩产物不参与 diff / 语言统计
+wwwroot/lib/**  linguist-vendored -diff

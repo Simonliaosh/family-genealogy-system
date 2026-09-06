@@ -1,11 +1,15 @@
+ï»¿/* åº“åç»Ÿä¸€ä¸º FamilyTreeï¼šæœ¬è„šæœ¬åŸå…ˆæ²¡æœ‰ USEï¼Œä¼šè½åœ¨æ‰§è¡Œå·¥å…·å½“æ—¶é€‰ä¸­çš„åº“ä¸Šã€‚ */
+USE [FamilyTree];
+GO
+
 /*
 ================================================================================
-  EFrame ÒÇ±íÅÌÄ£¿é£ºTbl_Dash_* ÁùÕÅ±í£¨½¨±í + Ë÷Òı + Íâ¼ü + MS_Description£©
+  EFrame ä»ªè¡¨ç›˜æ¨¡å—ï¼šTbl_Dash_* å…­å¼ è¡¨ï¼ˆå»ºè¡¨ + ç´¢å¼• + å¤–é”® + MS_Descriptionï¼‰
 ================================================================================
-  Ö´ĞĞË³Ğò£ºÔÚ docs/EFrame_CreateTables.sql Ö®ºóÖ´ĞĞ±¾½Å±¾£¨ÃİµÈ£©¡£
-  ÅäÌ×ÖÖ×Ó£ºscripts/25-Seed_Dashboard.sql
-  ±àÂë£ºANSI (GBK)
-  ËµÃ÷£ºÎ¨Ò»Ë÷Òı²ÉÓÃ (ÒµÎñ¼ü, IsDeleted) ¸´ºÏ¼ü£¬·ÇÉ¸Ñ¡Ë÷Òı£¬¼æÈİ ANSI_PADDING OFF
+  æ‰§è¡Œé¡ºåºï¼šåœ¨ docs/EFrame_CreateTables.sql ä¹‹åæ‰§è¡Œæœ¬è„šæœ¬ï¼ˆå¹‚ç­‰ï¼‰ã€‚
+  é…å¥—ç§å­ï¼šscripts/25-Seed_Dashboard.sql
+  ç¼–ç ï¼šANSI (GBK)
+  è¯´æ˜ï¼šå”¯ä¸€ç´¢å¼•é‡‡ç”¨ (ä¸šåŠ¡é”®, IsDeleted) å¤åˆé”®ï¼Œéç­›é€‰ç´¢å¼•ï¼Œå…¼å®¹ ANSI_PADDING OFF
 ================================================================================
 */
 SET ANSI_NULLS ON;
@@ -31,7 +35,7 @@ BEGIN SET NOCOUNT ON;
 END;
 GO
 
-/* ---- 1. Tbl_Dash_Indicator ÒµÎñÖ¸±ê¿â ---- */
+/* ---- 1. Tbl_Dash_Indicator ä¸šåŠ¡æŒ‡æ ‡åº“ ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_Indicator', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Tbl_Dash_Indicator] (
@@ -56,21 +60,21 @@ BEGIN
         [RowVersion] ROWVERSION,
         CONSTRAINT [PK_Tbl_Dash_Indicator] PRIMARY KEY CLUSTERED ([DataID])
     );
-    PRINT N'ÒÑ´´½¨ Tbl_Dash_Indicator';
+    PRINT N'å·²åˆ›å»º Tbl_Dash_Indicator';
 END
 GO
-EXEC #SetDesc N'Tbl_Dash_Indicator', NULL, N'ÒµÎñÖ¸±ê¿â£º¹ÜÀíÔ±Î¬»¤µÄÍ³¼Æ/ÁĞ±íÒµÎñ¶¨Òå';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'DataID', N'Ö÷¼ü';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'IndicatorCode', N'Ö¸±ê±àÂë£¨Î¨Ò»£©';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'IndicatorName', N'Ö¸±êÃû³Æ';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'AppCode', N'ËùÊôÓ¦ÓÃÄ£¿é£¬Ä¬ÈÏ FRAME£¬¹ØÁª Tbl_E_AppModule.AppCode';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'ChartType', N'Í¼±íÀàĞÍÃ¶¾Ù 1~9';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'DataSource', N'Êı¾İÀ´Ô´±í»òÊÓÍ¼ËµÃ÷';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'CalcRule', N'JSON£ºsqlText/globalLink/itemLinkConfig/filterDefault/menuList';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'DefaultTimeScope', N'Ä¬ÈÏÊ±¼ä·¶Î§ 1½ñÈÕ 2±¾ÖÜ 3±¾ÔÂ 4±¾Äê';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'IsLockCalc', N'ÊÇ·ñËø¶¨¼ÆËã¹æÔò';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'DispSeq', N'ÏÔÊ¾Ë³Ğò';
-EXEC #SetDesc N'Tbl_Dash_Indicator', N'Remark', N'±¸×¢';
+EXEC #SetDesc N'Tbl_Dash_Indicator', NULL, N'ä¸šåŠ¡æŒ‡æ ‡åº“ï¼šç®¡ç†å‘˜ç»´æŠ¤çš„ç»Ÿè®¡/åˆ—è¡¨ä¸šåŠ¡å®šä¹‰';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'DataID', N'ä¸»é”®';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'IndicatorCode', N'æŒ‡æ ‡ç¼–ç ï¼ˆå”¯ä¸€ï¼‰';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'IndicatorName', N'æŒ‡æ ‡åç§°';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'AppCode', N'æ‰€å±åº”ç”¨æ¨¡å—ï¼Œé»˜è®¤ FRAMEï¼Œå…³è” Tbl_E_AppModule.AppCode';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'ChartType', N'å›¾è¡¨ç±»å‹æšä¸¾ 1~9';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'DataSource', N'æ•°æ®æ¥æºè¡¨æˆ–è§†å›¾è¯´æ˜';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'CalcRule', N'JSONï¼šsqlText/globalLink/itemLinkConfig/filterDefault/menuList';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'DefaultTimeScope', N'é»˜è®¤æ—¶é—´èŒƒå›´ 1ä»Šæ—¥ 2æœ¬å‘¨ 3æœ¬æœˆ 4æœ¬å¹´';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'IsLockCalc', N'æ˜¯å¦é”å®šè®¡ç®—è§„åˆ™';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'DispSeq', N'æ˜¾ç¤ºé¡ºåº';
+EXEC #SetDesc N'Tbl_Dash_Indicator', N'Remark', N'å¤‡æ³¨';
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'UQ_Tbl_Dash_Indicator_Code' AND object_id=OBJECT_ID(N'dbo.Tbl_Dash_Indicator'))
     CREATE UNIQUE INDEX [UQ_Tbl_Dash_Indicator_Code] ON [dbo].[Tbl_Dash_Indicator]([IndicatorCode],[IsDeleted]);
@@ -79,7 +83,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'IX_Tbl_Dash_Indicator_App_
     CREATE INDEX [IX_Tbl_Dash_Indicator_App_Status] ON [dbo].[Tbl_Dash_Indicator]([IsDeleted],[AppCode],[BStatus],[DispSeq]);
 GO
 
-/* ---- 2. Tbl_Dash_PosTemplate ¸ÚÎ»±ê×¼Ä£°å ---- */
+/* ---- 2. Tbl_Dash_PosTemplate å²—ä½æ ‡å‡†æ¨¡æ¿ ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_PosTemplate', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Tbl_Dash_PosTemplate] (
@@ -103,23 +107,23 @@ BEGIN
         [RowVersion] ROWVERSION,
         CONSTRAINT [PK_Tbl_Dash_PosTemplate] PRIMARY KEY CLUSTERED ([DataID])
     );
-    PRINT N'ÒÑ´´½¨ Tbl_Dash_PosTemplate';
+    PRINT N'å·²åˆ›å»º Tbl_Dash_PosTemplate';
 END
 GO
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', NULL, N'¸ÚÎ»±ê×¼Ä£°å£º°´ PosID ¶¨ÒåÄ¬ÈÏ¿¨Æ¬²¼¾Ö£¨ĞĞ/ÁĞ/¿ç¶È/±êÌâ/Ëø¶¨/Ä¬ÈÏÉ¸Ñ¡£©';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'PosID', N'¸ÚÎ» ID£¬¹ØÁª Tbl_E_Position.DataID';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'IndicatorID', N'ÒµÎñÖ¸±ê ID£¬¹ØÁª Tbl_Dash_Indicator.DataID';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'LayoutRow', N'²¼¾ÖĞĞºÅ£¨4 ÁĞÍø¸ñ£©';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'LayoutCol', N'²¼¾ÖÁĞºÅ 1~4';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'ColSpan', N'ÁĞ¿ç¶È 1~4';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'IsLock', N'ÊÇ·ñËø¶¨£¨ÓÃ»§²»¿ÉÉ¾³ı/Òş²Ø£©';
-EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'CardTitle', N'¿¨Æ¬±êÌâ';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', NULL, N'å²—ä½æ ‡å‡†æ¨¡æ¿ï¼šæŒ‰ PosID å®šä¹‰é»˜è®¤å¡ç‰‡å¸ƒå±€ï¼ˆè¡Œ/åˆ—/è·¨åº¦/æ ‡é¢˜/é”å®š/é»˜è®¤ç­›é€‰ï¼‰';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'PosID', N'å²—ä½ IDï¼Œå…³è” Tbl_E_Position.DataID';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'IndicatorID', N'ä¸šåŠ¡æŒ‡æ ‡ IDï¼Œå…³è” Tbl_Dash_Indicator.DataID';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'LayoutRow', N'å¸ƒå±€è¡Œå·ï¼ˆ4 åˆ—ç½‘æ ¼ï¼‰';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'LayoutCol', N'å¸ƒå±€åˆ—å· 1~4';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'ColSpan', N'åˆ—è·¨åº¦ 1~4';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'IsLock', N'æ˜¯å¦é”å®šï¼ˆç”¨æˆ·ä¸å¯åˆ é™¤/éšè—ï¼‰';
+EXEC #SetDesc N'Tbl_Dash_PosTemplate', N'CardTitle', N'å¡ç‰‡æ ‡é¢˜';
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'UQ_Tbl_Dash_PosTemplate_Pos_Ind' AND object_id=OBJECT_ID(N'dbo.Tbl_Dash_PosTemplate'))
     CREATE UNIQUE INDEX [UQ_Tbl_Dash_PosTemplate_Pos_Ind] ON [dbo].[Tbl_Dash_PosTemplate]([PosID],[IndicatorID],[IsDeleted]);
 GO
 
-/* ---- 3. Tbl_Dash_UserSetting ÓÃ»§ÒÇ±íÅÌÆ«ºÃ ---- */
+/* ---- 3. Tbl_Dash_UserSetting ç”¨æˆ·ä»ªè¡¨ç›˜åå¥½ ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_UserSetting', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Tbl_Dash_UserSetting] (
@@ -132,19 +136,19 @@ BEGIN
         [Operator] VARCHAR(30) NULL,
         CONSTRAINT [PK_Tbl_Dash_UserSetting] PRIMARY KEY CLUSTERED ([DataID])
     );
-    PRINT N'ÒÑ´´½¨ Tbl_Dash_UserSetting';
+    PRINT N'å·²åˆ›å»º Tbl_Dash_UserSetting';
 END
 GO
-EXEC #SetDesc N'Tbl_Dash_UserSetting', NULL, N'ÓÃ»§ÒÇ±íÅÌÆ«ºÃ£ºCurrentUserPosID Ö¸Ïò Tbl_E_UserPosition.DataID';
-EXEC #SetDesc N'Tbl_Dash_UserSetting', N'UserID', N'ÓÃ»§ ID£¬¹ØÁª Tbl_E_Users.DataID';
-EXEC #SetDesc N'Tbl_Dash_UserSetting', N'CurrentUserPosID', N'µ±Ç°ÉúĞ§ÈÎ¸Ú ID';
-EXEC #SetDesc N'Tbl_Dash_UserSetting', N'GlobalFilterJson', N'È«¾ÖÉ¸Ñ¡ JSON£¨Ê±¼ä/²¿ÃÅµÈ£©';
+EXEC #SetDesc N'Tbl_Dash_UserSetting', NULL, N'ç”¨æˆ·ä»ªè¡¨ç›˜åå¥½ï¼šCurrentUserPosID æŒ‡å‘ Tbl_E_UserPosition.DataID';
+EXEC #SetDesc N'Tbl_Dash_UserSetting', N'UserID', N'ç”¨æˆ· IDï¼Œå…³è” Tbl_E_Users.DataID';
+EXEC #SetDesc N'Tbl_Dash_UserSetting', N'CurrentUserPosID', N'å½“å‰ç”Ÿæ•ˆä»»å²— ID';
+EXEC #SetDesc N'Tbl_Dash_UserSetting', N'GlobalFilterJson', N'å…¨å±€ç­›é€‰ JSONï¼ˆæ—¶é—´/éƒ¨é—¨ç­‰ï¼‰';
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'UQ_Tbl_Dash_UserSetting_User' AND object_id=OBJECT_ID(N'dbo.Tbl_Dash_UserSetting'))
     CREATE UNIQUE INDEX [UQ_Tbl_Dash_UserSetting_User] ON [dbo].[Tbl_Dash_UserSetting]([UserID]);
 GO
 
-/* ---- 4. Tbl_Dash_UserCard ÓÃ»§¸öĞÔ»¯¿¨Æ¬ ---- */
+/* ---- 4. Tbl_Dash_UserCard ç”¨æˆ·ä¸ªæ€§åŒ–å¡ç‰‡ ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_UserCard', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Tbl_Dash_UserCard] (
@@ -168,22 +172,22 @@ BEGIN
         [Operator] VARCHAR(30) NULL,
         CONSTRAINT [PK_Tbl_Dash_UserCard] PRIMARY KEY CLUSTERED ([DataID])
     );
-    PRINT N'ÒÑ´´½¨ Tbl_Dash_UserCard';
+    PRINT N'å·²åˆ›å»º Tbl_Dash_UserCard';
 END
 GO
-EXEC #SetDesc N'Tbl_Dash_UserCard', NULL, N'ÓÃ»§¸öĞÔ»¯¿¨Æ¬£º°´ UserPosID ¸ôÀë£¬Ê×Ò³äÖÈ¾Êı¾İÔ´';
-EXEC #SetDesc N'Tbl_Dash_UserCard', N'UserPosID', N'ÈÎ¸Ú ID£¬¹ØÁª Tbl_E_UserPosition.DataID';
-EXEC #SetDesc N'Tbl_Dash_UserCard', N'PosID', N'¸ÚÎ» ID£¨ÈßÓà±ãÓÚ²éÑ¯£©';
-EXEC #SetDesc N'Tbl_Dash_UserCard', N'DeptID', N'²¿ÃÅ ID£¨ÈßÓà±ãÓÚ²éÑ¯£©';
-EXEC #SetDesc N'Tbl_Dash_UserCard', N'IndicatorID', N'ÒµÎñÖ¸±ê ID';
-EXEC #SetDesc N'Tbl_Dash_UserCard', N'IsHide', N'ÊÇ·ñÒş²Ø';
-EXEC #SetDesc N'Tbl_Dash_UserCard', N'CardTitle', N'¿¨Æ¬±êÌâ';
+EXEC #SetDesc N'Tbl_Dash_UserCard', NULL, N'ç”¨æˆ·ä¸ªæ€§åŒ–å¡ç‰‡ï¼šæŒ‰ UserPosID éš”ç¦»ï¼Œé¦–é¡µæ¸²æŸ“æ•°æ®æº';
+EXEC #SetDesc N'Tbl_Dash_UserCard', N'UserPosID', N'ä»»å²— IDï¼Œå…³è” Tbl_E_UserPosition.DataID';
+EXEC #SetDesc N'Tbl_Dash_UserCard', N'PosID', N'å²—ä½ IDï¼ˆå†—ä½™ä¾¿äºæŸ¥è¯¢ï¼‰';
+EXEC #SetDesc N'Tbl_Dash_UserCard', N'DeptID', N'éƒ¨é—¨ IDï¼ˆå†—ä½™ä¾¿äºæŸ¥è¯¢ï¼‰';
+EXEC #SetDesc N'Tbl_Dash_UserCard', N'IndicatorID', N'ä¸šåŠ¡æŒ‡æ ‡ ID';
+EXEC #SetDesc N'Tbl_Dash_UserCard', N'IsHide', N'æ˜¯å¦éšè—';
+EXEC #SetDesc N'Tbl_Dash_UserCard', N'CardTitle', N'å¡ç‰‡æ ‡é¢˜';
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'UQ_Tbl_Dash_UserCard_UserPos_Ind' AND object_id=OBJECT_ID(N'dbo.Tbl_Dash_UserCard'))
     CREATE UNIQUE INDEX [UQ_Tbl_Dash_UserCard_UserPos_Ind] ON [dbo].[Tbl_Dash_UserCard]([UserID],[UserPosID],[IndicatorID],[IsDeleted]);
 GO
 
-/* ---- 5. Tbl_Dash_PosIndicatorPerm ¸ÚÎ»Ö¸±êÊÚÈ¨ ---- */
+/* ---- 5. Tbl_Dash_PosIndicatorPerm å²—ä½æŒ‡æ ‡æˆæƒ ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_PosIndicatorPerm', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Tbl_Dash_PosIndicatorPerm] (
@@ -196,18 +200,18 @@ BEGIN
         [Operator] VARCHAR(30) NULL,
         CONSTRAINT [PK_Tbl_Dash_PosIndicatorPerm] PRIMARY KEY CLUSTERED ([DataID])
     );
-    PRINT N'ÒÑ´´½¨ Tbl_Dash_PosIndicatorPerm';
+    PRINT N'å·²åˆ›å»º Tbl_Dash_PosIndicatorPerm';
 END
 GO
-EXEC #SetDesc N'Tbl_Dash_PosIndicatorPerm', NULL, N'¸ÚÎ»Ö¸±êÊÚÈ¨£º¸Ã¸ÚÎ»¿É¼ûµÄÒµÎñÖ¸±ê';
-EXEC #SetDesc N'Tbl_Dash_PosIndicatorPerm', N'PosID', N'¸ÚÎ» ID';
-EXEC #SetDesc N'Tbl_Dash_PosIndicatorPerm', N'IndicatorID', N'ÒµÎñÖ¸±ê ID';
+EXEC #SetDesc N'Tbl_Dash_PosIndicatorPerm', NULL, N'å²—ä½æŒ‡æ ‡æˆæƒï¼šè¯¥å²—ä½å¯è§çš„ä¸šåŠ¡æŒ‡æ ‡';
+EXEC #SetDesc N'Tbl_Dash_PosIndicatorPerm', N'PosID', N'å²—ä½ ID';
+EXEC #SetDesc N'Tbl_Dash_PosIndicatorPerm', N'IndicatorID', N'ä¸šåŠ¡æŒ‡æ ‡ ID';
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'UQ_Tbl_Dash_PosIndicatorPerm' AND object_id=OBJECT_ID(N'dbo.Tbl_Dash_PosIndicatorPerm'))
     CREATE UNIQUE INDEX [UQ_Tbl_Dash_PosIndicatorPerm] ON [dbo].[Tbl_Dash_PosIndicatorPerm]([PosID],[IndicatorID]);
 GO
 
-/* ---- 6. Tbl_Dash_UserOperLog ÓÃ»§²Ù×÷ÈÕÖ¾ ---- */
+/* ---- 6. Tbl_Dash_UserOperLog ç”¨æˆ·æ“ä½œæ—¥å¿— ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_UserOperLog', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Tbl_Dash_UserOperLog] (
@@ -220,18 +224,18 @@ BEGIN
         [Operator] VARCHAR(30) NULL,
         CONSTRAINT [PK_Tbl_Dash_UserOperLog] PRIMARY KEY CLUSTERED ([DataID])
     );
-    PRINT N'ÒÑ´´½¨ Tbl_Dash_UserOperLog';
+    PRINT N'å·²åˆ›å»º Tbl_Dash_UserOperLog';
 END
 GO
-EXEC #SetDesc N'Tbl_Dash_UserOperLog', NULL, N'ÓÃ»§ÒÇ±íÅÌ²Ù×÷ÈÕÖ¾';
-EXEC #SetDesc N'Tbl_Dash_UserOperLog', N'OperType', N'²Ù×÷ÀàĞÍ£ºINIT/ADD_CARD/RESET/SWITCH_POS µÈ';
-EXEC #SetDesc N'Tbl_Dash_UserOperLog', N'OperContent', N'²Ù×÷ÄÚÈİÕªÒª';
+EXEC #SetDesc N'Tbl_Dash_UserOperLog', NULL, N'ç”¨æˆ·ä»ªè¡¨ç›˜æ“ä½œæ—¥å¿—';
+EXEC #SetDesc N'Tbl_Dash_UserOperLog', N'OperType', N'æ“ä½œç±»å‹ï¼šINIT/ADD_CARD/RESET/SWITCH_POS ç­‰';
+EXEC #SetDesc N'Tbl_Dash_UserOperLog', N'OperContent', N'æ“ä½œå†…å®¹æ‘˜è¦';
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name=N'IX_Tbl_Dash_UserOperLog_User_Time' AND object_id=OBJECT_ID(N'dbo.Tbl_Dash_UserOperLog'))
     CREATE INDEX [IX_Tbl_Dash_UserOperLog_User_Time] ON [dbo].[Tbl_Dash_UserOperLog]([UserID],[OperTime] DESC);
 GO
 
-/* ---- Íâ¼ü£¨Óë EFrame Âß¼­¹ØÁª£¬¿ÉÑ¡£© ---- */
+/* ---- å¤–é”®ï¼ˆä¸ EFrame é€»è¾‘å…³è”ï¼Œå¯é€‰ï¼‰ ---- */
 IF OBJECT_ID(N'dbo.Tbl_Dash_UserSetting',N'U') IS NOT NULL AND OBJECT_ID(N'dbo.Tbl_E_Users',N'U') IS NOT NULL
    AND NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name=N'FK_Tbl_Dash_UserSetting_User')
     ALTER TABLE [dbo].[Tbl_Dash_UserSetting] WITH CHECK ADD CONSTRAINT [FK_Tbl_Dash_UserSetting_User]
@@ -260,5 +264,26 @@ GO
 
 IF OBJECT_ID('tempdb..#SetDesc') IS NOT NULL DROP PROCEDURE #SetDesc;
 GO
-PRINT N'11-CreateTbl_Dash_All Íê³É¡£Çë¼ÌĞøÖ´ĞĞ 25-Seed_Dashboard.sql';
+PRINT N'11-CreateTbl_Dash_All å®Œæˆã€‚è¯·ç»§ç»­æ‰§è¡Œ 25-Seed_Dashboard.sql';
+GO
+
+/* ---------- è„šæœ¬æ‰§è¡Œå°è´¦ ----------
+   ä»“åº“åŸå…ˆæ²¡æœ‰ä»»ä½•è¿ç§»æœºåˆ¶ï¼šæ–‡ä»¶åæ˜¯å”¯ä¸€çš„é¡ºåºä¾æ®ï¼Œè€Œç¼–å·å·²ç»åœ¨ç¢°æ’
+   ï¼ˆ20-Seed_Foundation / 20-Seed_README åŒå·ï¼‰ï¼Œä¹Ÿæ²¡æœ‰åŠæ³•é—®ä¸€ä¸ªæ•°æ®åº“ã€Œä½ è·‘è¿‡å“ªäº›è„šæœ¬ã€ã€‚
+   è¿™æ®µè‡ªå»ºè¡¨ + è®°å½•ï¼Œå¹‚ç­‰ï¼Œå¯åœ¨ä»»æ„è„šæœ¬å•ç‹¬æ‰§è¡Œã€‚ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'11-CreateTbl_Dash_All.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'11-CreateTbl_Dash_All.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'11-CreateTbl_Dash_All.sql');
 GO

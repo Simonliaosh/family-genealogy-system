@@ -81,11 +81,71 @@ public sealed class FtTreeHealthService
             CheckParentEdge(issues, p, by, p.MotherPersonId, "母", byId);
         }
 
+        AddCycleIssues(issues, people, byId);
+
         return issues
             .OrderBy(x => x.Severity == "ERROR" ? 0 : 1)
             .ThenBy(x => x.IssueType)
             .ThenBy(x => x.PersonName)
             .ToList();
+    }
+
+    /// <summary>
+    /// 多节点环检测。原先只检 SELF_PARENT（自环），而按姓名批量改父边的路径
+    /// （HealParentEdgesAsync / AttachAncestorsIfNoneAsync）都能写出 A→B→C→A 这种环，
+    /// 结果是环写得进去、体检工具看不见。这里做一次迭代加深的祖先追溯。
+    /// </summary>
+    private static void AddCycleIssues(
+        List<FtTreeHealthIssueVm> issues,
+        IReadOnlyList<PersonSnap> people,
+        IReadOnlyDictionary<int, PersonSnap> byId)
+    {
+        // 0=未访问 1=在当前追溯路径上 2=已确认无环
+        var state = new Dictionary<int, byte>(people.Count);
+        var reported = new HashSet<int>();
+
+        foreach (var start in people)
+        {
+            if (state.GetValueOrDefault(start.DataId) != 0) continue;
+
+            var path = new List<int>();
+            var onPath = new HashSet<int>();
+            var cur = start.DataId;
+
+            while (true)
+            {
+                if (state.GetValueOrDefault(cur) == 2) break;      // 走到已判定的安全区
+                if (!onPath.Add(cur))                              // 回到路径上的某点 = 成环
+                {
+                    var from = path.IndexOf(cur);
+                    var ring = path.Skip(from).ToList();
+                    var anchor = ring.Min();
+                    if (reported.Add(anchor))
+                    {
+                        var names = ring.Select(id => byId.TryGetValue(id, out var q) ? q.FullName : "#" + id);
+                        issues.Add(new FtTreeHealthIssueVm
+                        {
+                            IssueType = "PARENT_CYCLE",
+                            Severity = "ERROR",
+                            Title = "父母关系成环",
+                            Detail = "环路：" + string.Join(" → ", names) + " → …",
+                            PersonId = anchor,
+                            PersonName = byId.TryGetValue(anchor, out var a) ? a.FullName : "#" + anchor
+                        });
+                    }
+                    break;
+                }
+
+                path.Add(cur);
+                if (!byId.TryGetValue(cur, out var node)) break;
+                var next = node.FatherPersonId ?? node.MotherPersonId;
+                if (next == null || next == cur) break;
+                cur = next.Value;
+            }
+
+            foreach (var id in path)
+                state[id] = 2;
+        }
     }
 
     private static void CheckParentEdge(

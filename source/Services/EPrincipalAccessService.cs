@@ -284,11 +284,14 @@ public sealed class EPrincipalAccessService
             var mp = CanonicalMenuPath(r.MenuPath);
             if (string.IsNullOrEmpty(mp)) continue;
             var compactMenu = CompactPathKey(mp);
+            // 紧凑键匹配必须锚定在路径段边界上。原先是无锚定的 StartsWith：
+            // 一旦有人新增一个 MenuPath='/FtPerson' 的资源，它会静默授权
+            // /FtPersonLink/*、/FtPersonDraft/*、/FtPersonMarry/* —— 名字前缀相同就被当成同一个资源。
             var pathMatch = requestPaths.Any(requestPath =>
                 requestPath.Equals(mp, StringComparison.OrdinalIgnoreCase) ||
                 requestPath.StartsWith(mp.TrimEnd('/') + "/", StringComparison.OrdinalIgnoreCase) ||
-                CompactPathKey(requestPath).Equals(compactMenu, StringComparison.OrdinalIgnoreCase) ||
-                CompactPathKey(requestPath).StartsWith(compactMenu, StringComparison.OrdinalIgnoreCase));
+                CompactSegmentPrefixes(requestPath).Any(k =>
+                    k.Equals(compactMenu, StringComparison.OrdinalIgnoreCase)));
             // 菜单只配到 /Xxx/Index 时，Create/Edit/Details 等同控制器下动作无法靠前缀匹配，按控制器名归并
             if (!pathMatch && ctrlReq.Length > 0)
             {
@@ -467,6 +470,23 @@ public sealed class EPrincipalAccessService
             .Select(char.ToLowerInvariant)
             .ToArray();
         return new string(chars);
+    }
+
+    /// <summary>
+    /// 请求路径按「段边界」切出的所有紧凑前缀。
+    /// <c>/PMPartner/Index</c> → <c>["pmpartner", "pmpartnerindex"]</c>。
+    /// 用它做相等比较，既保留 <c>/PM/Partner</c> ↔ <c>/PMPartner/Index</c> 的兼容，
+    /// 又不会让 <c>/FtPerson</c> 前缀吞掉 <c>/FtPersonLink</c>。
+    /// </summary>
+    private static IEnumerable<string> CompactSegmentPrefixes(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) yield break;
+        var acc = "";
+        foreach (var seg in path.Split('/', StringSplitOptions.RemoveEmptyEntries))
+        {
+            acc += CompactPathKey(seg);
+            if (acc.Length > 0) yield return acc;
+        }
     }
 
     private static string? ResolveMenuGroupCodeForResource(

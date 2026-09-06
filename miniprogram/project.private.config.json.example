@@ -1,0 +1,7 @@
+{
+  "//": "个人本地设置。复制为 project.private.config.json（已被 .gitignore 忽略），微信开发者工具会优先读它。",
+  "//urlCheck": "本机调试后端时可临时关闭域名校验。这个开关只应存在于个人配置里——原先它提交在 project.config.json 中，对每个克隆者永久生效，明文 http:// 的 API 地址正是这样活到接近生产的。",
+  "setting": {
+    "urlCheck": false
+  }
+}

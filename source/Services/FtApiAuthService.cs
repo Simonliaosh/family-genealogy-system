@@ -40,11 +40,14 @@ public sealed class FtApiAuthService
 
     public bool MpDevMock => _opt.WeChat.AllowDevMock && !MpConfigured;
 
+    /// <summary>
+    /// 匿名可读的公开配置。不再回传 <c>allowDevMock</c>——那等于向外界公告
+    /// 「本站是否开着一个可用任意 openid 冒名登录的开关」。小程序改为始终渲染微信登录按钮。
+    /// </summary>
     public object PublicConfig() => new
     {
         wechatEnabled = WeChatConfigured,
         mpEnabled = MpConfigured,
-        allowDevMock = _opt.WeChat.AllowDevMock && !WeChatConfigured && !MpConfigured,
         publicBaseUrl = ResolvePublicBaseUrl()
     };
 
@@ -127,7 +130,7 @@ public sealed class FtApiAuthService
         var login = (idCard ?? "").Trim();
         var pwd = password ?? "";
         EUser? user = null;
-        string fail = "登录名或密码不正确。";
+        const string fail = "登录名或密码不正确。";
         if (FtText.IsIdCard(login))
         {
             var r = await _acc.TryPasswordLoginByIdCardAsync(login, pwd, ct);
@@ -138,10 +141,17 @@ public sealed class FtApiAuthService
         {
             var name = FtText.NormalizeLoginName(login);
             user = await _db.EUsers.FirstOrDefaultAsync(x => x.LoginId == name && !x.IsDeleted, ct);
-            if (user == null || !user.IsEnabled || user.IsLocked)
+            if (user == null || !LoginAttempts.IsUsable(user))
                 return (false, fail, null, 0, "", false);
             if (!PasswordHasher.Verify(pwd, user.PwdHash, user.PasswordAlgo))
+            {
+                // 与 MVC 登录路径一致地累加失败次数并在超阈值时锁定
+                LoginAttempts.MarkFailure(user);
+                await _db.SaveChangesAsync(ct);
                 return (false, fail, null, 0, "", false);
+            }
+            LoginAttempts.MarkSuccess(user);
+            await _db.SaveChangesAsync(ct);
         }
 
         var token = await IssueTokenAsync(user!.DataId, "id", ct);
