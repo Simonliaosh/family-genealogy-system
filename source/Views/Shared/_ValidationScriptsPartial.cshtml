@@ -1,2 +1,5 @@
-<script src="~/lib/jquery-validation/jquery.validate.min.js" asp-append-version="true"></script>
-<script src="~/lib/jquery-validation/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+@* 路径必须与 wwwroot/lib 下的真实布局一致：
+   jquery-validation 在 dist/ 子目录，unobtrusive 在独立的 jquery-validation-unobtrusive/ 目录。
+   原来这两行都是 404，导致 46 个引用本 partial 的视图里所有 asp-validation-for 全是死的。 *@
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>

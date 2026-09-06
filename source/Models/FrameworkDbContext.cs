@@ -71,5 +71,63 @@ public class FrameworkDbContext : DbContext
         {
             e.Property(x => x.Days).HasPrecision(5, 1);
         });
+
+        ConfigureFamilyTree(modelBuilder);
+    }
+
+    /// <summary>
+    /// 族谱核心表的关系与索引配置。
+    /// </summary>
+    /// <remarks>
+    /// 这里刻意<strong>不</strong>配 <c>HasForeignKey</c>：库里现存数据已有悬空父边
+    /// （项目为此专门写了 <c>FtTreeHealthService</c> 的 BROKEN_EDGE 探测器），
+    /// 贸然加外键会让既有库无法写入。正确顺序是先跑一次健康扫描清断边，再补外键约束。
+    /// 索引部分与 <c>scripts/29-CreateTbl_FamilyTree_Core.sql</c> 一一对应——
+    /// 该项目不用 EF Migrations，索引由 SQL 脚本实际创建，这里的声明用于让模型自描述、
+    /// 并让将来引入迁移工具时能直接生成。
+    /// </remarks>
+    private static void ConfigureFamilyTree(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<FtPerson>(e =>
+        {
+            e.HasIndex(x => x.FatherPersonId).HasDatabaseName("IX_FamilyTree_Person_FatherPersonId");
+            e.HasIndex(x => x.MotherPersonId).HasDatabaseName("IX_FamilyTree_Person_MotherPersonId");
+            e.HasIndex(x => x.SameAsPersonId).HasDatabaseName("IX_FamilyTree_Person_SameAsPersonId");
+            e.HasIndex(x => x.OwnerUserId).HasDatabaseName("IX_FamilyTree_Person_OwnerUserId");
+            e.HasIndex(x => x.ClanId).HasDatabaseName("IX_FamilyTree_Person_ClanId");
+            e.HasIndex(x => new { x.InMainGenealogy, x.IsDeleted }).HasDatabaseName("IX_FamilyTree_Person_InMainGenealogy");
+            // 一个用户只能绑定一条「本人」记录
+            e.HasIndex(x => x.BindUserId).IsUnique().HasDatabaseName("UX_FamilyTree_Person_BindUserId")
+                .HasFilter("[BindUserId] IS NOT NULL AND [IsDeleted] = 0");
+            e.Property(x => x.RowVersion).IsRowVersion();
+        });
+
+        modelBuilder.Entity<FtPersonLink>(e =>
+        {
+            e.HasIndex(x => new { x.SourcePersonId, x.LinkStatus }).HasDatabaseName("IX_FamilyTree_PersonLink_Source");
+            e.HasIndex(x => new { x.LinkStatus, x.IsDeleted }).HasDatabaseName("IX_FamilyTree_PersonLink_Status");
+            e.Property(x => x.RowVersion).IsRowVersion();
+        });
+
+        modelBuilder.Entity<FtPersonDraft>(e =>
+        {
+            e.Property(x => x.RowVersion).IsRowVersion();
+        });
+
+        modelBuilder.Entity<FtOpLog>(e =>
+        {
+            e.HasIndex(x => x.CreateDate).HasDatabaseName("IX_FamilyTree_OpLog_CreateDate");
+        });
+
+        modelBuilder.Entity<FtApiToken>(e =>
+        {
+            e.HasIndex(x => new { x.TokenHash, x.ExpireDate }).HasDatabaseName("IX_FamilyTree_ApiToken_TokenHash");
+        });
+
+        modelBuilder.Entity<FtAccountBind>(e =>
+        {
+            e.HasIndex(x => x.IdCardHash).HasDatabaseName("IX_FamilyTree_AccountBind_IdCardHash");
+            e.HasIndex(x => x.WechatOpenId).HasDatabaseName("IX_FamilyTree_AccountBind_WechatOpenId");
+        });
     }
 }

@@ -99,7 +99,7 @@ public sealed class FtBranchAdminApplyService
     public async Task<string> ApplyAsync(int userId, string? reason, string op, CancellationToken ct)
     {
         if (!await DatabaseSchemaHelper.TableExistsAsync(_db, "FamilyTree_BranchAdminApply", ct))
-            throw new InvalidOperationException("请先执行 docs/04-数据结构.sql 的 FamilyTree_BranchAdminApply 段，以及 scripts/31-Seed_FtBranchAdminApply.sql。");
+            throw new InvalidOperationException("请先执行 scripts/29-CreateTbl_FamilyTree_Core.sql（含 FamilyTree_BranchAdminApply 表），以及 scripts/31-Seed_FtBranchAdminApply.sql。");
         if (await _duty.IsSuperAsync(userId, ct))
             throw new InvalidOperationException("超管无需申请支链管理员。");
         if (await _duty.IsBranchAdminAsync(userId, ct))

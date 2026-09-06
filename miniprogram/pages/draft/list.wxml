@@ -1,13 +1,23 @@
 <view class="card">
   <button class="btn" bindtap="create">新建人物</button>
 </view>
-<view class="card" wx:for="{{rows}}" wx:key="dataId">
-  <view class="row" bindtap="edit" data-id="{{item.dataId}}">
-    <view>
-      <view>{{item.fullName}}</view>
-      <view class="muted">{{item.relationType}} · {{item.auditStatus}}</view>
-    </view>
-    <text class="muted">详情</text>
-  </view>
+
+<view class="card muted" wx:if="{{loading}}">加载中…</view>
+
+<view class="card" wx:elif="{{loadError}}">
+  <view class="muted">加载失败：{{loadError}}</view>
+  <button class="btn btn-ghost" bindtap="onRetry" style="margin-top:16rpx;">重试</button>
 </view>
-<view class="card muted" wx:if="{{rows.length===0}}">暂无记录。点完成才会写入人物档案。</view>
+
+<block wx:else>
+  <view class="card" wx:for="{{rows}}" wx:key="dataId">
+    <view class="row" bindtap="edit" data-id="{{item.dataId}}">
+      <view>
+        <view>{{item.fullName}}</view>
+        <view class="muted">{{item.relationType}} · {{item.auditStatus}}</view>
+      </view>
+      <text class="muted">详情</text>
+    </view>
+  </view>
+  <view class="card muted" wx:if="{{rows.length===0}}">暂无记录。点完成才会写入人物档案。</view>
+</block>

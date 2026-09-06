@@ -1,20 +1,24 @@
+ï»¿/* åº“åç»Ÿä¸€ä¸º FamilyTreeï¼šæœ¬è„šæœ¬åŸå…ˆæ²¡æœ‰ USEï¼Œä¼šè½åœ¨æ‰§è¡Œå·¥å…·å½“æ—¶é€‰ä¸­çš„åº“ä¸Šã€‚ */
+USE [FamilyTree];
+GO
+
 /*
 ==============================================================================
-  EFrame ÖÖ×Ó 06 - ÒÇ±íÅÌÔ¤ÖÃÖ¸±êÓëÄ£°å£¨9 Àà ChartType È«¸²¸Ç£©
+  EFrame ç§å­ 06 - ä»ªè¡¨ç›˜é¢„ç½®æŒ‡æ ‡ä¸æ¨¡æ¿ï¼ˆ9 ç±» ChartType å…¨è¦†ç›–ï¼‰
 ==============================================================================
-  Ç°ÖÃ£º11-CreateTbl_Dash_All.sql + 23-Seed_Menus.sql
-  ChartType£º1 KPI | 2 ÕÛÏß | 3 Öù×´ | 4 ±ıÍ¼ | 5 ±í¸ñ | 6 Â©¶· | 7 ½ø¶È | 8 ²Ëµ¥ | 9 ÁĞ±í
-  ËµÃ÷£ºÉ¾Ë÷ÒıÓë INSERT ±ØĞë·Ö GO Åú´Î£¨Í¬Åú±àÒëÊ±ÈÔ¿´µ½¾ÉË÷Òı»á 1934£©
-  ±àÂë£ºANSI (GBK)
+  å‰ç½®ï¼š11-CreateTbl_Dash_All.sql + 23-Seed_Menus.sql
+  ChartTypeï¼š1 KPI | 2 æŠ˜çº¿ | 3 æŸ±çŠ¶ | 4 é¥¼å›¾ | 5 è¡¨æ ¼ | 6 æ¼æ–— | 7 è¿›åº¦ | 8 èœå• | 9 åˆ—è¡¨
+  è¯´æ˜ï¼šåˆ ç´¢å¼•ä¸ INSERT å¿…é¡»åˆ† GO æ‰¹æ¬¡ï¼ˆåŒæ‰¹ç¼–è¯‘æ—¶ä»çœ‹åˆ°æ—§ç´¢å¼•ä¼š 1934ï¼‰
+  ç¼–ç ï¼šANSI (GBK)
 ==============================================================================
 */
 
-/* ==================== 0. Ğ´ÈëÇ°ÔİÉ¾ Dash ·Ç¾Û¼¯Ë÷Òı£¨½ö PK£© ==================== */
+/* ==================== 0. å†™å…¥å‰æš‚åˆ  Dash éèšé›†ç´¢å¼•ï¼ˆä»… PKï¼‰ ==================== */
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
 
 IF OBJECT_ID(N'dbo.Tbl_Dash_Indicator', N'U') IS NULL
-    RAISERROR(N'Î´ÕÒµ½ dbo.Tbl_Dash_Indicator£¬ÇëÏÈÖ´ĞĞ 11-CreateTbl_Dash_All.sql ²¢È·ÈÏµ±Ç°¿âÕıÈ·¡£', 16, 1);
+    RAISERROR(N'æœªæ‰¾åˆ° dbo.Tbl_Dash_Indicatorï¼Œè¯·å…ˆæ‰§è¡Œ 11-CreateTbl_Dash_All.sql å¹¶ç¡®è®¤å½“å‰åº“æ­£ç¡®ã€‚', 16, 1);
 
 IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Tbl_Dash_Indicator_Code' AND object_id = OBJECT_ID(N'dbo.Tbl_Dash_Indicator'))
     DROP INDEX [UQ_Tbl_Dash_Indicator_Code] ON [dbo].[Tbl_Dash_Indicator];
@@ -46,10 +50,10 @@ IF EXISTS (
     SELECT 1 FROM sys.indexes i
     INNER JOIN sys.tables t ON t.object_id = i.object_id
     WHERE t.name IN (N'Tbl_Dash_Indicator', N'Tbl_Dash_PosTemplate', N'Tbl_Dash_UserCard') AND i.type = 2)
-    RAISERROR(N'Dash ·Ç¾Û¼¯Ë÷ÒıÎ´ÄÜÈ«²¿É¾³ı£¬Çë¼ì²éÈ¨ÏŞ»òÊÖ¶¯ DROP ºóÔÙÖ´ĞĞ±¾½Å±¾¡£', 16, 1);
+    RAISERROR(N'Dash éèšé›†ç´¢å¼•æœªèƒ½å…¨éƒ¨åˆ é™¤ï¼Œè¯·æ£€æŸ¥æƒé™æˆ–æ‰‹åŠ¨ DROP åå†æ‰§è¡Œæœ¬è„šæœ¬ã€‚', 16, 1);
 GO
 
-/* ==================== 5~7. Ğ´ÈëÖÖ×ÓÊı¾İ£¨ĞÂÅú´ÎÖØĞÂ±àÒë£¬²»ÔÙ°ó¶¨¾ÉË÷Òı£© ==================== */
+/* ==================== 5~7. å†™å…¥ç§å­æ•°æ®ï¼ˆæ–°æ‰¹æ¬¡é‡æ–°ç¼–è¯‘ï¼Œä¸å†ç»‘å®šæ—§ç´¢å¼•ï¼‰ ==================== */
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
 SET ANSI_NULLS ON;
@@ -65,7 +69,7 @@ DECLARE @CalcTodoCount NVARCHAR(MAX) = N'{"sqlText":"","globalLink":{"routePath"
 DECLARE @CalcTodoList NVARCHAR(MAX) = N'{"sqlText":"","globalLink":{"routePath":"/ETodoTask/Index","linkType":1,"paramPlaceholder":[]},"itemLinkConfig":{"itemRoute":"/ETodoTask/Details/{todoId}","bindDataField":["todoId"],"publicParam":[]},"filterDefault":{},"menuList":[]}';
 DECLARE @CalcEventRecent NVARCHAR(MAX) = N'{"sqlText":"","globalLink":{"routePath":"/EEventInstanceQuery/Index","linkType":1,"paramPlaceholder":[]},"itemLinkConfig":{"itemRoute":"/EEventInstanceQuery/Details/{instanceId}","bindDataField":["instanceId"],"publicParam":[]},"filterDefault":{},"menuList":[]}';
 DECLARE @CalcOrgStats NVARCHAR(MAX) = N'{"sqlText":"","globalLink":null,"itemLinkConfig":null,"filterDefault":{},"menuList":[]}';
-DECLARE @CalcQuickMenu NVARCHAR(MAX) = N'{"sqlText":"","globalLink":null,"itemLinkConfig":null,"filterDefault":{},"menuList":[{"icon":"todo","name":"ÎÒµÄ´ı°ì","routePath":"/ETodoTask/Index","bgColor":"#409eff"},{"icon":"event","name":"ÊÂ¼ş²éÑ¯","routePath":"/EEventInstanceQuery/Index","bgColor":"#67c23a"},{"icon":"leave","name":"Çë¼ÙÉêÇë","routePath":"/HrLeave/Create","bgColor":"#e6a23c"},{"icon":"dash","name":"Ö¸±ê¿â","routePath":"/EDashIndicator/Index","bgColor":"#909399"}]}';
+DECLARE @CalcQuickMenu NVARCHAR(MAX) = N'{"sqlText":"","globalLink":null,"itemLinkConfig":null,"filterDefault":{},"menuList":[{"icon":"todo","name":"æˆ‘çš„å¾…åŠ","routePath":"/ETodoTask/Index","bgColor":"#409eff"},{"icon":"event","name":"äº‹ä»¶æŸ¥è¯¢","routePath":"/EEventInstanceQuery/Index","bgColor":"#67c23a"},{"icon":"leave","name":"è¯·å‡ç”³è¯·","routePath":"/HrLeave/Create","bgColor":"#e6a23c"},{"icon":"dash","name":"æŒ‡æ ‡åº“","routePath":"/EDashIndicator/Index","bgColor":"#909399"}]}';
 
 IF OBJECT_ID('tempdb..#DashIndSeed') IS NOT NULL DROP TABLE #DashIndSeed;
 CREATE TABLE #DashIndSeed (
@@ -79,17 +83,17 @@ CREATE TABLE #DashIndSeed (
 );
 
 INSERT INTO #DashIndSeed (IndicatorCode, IndicatorName, ChartType, DataSource, CalcRule, DispSeq, Remark) VALUES
-(N'FRAME_TODO_COUNT',   N'´ı°ìÊıÁ¿',     1, N'Tbl_E_TodoTask',      @CalcTodoCount,   10, N'ChartType=1 KPI ¿¨Æ¬'),
-(N'FRAME_ORG_STATS',    N'×éÖ¯¸ÅÀÀ',     1, N'Tbl_E_Users',         @CalcOrgStats,    11, N'ChartType=1 KPI ¿¨Æ¬'),
-(N'FRAME_DEMO_LINE',    N'µÇÂ¼Ç÷ÊÆ',     2, N'Tbl_E_LoginLog',      @CalcEmpty,       20, N'ChartType=2 ÕÛÏßÍ¼ÑİÊ¾'),
-(N'FRAME_DEMO_BAR',     N'²Ëµ¥×é×ÊÔ´',   3, N'Tbl_E_Resource',      @CalcEmpty,       30, N'ChartType=3 Öù×´Í¼ÑİÊ¾'),
-(N'FRAME_DEMO_PIE',     N'ÓÃ»§ÀàĞÍ·Ö²¼', 4, N'Tbl_E_Users',         @CalcEmpty,       40, N'ChartType=4 ±ıÍ¼ÑİÊ¾'),
-(N'FRAME_DEMO_TABLE',   N'×î½üµÇÂ¼',     5, N'Tbl_E_LoginLog',      @CalcEmpty,       50, N'ChartType=5 Ã÷Ï¸±í¸ñÑİÊ¾'),
-(N'FRAME_DEMO_FUNNEL',  N'ÊÂ¼ş×´Ì¬Â©¶·', 6, N'Tbl_E_EventInstance', @CalcEmpty,       60, N'ChartType=6 Â©¶·Í¼ÑİÊ¾'),
-(N'FRAME_DEMO_GAUGE',   N'´ı°ìÍê³ÉÂÊ',   7, N'Tbl_E_TodoTask',      @CalcEmpty,       70, N'ChartType=7 ½ø¶ÈÒÇ±íÅÌÑİÊ¾'),
-(N'FRAME_QUICK_MENU',   N'¿ì½İÈë¿Ú',     8, N'Tbl_E_Resource',      @CalcQuickMenu,   80, N'ChartType=8 ¿ì½İ²Ëµ¥'),
-(N'FRAME_TODO_LIST',    N'ÎÒµÄ´ı°ì',     9, N'Tbl_E_TodoTask',      @CalcTodoList,    90, N'ChartType=9 ¹ö¶¯ÁĞ±í'),
-(N'FRAME_EVENT_RECENT', N'½üÆÚÊÂ¼ş',     9, N'Tbl_E_EventInstance', @CalcEventRecent, 91, N'ChartType=9 ¹ö¶¯ÁĞ±í');
+(N'FRAME_TODO_COUNT',   N'å¾…åŠæ•°é‡',     1, N'Tbl_E_TodoTask',      @CalcTodoCount,   10, N'ChartType=1 KPI å¡ç‰‡'),
+(N'FRAME_ORG_STATS',    N'ç»„ç»‡æ¦‚è§ˆ',     1, N'Tbl_E_Users',         @CalcOrgStats,    11, N'ChartType=1 KPI å¡ç‰‡'),
+(N'FRAME_DEMO_LINE',    N'ç™»å½•è¶‹åŠ¿',     2, N'Tbl_E_LoginLog',      @CalcEmpty,       20, N'ChartType=2 æŠ˜çº¿å›¾æ¼”ç¤º'),
+(N'FRAME_DEMO_BAR',     N'èœå•ç»„èµ„æº',   3, N'Tbl_E_Resource',      @CalcEmpty,       30, N'ChartType=3 æŸ±çŠ¶å›¾æ¼”ç¤º'),
+(N'FRAME_DEMO_PIE',     N'ç”¨æˆ·ç±»å‹åˆ†å¸ƒ', 4, N'Tbl_E_Users',         @CalcEmpty,       40, N'ChartType=4 é¥¼å›¾æ¼”ç¤º'),
+(N'FRAME_DEMO_TABLE',   N'æœ€è¿‘ç™»å½•',     5, N'Tbl_E_LoginLog',      @CalcEmpty,       50, N'ChartType=5 æ˜ç»†è¡¨æ ¼æ¼”ç¤º'),
+(N'FRAME_DEMO_FUNNEL',  N'äº‹ä»¶çŠ¶æ€æ¼æ–—', 6, N'Tbl_E_EventInstance', @CalcEmpty,       60, N'ChartType=6 æ¼æ–—å›¾æ¼”ç¤º'),
+(N'FRAME_DEMO_GAUGE',   N'å¾…åŠå®Œæˆç‡',   7, N'Tbl_E_TodoTask',      @CalcEmpty,       70, N'ChartType=7 è¿›åº¦ä»ªè¡¨ç›˜æ¼”ç¤º'),
+(N'FRAME_QUICK_MENU',   N'å¿«æ·å…¥å£',     8, N'Tbl_E_Resource',      @CalcQuickMenu,   80, N'ChartType=8 å¿«æ·èœå•'),
+(N'FRAME_TODO_LIST',    N'æˆ‘çš„å¾…åŠ',     9, N'Tbl_E_TodoTask',      @CalcTodoList,    90, N'ChartType=9 æ»šåŠ¨åˆ—è¡¨'),
+(N'FRAME_EVENT_RECENT', N'è¿‘æœŸäº‹ä»¶',     9, N'Tbl_E_EventInstance', @CalcEventRecent, 91, N'ChartType=9 æ»šåŠ¨åˆ—è¡¨');
 
 DECLARE @Code VARCHAR(50), @Name NVARCHAR(100), @ChartType TINYINT, @DataSource NVARCHAR(100), @CalcRule NVARCHAR(MAX), @DispSeq INT, @Remark NVARCHAR(200);
 DECLARE cur_ind CURSOR LOCAL FAST_FORWARD FOR
@@ -135,21 +139,21 @@ CREATE TABLE #DashTplSeed (
 );
 
 INSERT INTO #DashTplSeed (PosCode, IndicatorCode, LayoutRow, LayoutCol, ColSpan, IsLock, CardTitle, DefaultFilterJson) VALUES
-(N'CF_ADMIN', N'FRAME_QUICK_MENU',   1, 1, 4, 0, N'¿ì½İÈë¿Ú(8)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_TODO_COUNT',   2, 1, 1, 1, N'´ı°ìÊıÁ¿(1)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_DEMO_GAUGE',   2, 2, 1, 0, N'´ı°ìÍê³ÉÂÊ(7)',   N'{}'),
-(N'CF_ADMIN', N'FRAME_ORG_STATS',    2, 3, 1, 0, N'×éÖ¯¸ÅÀÀ(1)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_DEMO_PIE',     2, 4, 1, 0, N'ÓÃ»§ÀàĞÍ(4)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_DEMO_LINE',    3, 1, 2, 0, N'µÇÂ¼Ç÷ÊÆ(2)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_DEMO_BAR',     3, 3, 2, 0, N'²Ëµ¥×é×ÊÔ´(3)',   N'{}'),
-(N'CF_ADMIN', N'FRAME_DEMO_TABLE',   4, 1, 2, 0, N'×î½üµÇÂ¼(5)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_DEMO_FUNNEL',  4, 3, 2, 0, N'ÊÂ¼şÂ©¶·(6)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_TODO_LIST',    5, 1, 2, 0, N'ÎÒµÄ´ı°ì(9)',     N'{}'),
-(N'CF_ADMIN', N'FRAME_EVENT_RECENT', 5, 3, 2, 0, N'½üÆÚÊÂ¼ş(9)',     N'{}'),
-(N'CF_STAFF', N'FRAME_QUICK_MENU',   1, 1, 4, 0, N'¿ì½İÈë¿Ú',       N'{}'),
-(N'CF_STAFF', N'FRAME_TODO_COUNT',   2, 1, 1, 0, N'´ı°ìÊıÁ¿',       N'{}'),
-(N'CF_STAFF', N'FRAME_DEMO_GAUGE',   2, 2, 1, 0, N'´ı°ìÍê³ÉÂÊ',     N'{}'),
-(N'CF_STAFF', N'FRAME_TODO_LIST',    3, 1, 2, 0, N'ÎÒµÄ´ı°ì',       N'{}');
+(N'CF_ADMIN', N'FRAME_QUICK_MENU',   1, 1, 4, 0, N'å¿«æ·å…¥å£(8)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_TODO_COUNT',   2, 1, 1, 1, N'å¾…åŠæ•°é‡(1)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_DEMO_GAUGE',   2, 2, 1, 0, N'å¾…åŠå®Œæˆç‡(7)',   N'{}'),
+(N'CF_ADMIN', N'FRAME_ORG_STATS',    2, 3, 1, 0, N'ç»„ç»‡æ¦‚è§ˆ(1)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_DEMO_PIE',     2, 4, 1, 0, N'ç”¨æˆ·ç±»å‹(4)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_DEMO_LINE',    3, 1, 2, 0, N'ç™»å½•è¶‹åŠ¿(2)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_DEMO_BAR',     3, 3, 2, 0, N'èœå•ç»„èµ„æº(3)',   N'{}'),
+(N'CF_ADMIN', N'FRAME_DEMO_TABLE',   4, 1, 2, 0, N'æœ€è¿‘ç™»å½•(5)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_DEMO_FUNNEL',  4, 3, 2, 0, N'äº‹ä»¶æ¼æ–—(6)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_TODO_LIST',    5, 1, 2, 0, N'æˆ‘çš„å¾…åŠ(9)',     N'{}'),
+(N'CF_ADMIN', N'FRAME_EVENT_RECENT', 5, 3, 2, 0, N'è¿‘æœŸäº‹ä»¶(9)',     N'{}'),
+(N'CF_STAFF', N'FRAME_QUICK_MENU',   1, 1, 4, 0, N'å¿«æ·å…¥å£',       N'{}'),
+(N'CF_STAFF', N'FRAME_TODO_COUNT',   2, 1, 1, 0, N'å¾…åŠæ•°é‡',       N'{}'),
+(N'CF_STAFF', N'FRAME_DEMO_GAUGE',   2, 2, 1, 0, N'å¾…åŠå®Œæˆç‡',     N'{}'),
+(N'CF_STAFF', N'FRAME_TODO_LIST',    3, 1, 2, 0, N'æˆ‘çš„å¾…åŠ',       N'{}');
 
 DECLARE @PosCode VARCHAR(50), @IndCode VARCHAR(50), @LR INT, @LC INT, @CS TINYINT, @Lock BIT, @Title NVARCHAR(100), @Filter NVARCHAR(MAX);
 DECLARE @PosId INT, @IndId INT;
@@ -179,7 +183,7 @@ DEALLOCATE cur_tpl;
 DROP TABLE #DashTplSeed;
 GO
 
-/* ==================== 8. ÖØ½¨ Dash ¸´ºÏË÷Òı£¨·ÇÉ¸Ñ¡£© ==================== */
+/* ==================== 8. é‡å»º Dash å¤åˆç´¢å¼•ï¼ˆéç­›é€‰ï¼‰ ==================== */
 SET NOCOUNT ON;
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
@@ -203,9 +207,30 @@ BEGIN
 END
 
 PRINT N'';
-PRINT N'========== 25-Seed_Dashboard Íê³É ==========';
-PRINT N'Ô¤ÖÃ 11 ÌõÖ¸±ê£¬¸²¸Ç ChartType 1~9£¨ÀàĞÍ 1/9 ¸÷ 2 ÌõÑİÊ¾£©';
-PRINT N'CF_ADMIN Ä£°åº¬È«²¿ 9 ÀàÍ¼±í£»Çë cfadmin ÖØĞÂµÇÂ¼ºó·ÃÎÊ /EDashBoard/Index';
-PRINT N'ÈôÒÑÓĞ¸öÈË¿¨Æ¬£¬ÇëÔÚÒÇ±íÅÌµã»÷¡¸ÖØÖÃÎª¸ÚÎ»Ä¬ÈÏ¡¹';
+PRINT N'========== 25-Seed_Dashboard å®Œæˆ ==========';
+PRINT N'é¢„ç½® 11 æ¡æŒ‡æ ‡ï¼Œè¦†ç›– ChartType 1~9ï¼ˆç±»å‹ 1/9 å„ 2 æ¡æ¼”ç¤ºï¼‰';
+PRINT N'CF_ADMIN æ¨¡æ¿å«å…¨éƒ¨ 9 ç±»å›¾è¡¨ï¼›è¯· cfadmin é‡æ–°ç™»å½•åè®¿é—® /EDashBoard/Index';
+PRINT N'è‹¥å·²æœ‰ä¸ªäººå¡ç‰‡ï¼Œè¯·åœ¨ä»ªè¡¨ç›˜ç‚¹å‡»ã€Œé‡ç½®ä¸ºå²—ä½é»˜è®¤ã€';
 PRINT N'==================================================';
+GO
+
+/* ---------- è„šæœ¬æ‰§è¡Œå°è´¦ ----------
+   ä»“åº“åŸå…ˆæ²¡æœ‰ä»»ä½•è¿ç§»æœºåˆ¶ï¼šæ–‡ä»¶åæ˜¯å”¯ä¸€çš„é¡ºåºä¾æ®ï¼Œè€Œç¼–å·å·²ç»åœ¨ç¢°æ’
+   ï¼ˆ20-Seed_Foundation / 20-Seed_README åŒå·ï¼‰ï¼Œä¹Ÿæ²¡æœ‰åŠæ³•é—®ä¸€ä¸ªæ•°æ®åº“ã€Œä½ è·‘è¿‡å“ªäº›è„šæœ¬ã€ã€‚
+   è¿™æ®µè‡ªå»ºè¡¨ + è®°å½•ï¼Œå¹‚ç­‰ï¼Œå¯åœ¨ä»»æ„è„šæœ¬å•ç‹¬æ‰§è¡Œã€‚ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'25-Seed_Dashboard.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'25-Seed_Dashboard.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'25-Seed_Dashboard.sql');
 GO

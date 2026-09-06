@@ -1,9 +1,11 @@
+using FamilyTree.Configuration;
 using FamilyTree.Filters;
 using FamilyTree.Helpers;
 using FamilyTree.Models.ViewModels;
 using FamilyTree.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FamilyTree.Controllers.Api;
 
@@ -18,6 +20,7 @@ public class FtAuthApiController : ControllerBase
 
     [HttpGet("Config")]
     [FtApiAllowAnonymous]
+    [EnableRateLimiting(RateLimitPolicies.AnonymousApi)]
     public IActionResult Config() => FtApiJson.Ok(_auth.PublicConfig());
 
     public sealed class WeChatLoginBody
@@ -28,6 +31,7 @@ public class FtAuthApiController : ControllerBase
 
     [HttpPost("WeChatLogin")]
     [FtApiAllowAnonymous]
+    [EnableRateLimiting(RateLimitPolicies.Login)]
     public async Task<IActionResult> WeChatLogin([FromBody] WeChatLoginBody body, CancellationToken ct)
     {
         var r = await _auth.WeChatLoginAsync(body.Code, body.MockOpenId, ct);
@@ -43,6 +47,7 @@ public class FtAuthApiController : ControllerBase
 
     [HttpPost("IdCardLogin")]
     [FtApiAllowAnonymous]
+    [EnableRateLimiting(RateLimitPolicies.Login)]
     public async Task<IActionResult> IdCardLogin([FromBody] IdLoginBody body, CancellationToken ct)
     {
         var r = await _auth.IdCardLoginAsync(body.IdCard, body.Password, ct);
@@ -52,6 +57,7 @@ public class FtAuthApiController : ControllerBase
 
     [HttpPost("Register")]
     [FtApiAllowAnonymous]
+    [EnableRateLimiting(RateLimitPolicies.Login)]
     public async Task<IActionResult> Register([FromBody] FtMemberRegisterVm body, CancellationToken ct)
     {
         var r = await _auth.RegisterAsync(body, ct);

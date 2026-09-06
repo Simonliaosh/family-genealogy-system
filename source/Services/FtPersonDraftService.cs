@@ -197,16 +197,32 @@ public sealed class FtPersonDraftService
     }
 
     /// <summary>无主谱命中或用户选择新建：写入人物档案；草稿仅改状态。</summary>
+    /// <remarks>
+    /// 整个归档过程原先有 8 次独立提交，而重入守卫依赖的 <c>AuditStatus</c>/<c>ResultPersonId</c>
+    /// 只在最后一次才写入：人物建好之后任何一步失败，人物已落库、草稿却没打标，
+    /// 用户重试就会再建一个人物——重复祖先是族谱系统最坏的数据损坏形态。
+    /// 现在整段包一个事务：要么全成，要么什么都没留下，守卫因此始终有效。
+    /// </remarks>
     public async Task<(int PersonId, string Message)> ArchiveAsNewAsync(int draftId, int userId, string op, CancellationToken ct)
     {
         var draft = await GetAsync(draftId, userId, ct) ?? throw new InvalidOperationException("草稿不存在。");
         if (draft.AuditStatus == "PASS" && draft.ResultPersonId.HasValue)
             return (draft.ResultPersonId.Value, "该草稿已入档。");
 
-        var pid = await MaterializePersonFromDraftAsync(draft, userId, op, ct);
-        MarkDraftPassed(draft, pid);
-        await _db.SaveChangesAsync(ct);
-        return (pid, $"已写入人物档案 #{pid}（独立建档）。");
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        try
+        {
+            var pid = await MaterializePersonFromDraftAsync(draft, userId, op, ct);
+            MarkDraftPassed(draft, pid);
+            await _db.SaveChangesAsync(ct);
+            await tx.CommitAsync(ct);
+            return (pid, $"已写入人物档案 #{pid}（独立建档）。");
+        }
+        catch
+        {
+            await tx.RollbackAsync(ct);
+            throw;
+        }
     }
 
     /// <summary>确认与已入档主谱人为同一人：建档并以目标为关系依据申请加入家族链；草稿仅改状态。</summary>
@@ -223,11 +239,22 @@ public sealed class FtPersonDraftService
         if (!tgt.InMainGenealogy)
             throw new InvalidOperationException("只能按已入主谱的人物加入家族链。");
 
-        var pid = await MaterializePersonFromDraftAsync(draft, userId, op, ct);
-        var (linkId, linkMsg) = await _links.ApplyAsync(pid, targetId, userId, op, level, ct);
-        MarkDraftPassed(draft, pid);
-        await _db.SaveChangesAsync(ct);
-        return (pid, $"已写入档案，并按「{tgt.FullName}」提交链入申请。" + linkMsg, linkId);
+        // 建人物 + 建链接 + 打标草稿是一件事，必须原子；ApplyAsync 会复用这里开的事务
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        try
+        {
+            var pid = await MaterializePersonFromDraftAsync(draft, userId, op, ct);
+            var (linkId, linkMsg) = await _links.ApplyAsync(pid, targetId, userId, op, level, ct);
+            MarkDraftPassed(draft, pid);
+            await _db.SaveChangesAsync(ct);
+            await tx.CommitAsync(ct);
+            return (pid, $"已写入档案，并按「{tgt.FullName}」提交链入申请。" + linkMsg, linkId);
+        }
+        catch
+        {
+            await tx.RollbackAsync(ct);
+            throw;
+        }
     }
 
     /// <summary>兼容旧调用：先匹配；有主谱命中时抛出引导信息由控制器跳确认页。建议改用 BuildArchiveConfirm / Archive*。</summary>

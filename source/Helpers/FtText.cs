@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FamilyTree.Helpers;
 
@@ -89,10 +90,46 @@ public static class FtText
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes((salt ?? "") + n));
         return Convert.ToHexString(bytes).ToLowerInvariant();
     }
+
+    /// <summary>
+    /// 登录标识脱敏，供日志与登录日志表使用。身份证登录是一等流程，
+    /// 原先 18 位号码会完整落进 <c>Tbl_E_LoginLog</c> 并展示给有权限者——
+    /// 这把「身份证只存哈希」的设计意图整个抵消了。保留前 3 后 4，中间打点。
+    /// </summary>
+    public static string MaskLoginId(string? raw)
+    {
+        var s = (raw ?? "").Trim();
+        if (s.Length == 0) return "";
+        if (!IsIdCard(s)) return s;
+        return s[..3] + new string('*', s.Length - 7) + s[^4..];
+    }
 }
 
 public static class FtPaging
 {
+    /// <summary>
+    /// 库侧分页：把 <c>Count</c> / <c>Skip</c> / <c>Take</c> 下推到 SQL。
+    /// 与内存版 <see cref="Page{T}"/> 返回同样的四元组，便于逐个列表迁移。
+    /// </summary>
+    public static async Task<(IReadOnlyList<T> pageRows, int total, int totalPages, int page)> PageAsync<T>(
+        IQueryable<T> query, int page, int pageSize, CancellationToken ct)
+    {
+        if (pageSize <= 0) pageSize = 16;
+        if (pageSize > 200) pageSize = 200;
+
+        // 四元组语义必须与内存版 Page 完全一致（含 totalPages 至少为 1），
+        // 否则逐个列表迁移时分页条的渲染会静默变样。
+        var total = await query.CountAsync(ct);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(total / (double)pageSize));
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+
+        var rows = total == 0
+            ? new List<T>()
+            : await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+        return (rows, total, totalPages, page);
+    }
+
     public static (IReadOnlyList<T> pageRows, int total, int totalPages, int page) Page<T>(
         IList<T> rows, int page, int pageSize)
     {

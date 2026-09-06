@@ -1,11 +1,15 @@
+Ôªø/* Â∫ìÂêçÁªü‰∏Ä‰∏∫ FamilyTreeÔºöÊú¨ËÑöÊú¨ÂéüÂÖàÊ≤°Êúâ USEÔºå‰ºöËêΩÂú®ÊâßË°åÂ∑•ÂÖ∑ÂΩìÊó∂ÈÄâ‰∏≠ÁöÑÂ∫ì‰∏ä„ÄÇ */
+USE [FamilyTree];
+GO
+
 /*
 ==============================================================================
-  EFrame ÷÷◊” 01 - ª˘¥° ˝æ›£®”¶”√ƒ£øÈ/≤Àµ•◊È/◊÷µ‰£©
+  EFrame ÁßçÂ≠ê 01 - Âü∫Á°ÄÊï∞ÊçÆÔºàÂ∫îÁî®Ê®°Âùó/ËèúÂçïÁªÑ/Â≠óÂÖ∏Ôºâ
 ==============================================================================
-  ¿¥‘¥£∫EFrame.xls + EFrame º‹ππ∂‘∆Î£®√›µ» MERGE / IF NOT EXISTS£©
-  «∞÷√£∫docs/EFrame_CreateTables.sql°¢docs/EFrame_v2_supplement.sql
-  À≥–Ú£∫µ⁄ 1 ≤Ω
-  ±‡¬Î£∫ANSI (GBK)
+  Êù•Ê∫êÔºöEFrame.xls + EFrame Êû∂ÊûÑÂØπÈΩêÔºàÂπÇÁ≠â MERGE / IF NOT EXISTSÔºâ
+  ÂâçÁΩÆÔºödocs/EFrame_CreateTables.sql„ÄÅdocs/EFrame_v2_supplement.sql
+  È°∫Â∫èÔºöÁ¨¨ 1 Ê≠•
+  ÁºñÁ†ÅÔºöANSI (GBK)
 ==============================================================================
 */
 SET NOCOUNT ON;
@@ -15,49 +19,49 @@ GO
 DECLARE @Now DATETIME = GETDATE();
 DECLARE @Op VARCHAR(30) = 'SEED-EFRAME';
 
-/* ----- ”¶”√ƒ£øÈ ----- */
+/* ----- Â∫îÁî®Ê®°Âùó ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_AppModule WHERE AppCode = 'FRAME')
     INSERT INTO dbo.Tbl_E_AppModule (AppCode, AppName, AppType, BaseUrl, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('FRAME', N'EFrame π‹¿ÌøÚº‹', 'FRAMEWORK', NULL, 99, '1', 0, @Now, @Now, @Op);
+    VALUES ('FRAME', N'EFrame ÁÆ°ÁêÜÊ°ÜÊû∂', 'FRAMEWORK', NULL, 99, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_AppModule SET AppName=N'EFrame π‹¿ÌøÚº‹', AppType='FRAMEWORK',
+    UPDATE dbo.Tbl_E_AppModule SET AppName=N'EFrame ÁÆ°ÁêÜÊ°ÜÊû∂', AppType='FRAMEWORK',
         BaseUrl=NULL, DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='FRAME';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_AppModule WHERE AppCode = 'CRM')
     INSERT INTO dbo.Tbl_E_AppModule (AppCode, AppName, AppType, BaseUrl, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('CRM', N'øÕªßπÿœµ£®—› æ£©', 'BUSINESS', N'https://crm.example.local', 10, '1', 0, @Now, @Now, @Op);
+    VALUES ('CRM', N'ÂÆ¢Êà∑ÂÖ≥Á≥ªÔºàÊºîÁ§∫Ôºâ', 'BUSINESS', N'https://crm.example.local', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_AppModule SET AppName=N'øÕªßπÿœµ£®—› æ£©', AppType='BUSINESS',
+    UPDATE dbo.Tbl_E_AppModule SET AppName=N'ÂÆ¢Êà∑ÂÖ≥Á≥ªÔºàÊºîÁ§∫Ôºâ', AppType='BUSINESS',
         BaseUrl=N'https://crm.example.local', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='CRM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_AppModule WHERE AppCode = 'OA')
     INSERT INTO dbo.Tbl_E_AppModule (AppCode, AppName, AppType, BaseUrl, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('OA', N'∞Ïπ´◊‘∂ØªØ£®—› æ£©', 'BUSINESS', N'https://oa.example.local', 20, '1', 0, @Now, @Now, @Op);
+    VALUES ('OA', N'ÂäûÂÖ¨Ëá™Âä®ÂåñÔºàÊºîÁ§∫Ôºâ', 'BUSINESS', N'https://oa.example.local', 20, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_AppModule SET AppName=N'∞Ïπ´◊‘∂ØªØ£®—› æ£©', AppType='BUSINESS',
+    UPDATE dbo.Tbl_E_AppModule SET AppName=N'ÂäûÂÖ¨Ëá™Âä®ÂåñÔºàÊºîÁ§∫Ôºâ', AppType='BUSINESS',
         BaseUrl=N'https://oa.example.local', DispSeq=20, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='OA';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_AppModule WHERE AppCode = 'HR')
     INSERT INTO dbo.Tbl_E_AppModule (AppCode, AppName, AppType, BaseUrl, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('HR', N'»À ¬π‹¿Ì', 'BUSINESS', N'/HrHome/Index', 15, '1', 0, @Now, @Now, @Op);
+    VALUES ('HR', N'‰∫∫‰∫ãÁÆ°ÁêÜ', 'BUSINESS', N'/HrHome/Index', 15, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_AppModule SET AppName=N'»À ¬π‹¿Ì', AppType='BUSINESS',
+    UPDATE dbo.Tbl_E_AppModule SET AppName=N'‰∫∫‰∫ãÁÆ°ÁêÜ', AppType='BUSINESS',
         BaseUrl=N'/HrHome/Index', DispSeq=15, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='HR';
 
-/* ----- ≤Àµ•◊È ----- */
+/* ----- ËèúÂçïÁªÑ ----- */
 
 ;MERGE dbo.Tbl_E_MenuGroup AS t
 USING (VALUES
-    ('EVT', 'FRAME', N' ¬º˛π‹¿Ì', 30),
-    ('HR', 'FRAME', N'»À ¬π‹¿Ì', 25),
-    ('LOG', 'FRAME', N'»’÷æ≤È—Ø', 40),
-    ('ORG', 'FRAME', N'◊È÷Øº‹ππ', 20),
-    ('SYS', 'FRAME', N'œµÕ≥π‹¿Ì', 10)
+    ('EVT', 'FRAME', N'‰∫ã‰ª∂ÁÆ°ÁêÜ', 30),
+    ('HR', 'FRAME', N'‰∫∫‰∫ãÁÆ°ÁêÜ', 25),
+    ('LOG', 'FRAME', N'Êó•ÂøóÊü•ËØ¢', 40),
+    ('ORG', 'FRAME', N'ÁªÑÁªáÊû∂ÊûÑ', 20),
+    ('SYS', 'FRAME', N'Á≥ªÁªüÁÆ°ÁêÜ', 10)
 ) AS s (MenuGroupCode, AppCode, MenuGroupName, DispSeq)
 ON t.MenuGroupCode = s.MenuGroupCode
 WHEN NOT MATCHED THEN
@@ -66,485 +70,485 @@ WHEN NOT MATCHED THEN
 WHEN MATCHED THEN
     UPDATE SET AppCode=s.AppCode, MenuGroupName=s.MenuGroupName, DispSeq=s.DispSeq, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op;
 
-/* ----- ◊÷µ‰¿‡–Õ ----- */
+/* ----- Â≠óÂÖ∏Á±ªÂûã ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'ACTION_CODE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'◊ ‘¥∂Ø◊˜±‡¬Î', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'ËµÑÊ∫êÂä®‰ΩúÁºñÁ†Å', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'◊ ‘¥∂Ø◊˜±‡¬Î', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ËµÑÊ∫êÂä®‰ΩúÁºñÁ†Å', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'APP_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('APP_TYPE', N'”¶”√¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('APP_TYPE', N'Â∫îÁî®Á±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'”¶”√¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Â∫îÁî®Á±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='APP_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'BSTATUS')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('BSTATUS', N'“µŒÒ◊¥Ã¨', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('BSTATUS', N'‰∏öÂä°Áä∂ÊÄÅ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'“µŒÒ◊¥Ã¨', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∏öÂä°Áä∂ÊÄÅ', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='BSTATUS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'CANDIDATE_STATUS')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CANDIDATE_STATUS', N'∫Ú—°»À◊¥Ã¨', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('CANDIDATE_STATUS', N'ÂÄôÈÄâ‰∫∫Áä∂ÊÄÅ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'∫Ú—°»À◊¥Ã¨', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂÄôÈÄâ‰∫∫Áä∂ÊÄÅ', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CANDIDATE_STATUS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'CHANNEL')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CHANNEL', N'Õ®÷™«˛µ¿', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CHANNEL', N'ÈÄöÁü•Ê∏†ÈÅì', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Õ®÷™«˛µ¿', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÈÄöÁü•Ê∏†ÈÅì', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CHANNEL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'DATA_SCOPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DATA_SCOPE', N' ˝æ›∑∂Œß', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('DATA_SCOPE', N'Êï∞ÊçÆËåÉÂõ¥', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ˝æ›∑∂Œß', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Êï∞ÊçÆËåÉÂõ¥', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DATA_SCOPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'DELEGATE_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELEGATE_TYPE', N'ŒØÕ–¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELEGATE_TYPE', N'ÂßîÊâòÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ŒØÕ–¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂßîÊâòÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELEGATE_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'DELIVERY_STATUS')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELIVERY_STATUS', N'Õ∂µ›◊¥Ã¨', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELIVERY_STATUS', N'ÊäïÈÄíÁä∂ÊÄÅ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Õ∂µ›◊¥Ã¨', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÊäïÈÄíÁä∂ÊÄÅ', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELIVERY_STATUS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'DEPT_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DEPT_TYPE', N'≤ø√≈¿‡–Õ', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DEPT_TYPE', N'ÈÉ®Èó®Á±ªÂûã', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'≤ø√≈¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÈÉ®Èó®Á±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DEPT_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'DUTY_CATEGORY')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DUTY_CATEGORY', N'÷∞‘∑÷¿‡', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DUTY_CATEGORY', N'ËÅåË¥£ÂàÜÁ±ª', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'÷∞‘∑÷¿‡', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ËÅåË¥£ÂàÜÁ±ª', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DUTY_CATEGORY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'EVENT_ACTION')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_ACTION', N' ¬º˛»’÷æ∂Ø◊˜', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_ACTION', N'‰∫ã‰ª∂Êó•ÂøóÂä®‰Ωú', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ¬º˛»’÷æ∂Ø◊˜', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫ã‰ª∂Êó•ÂøóÂä®‰Ωú', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_ACTION';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'EVENT_STATUS')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_STATUS', N' ¬º˛ µ¿˝◊¥Ã¨', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_STATUS', N'‰∫ã‰ª∂ÂÆû‰æãÁä∂ÊÄÅ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ¬º˛ µ¿˝◊¥Ã¨', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫ã‰ª∂ÂÆû‰æãÁä∂ÊÄÅ', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_STATUS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'EVENT_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_TYPE', N' ¬º˛∑÷¿‡', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_TYPE', N'‰∫ã‰ª∂ÂàÜÁ±ª', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ¬º˛∑÷¿‡', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫ã‰ª∂ÂàÜÁ±ª', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'EXEC_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EXEC_TYPE', N' ¬º˛÷¥––¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('EXEC_TYPE', N'‰∫ã‰ª∂ÊâßË°åÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ¬º˛÷¥––¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫ã‰ª∂ÊâßË°åÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EXEC_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'FLOW_ACTION')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('FLOW_ACTION', N'¡˜◊™∂Ø◊˜¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('FLOW_ACTION', N'ÊµÅËΩ¨Âä®‰ΩúÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¡˜◊™∂Ø◊˜¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÊµÅËΩ¨Âä®‰ΩúÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='FLOW_ACTION';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'GROUP_STATUS')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('GROUP_STATUS', N'¥˝∞Ï◊È◊¥Ã¨', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('GROUP_STATUS', N'ÂæÖÂäûÁªÑÁä∂ÊÄÅ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¥˝∞Ï◊È◊¥Ã¨', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂæÖÂäûÁªÑÁä∂ÊÄÅ', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='GROUP_STATUS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'HANDLE_MODE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDLE_MODE', N'¥¶¿Ìƒ£ Ω', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDLE_MODE', N'Â§ÑÁêÜÊ®°Âºè', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¥¶¿Ìƒ£ Ω', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Â§ÑÁêÜÊ®°Âºè', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDLE_MODE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'HANDOVER_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDOVER_TYPE', N'ΩªΩ”¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDOVER_TYPE', N'‰∫§Êé•Á±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ΩªΩ”¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫§Êé•Á±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDOVER_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'HR_LEAVE_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'«ÎºŸºŸ±', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'ËØ∑ÂÅáÂÅáÂà´', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'«ÎºŸºŸ±', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ËØ∑ÂÅáÂÅáÂà´', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HR_LEAVE_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'MEMBER_EDU_LEVEL')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'—ß¿˙', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'Â≠¶ÂéÜ', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'—ß¿˙', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Â≠¶ÂéÜ', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='MEMBER_EDU_LEVEL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'MEMBER_HEALTH')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_HEALTH', N'Ω°øµ◊¥øˆ', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_HEALTH', N'ÂÅ•Â∫∑Áä∂ÂÜµ', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Ω°øµ◊¥øˆ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂÅ•Â∫∑Áä∂ÂÜµ', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='MEMBER_HEALTH';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'MEMBER_PER_GRADE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'»À‘±÷∞º∂', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'‰∫∫ÂëòËÅåÁ∫ß', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'»À‘±÷∞º∂', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫∫ÂëòËÅåÁ∫ß', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='MEMBER_PER_GRADE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'MEMBER_SEX')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_SEX', N'»À‘±–‘±', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_SEX', N'‰∫∫ÂëòÊÄßÂà´', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'»À‘±–‘±', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∫∫ÂëòÊÄßÂà´', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='MEMBER_SEX';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'POSITION_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('POSITION_TYPE', N'∏⁄Œª¿‡–Õ', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('POSITION_TYPE', N'Â≤ó‰ΩçÁ±ªÂûã', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'∏⁄Œª¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Â≤ó‰ΩçÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='POSITION_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'PWD_ALGO')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('PWD_ALGO', N'√‹¬ÎÀ„∑®', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('PWD_ALGO', N'ÂØÜÁ†ÅÁÆóÊ≥ï', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'√‹¬ÎÀ„∑®', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂØÜÁ†ÅÁÆóÊ≥ï', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='PWD_ALGO';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'RELATION_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RELATION_TYPE', N'…œœ¬º∂πÿœµ¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('RELATION_TYPE', N'‰∏ä‰∏ãÁ∫ßÂÖ≥Á≥ªÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'…œœ¬º∂πÿœµ¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'‰∏ä‰∏ãÁ∫ßÂÖ≥Á≥ªÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RELATION_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'RESOLVE_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOLVE_TYPE', N'Ω” ’»ÀΩ‚Œˆ∑Ω Ω', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOLVE_TYPE', N'Êé•Êî∂‰∫∫Ëß£ÊûêÊñπÂºè', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Ω” ’»ÀΩ‚Œˆ∑Ω Ω', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Êé•Êî∂‰∫∫Ëß£ÊûêÊñπÂºè', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOLVE_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'RESOURCE_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOURCE_TYPE', N'◊ ‘¥¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOURCE_TYPE', N'ËµÑÊ∫êÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'◊ ‘¥¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ËµÑÊ∫êÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOURCE_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'SCOPE_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N' ˝æ›∑∂Œß¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'Êï∞ÊçÆËåÉÂõ¥Á±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ˝æ›∑∂Œß¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Êï∞ÊçÆËåÉÂõ¥Á±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'SUB_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUB_TYPE', N'∂©‘ƒ¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUB_TYPE', N'ËÆ¢ÈòÖÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'∂©‘ƒ¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ËÆ¢ÈòÖÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUB_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'SUBJECT_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUBJECT_TYPE', N' ⁄»®÷˜ÃÂ¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUBJECT_TYPE', N'ÊéàÊùÉ‰∏ª‰ΩìÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N' ⁄»®÷˜ÃÂ¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÊéàÊùÉ‰∏ª‰ΩìÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUBJECT_TYPE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'TARGET_RESOLVE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TARGET_RESOLVE', N'¥¶¿Ì»ÀΩ‚Œˆ∑Ω Ω', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('TARGET_RESOLVE', N'Â§ÑÁêÜ‰∫∫Ëß£ÊûêÊñπÂºè', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¥¶¿Ì»ÀΩ‚Œˆ∑Ω Ω', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Â§ÑÁêÜ‰∫∫Ëß£ÊûêÊñπÂºè', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TARGET_RESOLVE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'TODO_ACTION')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'¥˝∞Ï∂Ø◊˜¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'ÂæÖÂäûÂä®‰ΩúÁ±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¥˝∞Ï∂Ø◊˜¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂæÖÂäûÂä®‰ΩúÁ±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'TODO_PRIORITY')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_PRIORITY', N'¥˝∞Ï”≈œ»º∂', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_PRIORITY', N'ÂæÖÂäû‰ºòÂÖàÁ∫ß', 'FRAME', 1, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¥˝∞Ï”≈œ»º∂', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂæÖÂäû‰ºòÂÖàÁ∫ß', AppCode='FRAME',
         IsSystem=1, IsEditable=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_PRIORITY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'TODO_STATUS')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_STATUS', N'¥˝∞Ï◊¥Ã¨', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_STATUS', N'ÂæÖÂäûÁä∂ÊÄÅ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'¥˝∞Ï◊¥Ã¨', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'ÂæÖÂäûÁä∂ÊÄÅ', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_STATUS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictType WHERE DictTypeCode = 'USER_TYPE')
     INSERT INTO dbo.Tbl_E_DictType (DictTypeCode, DictTypeName, AppCode, IsSystem, IsEditable, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('USER_TYPE', N'”√ªß¿‡–Õ', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
+    VALUES ('USER_TYPE', N'Áî®Êà∑Á±ªÂûã', 'FRAME', 1, 0, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'”√ªß¿‡–Õ', AppCode='FRAME',
+    UPDATE dbo.Tbl_E_DictType SET DictTypeName=N'Áî®Êà∑Á±ªÂûã', AppCode='FRAME',
         IsSystem=1, IsEditable=0, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='USER_TYPE';
 
-/* ----- ◊÷µ‰œÓ ----- */
+/* ----- Â≠óÂÖ∏È°π ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='APP_TYPE' AND ItemCode=N'FRAMEWORK')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('APP_TYPE', N'FRAMEWORK', N'øÚº‹”¶”√', N'Framework', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('APP_TYPE', N'FRAMEWORK', N'Ê°ÜÊû∂Â∫îÁî®', N'Framework', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'øÚº‹”¶”√', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ê°ÜÊû∂Â∫îÁî®', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='APP_TYPE' AND ItemCode=N'FRAMEWORK';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='APP_TYPE' AND ItemCode=N'BUSINESS')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('APP_TYPE', N'BUSINESS', N'“µŒÒ”¶”√', N'Business', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('APP_TYPE', N'BUSINESS', N'‰∏öÂä°Â∫îÁî®', N'Business', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“µŒÒ”¶”√', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏öÂä°Â∫îÁî®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='APP_TYPE' AND ItemCode=N'BUSINESS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='APP_TYPE' AND ItemCode=N'PLUGIN')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('APP_TYPE', N'PLUGIN', N'≤Âº˛', N'Plugin', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('APP_TYPE', N'PLUGIN', N'Êèí‰ª∂', N'Plugin', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤Âº˛', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êèí‰ª∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='APP_TYPE' AND ItemCode=N'PLUGIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='BSTATUS' AND ItemCode=N'1')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('BSTATUS', N'1', N'∆Ù”√', N'Enabled', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('BSTATUS', N'1', N'ÂêØÁî®', N'Enabled', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆Ù”√', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂêØÁî®', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='BSTATUS' AND ItemCode=N'1';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='BSTATUS' AND ItemCode=N'2')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('BSTATUS', N'2', N'Õ£”√', N'Disabled', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('BSTATUS', N'2', N'ÂÅúÁî®', N'Disabled', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ£”√', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÅúÁî®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='BSTATUS' AND ItemCode=N'2';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'COMPANY')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DEPT_TYPE', N'COMPANY', N'π´Àæ', N'Company', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DEPT_TYPE', N'COMPANY', N'ÂÖ¨Âè∏', N'Company', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'π´Àæ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ¨Âè∏', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'COMPANY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'DEPT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DEPT_TYPE', N'DEPT', N'≤ø√≈', N'Department', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DEPT_TYPE', N'DEPT', N'ÈÉ®Èó®', N'Department', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤ø√≈', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÉ®Èó®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'DEPT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'TEAM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DEPT_TYPE', N'TEAM', N'Õ≈∂”', N'Team', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DEPT_TYPE', N'TEAM', N'Âõ¢Èòü', N'Team', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ≈∂”', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âõ¢Èòü', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'TEAM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'STORE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DEPT_TYPE', N'STORE', N'√≈µÍ', N'Store', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DEPT_TYPE', N'STORE', N'Èó®Â∫ó', N'Store', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'√≈µÍ', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Èó®Â∫ó', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DEPT_TYPE' AND ItemCode=N'STORE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'MANAGER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('POSITION_TYPE', N'MANAGER', N'π‹¿Ì∏⁄', N'Manager', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('POSITION_TYPE', N'MANAGER', N'ÁÆ°ÁêÜÂ≤ó', N'Manager', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'π‹¿Ì∏⁄', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÁÆ°ÁêÜÂ≤ó', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'MANAGER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'SALES')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('POSITION_TYPE', N'SALES', N'œ˙ €∏⁄', N'Sales', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('POSITION_TYPE', N'SALES', N'ÈîÄÂîÆÂ≤ó', N'Sales', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'œ˙ €∏⁄', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈîÄÂîÆÂ≤ó', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'SALES';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'SERVICE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('POSITION_TYPE', N'SERVICE', N'∑˛ŒÒ∏⁄', N'Service', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('POSITION_TYPE', N'SERVICE', N'ÊúçÂä°Â≤ó', N'Service', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∑˛ŒÒ∏⁄', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊúçÂä°Â≤ó', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'SERVICE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'FINANCE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('POSITION_TYPE', N'FINANCE', N'≤∆ŒÒ∏⁄', N'Finance', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('POSITION_TYPE', N'FINANCE', N'Ë¥¢Âä°Â≤ó', N'Finance', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤∆ŒÒ∏⁄', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ë¥¢Âä°Â≤ó', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='POSITION_TYPE' AND ItemCode=N'FINANCE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'SELF')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DATA_SCOPE', N'SELF', N'Ωˆ±æ»À', N'Self Only', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DATA_SCOPE', N'SELF', N'‰ªÖÊú¨‰∫∫', N'Self Only', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ωˆ±æ»À', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰ªÖÊú¨‰∫∫', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'SELF';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'DEPT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DATA_SCOPE', N'DEPT', N'±æ≤ø√≈', N'Own Dept', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DATA_SCOPE', N'DEPT', N'Êú¨ÈÉ®Èó®', N'Own Dept', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'±æ≤ø√≈', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êú¨ÈÉ®Èó®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'DEPT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'DEPT_TREE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DATA_SCOPE', N'DEPT_TREE', N'±æ≤ø√≈º∞œ¬º∂', N'Dept & Sub', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DATA_SCOPE', N'DEPT_TREE', N'Êú¨ÈÉ®Èó®Âèä‰∏ãÁ∫ß', N'Dept & Sub', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'±æ≤ø√≈º∞œ¬º∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êú¨ÈÉ®Èó®Âèä‰∏ãÁ∫ß', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'DEPT_TREE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'ALL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DATA_SCOPE', N'ALL', N'»´≤ø', N'All', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DATA_SCOPE', N'ALL', N'ÂÖ®ÈÉ®', N'All', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»´≤ø', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ®ÈÉ®', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'ALL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'CUSTOM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DATA_SCOPE', N'CUSTOM', N'◊‘∂®“Â', N'Custom', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DATA_SCOPE', N'CUSTOM', N'Ëá™ÂÆö‰πâ', N'Custom', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'◊‘∂®“Â', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ëá™ÂÆö‰πâ', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DATA_SCOPE' AND ItemCode=N'CUSTOM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'APPROVAL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DUTY_CATEGORY', N'APPROVAL', N'…Û≈˙', N'Approval', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DUTY_CATEGORY', N'APPROVAL', N'ÂÆ°Êâπ', N'Approval', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'…Û≈˙', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÆ°Êâπ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'APPROVAL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'SALES')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DUTY_CATEGORY', N'SALES', N'œ˙ €', N'Sales', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DUTY_CATEGORY', N'SALES', N'ÈîÄÂîÆ', N'Sales', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'œ˙ €', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈîÄÂîÆ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'SALES';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'SERVICE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DUTY_CATEGORY', N'SERVICE', N'∑˛ŒÒ', N'Service', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DUTY_CATEGORY', N'SERVICE', N'ÊúçÂä°', N'Service', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∑˛ŒÒ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊúçÂä°', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'SERVICE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'FINANCE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DUTY_CATEGORY', N'FINANCE', N'≤∆ŒÒ', N'Finance', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DUTY_CATEGORY', N'FINANCE', N'Ë¥¢Âä°', N'Finance', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤∆ŒÒ', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ë¥¢Âä°', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DUTY_CATEGORY' AND ItemCode=N'FINANCE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'EMPLOYEE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('USER_TYPE', N'EMPLOYEE', N'‘±π§', N'Employee', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('USER_TYPE', N'EMPLOYEE', N'ÂëòÂ∑•', N'Employee', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‘±π§', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂëòÂ∑•', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'EMPLOYEE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'CUSTOMER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('USER_TYPE', N'CUSTOMER', N'øÕªß', N'Customer', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('USER_TYPE', N'CUSTOMER', N'ÂÆ¢Êà∑', N'Customer', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'øÕªß', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÆ¢Êà∑', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'CUSTOMER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'SUPPLIER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('USER_TYPE', N'SUPPLIER', N'π©”¶…Ã', N'Supplier', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('USER_TYPE', N'SUPPLIER', N'‰æõÂ∫îÂïÜ', N'Supplier', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'π©”¶…Ã', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰æõÂ∫îÂïÜ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'SUPPLIER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'PARTNER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('USER_TYPE', N'PARTNER', N'∫œ◊˜ªÔ∞È', N'Partner', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('USER_TYPE', N'PARTNER', N'Âêà‰Ωú‰ºô‰º¥', N'Partner', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∫œ◊˜ªÔ∞È', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âêà‰Ωú‰ºô‰º¥', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='USER_TYPE' AND ItemCode=N'PARTNER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='PWD_ALGO' AND ItemCode=N'MD5_16')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('PWD_ALGO', N'MD5_16', N'MD5 16Œª', N'MD5-16', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('PWD_ALGO', N'MD5_16', N'MD5 16‰Ωç', N'MD5-16', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'MD5 16Œª', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'MD5 16‰Ωç', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='PWD_ALGO' AND ItemCode=N'MD5_16';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='PWD_ALGO' AND ItemCode=N'PBKDF2')
@@ -563,107 +567,107 @@ ELSE
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'TODO')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELEGATE_TYPE', N'TODO', N'¥˝∞ÏŒØÕ–', N'Todo', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELEGATE_TYPE', N'TODO', N'ÂæÖÂäûÂßîÊâò', N'Todo', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝∞ÏŒØÕ–', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÂäûÂßîÊâò', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'TODO';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'APPROVAL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELEGATE_TYPE', N'APPROVAL', N'…Û≈˙ŒØÕ–', N'Approval', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELEGATE_TYPE', N'APPROVAL', N'ÂÆ°ÊâπÂßîÊâò', N'Approval', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'…Û≈˙ŒØÕ–', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÆ°ÊâπÂßîÊâò', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'APPROVAL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'NOTICE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELEGATE_TYPE', N'NOTICE', N'Õ®÷™ŒØÕ–', N'Notice', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELEGATE_TYPE', N'NOTICE', N'ÈÄöÁü•ÂßîÊâò', N'Notice', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ®÷™ŒØÕ–', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÄöÁü•ÂßîÊâò', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'NOTICE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'ALL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELEGATE_TYPE', N'ALL', N'»´≤øŒØÕ–', N'All', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELEGATE_TYPE', N'ALL', N'ÂÖ®ÈÉ®ÂßîÊâò', N'All', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»´≤øŒØÕ–', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ®ÈÉ®ÂßîÊâò', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELEGATE_TYPE' AND ItemCode=N'ALL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'LEAVE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDOVER_TYPE', N'LEAVE', N'«ÎºŸ', N'Leave', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDOVER_TYPE', N'LEAVE', N'ËØ∑ÂÅá', N'Leave', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'«ÎºŸ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ËØ∑ÂÅá', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'LEAVE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'TRANSFER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDOVER_TYPE', N'TRANSFER', N'µ˜∏⁄', N'Transfer', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDOVER_TYPE', N'TRANSFER', N'Ë∞ÉÂ≤ó', N'Transfer', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µ˜∏⁄', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ë∞ÉÂ≤ó', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'TRANSFER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'RESIGN')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDOVER_TYPE', N'RESIGN', N'¿Î÷∞', N'Resign', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDOVER_TYPE', N'RESIGN', N'Á¶ªËÅå', N'Resign', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¿Î÷∞', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Á¶ªËÅå', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'RESIGN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'TEMP')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDOVER_TYPE', N'TEMP', N'¡Ÿ ±', N'Temp', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDOVER_TYPE', N'TEMP', N'‰∏¥Êó∂', N'Temp', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¡Ÿ ±', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏¥Êó∂', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDOVER_TYPE' AND ItemCode=N'TEMP';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RELATION_TYPE' AND ItemCode=N'DIRECT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RELATION_TYPE', N'DIRECT', N'÷±Ω”ª„±®', N'Direct', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RELATION_TYPE', N'DIRECT', N'Áõ¥Êé•Ê±áÊä•', N'Direct', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'÷±Ω”ª„±®', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Áõ¥Êé•Ê±áÊä•', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RELATION_TYPE' AND ItemCode=N'DIRECT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RELATION_TYPE' AND ItemCode=N'MATRIX')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RELATION_TYPE', N'MATRIX', N'æÿ’Ûª„±®', N'Matrix', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RELATION_TYPE', N'MATRIX', N'Áü©ÈòµÊ±áÊä•', N'Matrix', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'æÿ’Ûª„±®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Áü©ÈòµÊ±áÊä•', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RELATION_TYPE' AND ItemCode=N'MATRIX';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RELATION_TYPE' AND ItemCode=N'TEMP')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RELATION_TYPE', N'TEMP', N'¡Ÿ ±ª„±®', N'Temp', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RELATION_TYPE', N'TEMP', N'‰∏¥Êó∂Ê±áÊä•', N'Temp', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¡Ÿ ±ª„±®', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏¥Êó∂Ê±áÊä•', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RELATION_TYPE' AND ItemCode=N'TEMP';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'PAGE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOURCE_TYPE', N'PAGE', N'“≥√Ê', N'Page', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOURCE_TYPE', N'PAGE', N'È°µÈù¢', N'Page', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“≥√Ê', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'È°µÈù¢', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'PAGE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'GROUP')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOURCE_TYPE', N'GROUP', N'∑÷◊È', N'Group', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOURCE_TYPE', N'GROUP', N'ÂàÜÁªÑ', N'Group', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∑÷◊È', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂàÜÁªÑ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'GROUP';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'MENU')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOURCE_TYPE', N'MENU', N'≤Àµ•', N'Menu', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOURCE_TYPE', N'MENU', N'ËèúÂçï', N'Menu', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤Àµ•', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ËèúÂçï', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'MENU';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'BUTTON')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOURCE_TYPE', N'BUTTON', N'∞¥≈•', N'Button', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOURCE_TYPE', N'BUTTON', N'ÊåâÈíÆ', N'Button', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥≈•', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåâÈíÆ', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'BUTTON';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOURCE_TYPE' AND ItemCode=N'API')
@@ -675,815 +679,836 @@ ELSE
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'QUERY')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'QUERY', N'≤È—Ø', N'Query', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'QUERY', N'Êü•ËØ¢', N'Query', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤È—Ø', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êü•ËØ¢', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'QUERY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'CREATE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'CREATE', N'–¬‘ˆ', N'Create', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'CREATE', N'Êñ∞Â¢û', N'Create', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'–¬‘ˆ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êñ∞Â¢û', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'CREATE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'UPDATE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'UPDATE', N'–ﬁ∏ƒ', N'Update', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'UPDATE', N'‰øÆÊîπ', N'Update', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'–ﬁ∏ƒ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰øÆÊîπ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'UPDATE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'DELETE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'DELETE', N'…æ≥˝', N'Delete', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'DELETE', N'Âà†Èô§', N'Delete', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'…æ≥˝', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âà†Èô§', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'DELETE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'APPROVE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'APPROVE', N'…Û≈˙', N'Approve', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'APPROVE', N'ÂÆ°Êâπ', N'Approve', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'…Û≈˙', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÆ°Êâπ', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'APPROVE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'EXPORT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'EXPORT', N'µº≥ˆ', N'Export', NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'EXPORT', N'ÂØºÂá∫', N'Export', NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µº≥ˆ', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂØºÂá∫', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'EXPORT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'IMPORT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('ACTION_CODE', N'IMPORT', N'µº»Î', N'Import', NULL, 7, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('ACTION_CODE', N'IMPORT', N'ÂØºÂÖ•', N'Import', NULL, 7, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µº»Î', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂØºÂÖ•', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='ACTION_CODE' AND ItemCode=N'IMPORT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'SELF')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N'SELF', N'Ωˆ±æ»À', N'Self', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'SELF', N'‰ªÖÊú¨‰∫∫', N'Self', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ωˆ±æ»À', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰ªÖÊú¨‰∫∫', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'SELF';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'DEPT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N'DEPT', N'±æ≤ø√≈', N'Dept', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'DEPT', N'Êú¨ÈÉ®Èó®', N'Dept', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'±æ≤ø√≈', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êú¨ÈÉ®Èó®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'DEPT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'DEPT_TREE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N'DEPT_TREE', N'±æ≤ø√≈º∞œ¬º∂', N'Dept Tree', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'DEPT_TREE', N'Êú¨ÈÉ®Èó®Âèä‰∏ãÁ∫ß', N'Dept Tree', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'±æ≤ø√≈º∞œ¬º∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êú¨ÈÉ®Èó®Âèä‰∏ãÁ∫ß', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'DEPT_TREE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'TEAM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N'TEAM', N'Õ≈∂”', N'Team', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'TEAM', N'Âõ¢Èòü', N'Team', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ≈∂”', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âõ¢Èòü', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'TEAM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'ALL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N'ALL', N'»´≤ø', N'All', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'ALL', N'ÂÖ®ÈÉ®', N'All', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»´≤ø', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ®ÈÉ®', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'ALL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'CUSTOM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SCOPE_TYPE', N'CUSTOM', N'◊‘∂®“Â', N'Custom', NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SCOPE_TYPE', N'CUSTOM', N'Ëá™ÂÆö‰πâ', N'Custom', NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'◊‘∂®“Â', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ëá™ÂÆö‰πâ', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SCOPE_TYPE' AND ItemCode=N'CUSTOM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'USER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUBJECT_TYPE', N'USER', N'”√ªß', N'User', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUBJECT_TYPE', N'USER', N'Áî®Êà∑', N'User', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'”√ªß', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Áî®Êà∑', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'USER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'POSITION')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUBJECT_TYPE', N'POSITION', N'∏⁄Œª', N'Position', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUBJECT_TYPE', N'POSITION', N'Â≤ó‰Ωç', N'Position', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∏⁄Œª', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â≤ó‰Ωç', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'POSITION';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'DUTY')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUBJECT_TYPE', N'DUTY', N'÷∞‘', N'Duty', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUBJECT_TYPE', N'DUTY', N'ËÅåË¥£', N'Duty', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'÷∞‘', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ËÅåË¥£', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'DUTY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'DEPT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUBJECT_TYPE', N'DEPT', N'≤ø√≈', N'Dept', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUBJECT_TYPE', N'DEPT', N'ÈÉ®Èó®', N'Dept', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤ø√≈', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÉ®Èó®', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUBJECT_TYPE' AND ItemCode=N'DEPT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EXEC_TYPE' AND ItemCode=N'SYNC')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EXEC_TYPE', N'SYNC', N'Õ¨≤Ω÷¥––', N'Sync', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EXEC_TYPE', N'SYNC', N'ÂêåÊ≠•ÊâßË°å', N'Sync', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ¨≤Ω÷¥––', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂêåÊ≠•ÊâßË°å', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EXEC_TYPE' AND ItemCode=N'SYNC';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EXEC_TYPE' AND ItemCode=N'ASYNC')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EXEC_TYPE', N'ASYNC', N'“Ï≤Ω÷¥––', N'Async', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EXEC_TYPE', N'ASYNC', N'ÂºÇÊ≠•ÊâßË°å', N'Async', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“Ï≤Ω÷¥––', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂºÇÊ≠•ÊâßË°å', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EXEC_TYPE' AND ItemCode=N'ASYNC';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EXEC_TYPE' AND ItemCode=N'MANUAL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EXEC_TYPE', N'MANUAL', N' ÷∂Ø¥•∑¢', N'Manual', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EXEC_TYPE', N'MANUAL', N'ÊâãÂä®Ëß¶Âèë', N'Manual', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N' ÷∂Ø¥•∑¢', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊâãÂä®Ëß¶Âèë', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EXEC_TYPE' AND ItemCode=N'MANUAL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'SINGLE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDLE_MODE', N'SINGLE', N'µ•»À¥¶¿Ì', N'Single', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDLE_MODE', N'SINGLE', N'Âçï‰∫∫Â§ÑÁêÜ', N'Single', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µ•»À¥¶¿Ì', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âçï‰∫∫Â§ÑÁêÜ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'SINGLE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'ALL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDLE_MODE', N'ALL', N'»´≤øª·«©', N'All Sign', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDLE_MODE', N'ALL', N'ÂÖ®ÈÉ®‰ºöÁ≠æ', N'All Sign', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»´≤øª·«©', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ®ÈÉ®‰ºöÁ≠æ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'ALL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'ANY')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDLE_MODE', N'ANY', N'»Œ“ª¥¶¿Ì', N'Any One', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDLE_MODE', N'ANY', N'‰ªª‰∏ÄÂ§ÑÁêÜ', N'Any One', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»Œ“ª¥¶¿Ì', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰ªª‰∏ÄÂ§ÑÁêÜ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'ANY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'CLAIM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HANDLE_MODE', N'CLAIM', N'«¿µ•', N'Claim', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HANDLE_MODE', N'CLAIM', N'Êä¢Âçï', N'Claim', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'«¿µ•', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êä¢Âçï', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='HANDLE_MODE' AND ItemCode=N'CLAIM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'APPROVAL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_TYPE', N'APPROVAL', N'…Û≈˙ ¬º˛', N'Approval', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_TYPE', N'APPROVAL', N'ÂÆ°Êâπ‰∫ã‰ª∂', N'Approval', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'…Û≈˙ ¬º˛', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÆ°Êâπ‰∫ã‰ª∂', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'APPROVAL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'NOTICE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_TYPE', N'NOTICE', N'Õ®÷™ ¬º˛', N'Notice', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_TYPE', N'NOTICE', N'ÈÄöÁü•‰∫ã‰ª∂', N'Notice', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ®÷™ ¬º˛', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÄöÁü•‰∫ã‰ª∂', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'NOTICE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'TASK')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_TYPE', N'TASK', N'»ŒŒÒ ¬º˛', N'Task', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_TYPE', N'TASK', N'‰ªªÂä°‰∫ã‰ª∂', N'Task', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»ŒŒÒ ¬º˛', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰ªªÂä°‰∫ã‰ª∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'TASK';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'SYSTEM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_TYPE', N'SYSTEM', N'œµÕ≥ ¬º˛', N'System', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_TYPE', N'SYSTEM', N'Á≥ªÁªü‰∫ã‰ª∂', N'System', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'œµÕ≥ ¬º˛', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Á≥ªÁªü‰∫ã‰ª∂', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_TYPE' AND ItemCode=N'SYSTEM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'NEW')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_STATUS', N'NEW', N'¥˝¥¶¿Ì', N'New', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_STATUS', N'NEW', N'ÂæÖÂ§ÑÁêÜ', N'New', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝¥¶¿Ì', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÂ§ÑÁêÜ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'NEW';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'PROCESSING')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_STATUS', N'PROCESSING', N'¥¶¿Ì÷–', N'Processing', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_STATUS', N'PROCESSING', N'Â§ÑÁêÜ‰∏≠', N'Processing', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥¶¿Ì÷–', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â§ÑÁêÜ‰∏≠', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'PROCESSING';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'DONE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_STATUS', N'DONE', N'“—ÕÍ≥…', N'Done', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_STATUS', N'DONE', N'Â∑≤ÂÆåÊàê', N'Done', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—ÕÍ≥…', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ÂÆåÊàê', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'DONE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'FAILED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_STATUS', N'FAILED', N' ß∞‹', N'Failed', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_STATUS', N'FAILED', N'Â§±Ë¥•', N'Failed', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N' ß∞‹', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â§±Ë¥•', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'FAILED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'CANCELLED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_STATUS', N'CANCELLED', N'“—»°œ˚', N'Cancelled', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_STATUS', N'CANCELLED', N'Â∑≤ÂèñÊ∂à', N'Cancelled', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—»°œ˚', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ÂèñÊ∂à', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_STATUS' AND ItemCode=N'CANCELLED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'PENDING')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELIVERY_STATUS', N'PENDING', N'¥˝Õ∂µ›', N'Pending', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELIVERY_STATUS', N'PENDING', N'ÂæÖÊäïÈÄí', N'Pending', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝Õ∂µ›', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÊäïÈÄí', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'PENDING';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'SENT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELIVERY_STATUS', N'SENT', N'“—∑¢ÀÕ', N'Sent', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELIVERY_STATUS', N'SENT', N'Â∑≤ÂèëÈÄÅ', N'Sent', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—∑¢ÀÕ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ÂèëÈÄÅ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'SENT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'FAILED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELIVERY_STATUS', N'FAILED', N' ß∞‹', N'Failed', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELIVERY_STATUS', N'FAILED', N'Â§±Ë¥•', N'Failed', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N' ß∞‹', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â§±Ë¥•', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'FAILED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'READ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('DELIVERY_STATUS', N'READ', N'“—∂¡', N'Read', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('DELIVERY_STATUS', N'READ', N'Â∑≤ËØª', N'Read', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—∂¡', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ËØª', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='DELIVERY_STATUS' AND ItemCode=N'READ';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CHANNEL' AND ItemCode=N'TODO')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CHANNEL', N'TODO', N'¥˝∞Ï', N'Todo', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CHANNEL', N'TODO', N'ÂæÖÂäû', N'Todo', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝∞Ï', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÂäû', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CHANNEL' AND ItemCode=N'TODO';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CHANNEL' AND ItemCode=N'MESSAGE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CHANNEL', N'MESSAGE', N'’æƒ⁄–≈', N'Message', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CHANNEL', N'MESSAGE', N'Á´ôÂÜÖ‰ø°', N'Message', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'’æƒ⁄–≈', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Á´ôÂÜÖ‰ø°', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CHANNEL' AND ItemCode=N'MESSAGE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CHANNEL' AND ItemCode=N'EMAIL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CHANNEL', N'EMAIL', N'” º˛', N'Email', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CHANNEL', N'EMAIL', N'ÈÇÆ‰ª∂', N'Email', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'” º˛', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÇÆ‰ª∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CHANNEL' AND ItemCode=N'EMAIL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CHANNEL' AND ItemCode=N'WECHAT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CHANNEL', N'WECHAT', N'∆Û“µŒ¢–≈', N'WeChat', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CHANNEL', N'WECHAT', N'‰ºÅ‰∏öÂæÆ‰ø°', N'WeChat', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆Û“µŒ¢–≈', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰ºÅ‰∏öÂæÆ‰ø°', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CHANNEL' AND ItemCode=N'WECHAT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CHANNEL' AND ItemCode=N'SMS')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CHANNEL', N'SMS', N'∂Ã–≈', N'SMS', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CHANNEL', N'SMS', N'Áü≠‰ø°', N'SMS', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∂Ã–≈', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Áü≠‰ø°', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CHANNEL' AND ItemCode=N'SMS';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'0')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_STATUS', N'0', N'¥˝¥¶¿Ì', N'Pending', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_STATUS', N'0', N'ÂæÖÂ§ÑÁêÜ', N'Pending', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝¥¶¿Ì', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÂ§ÑÁêÜ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'0';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'1')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_STATUS', N'1', N'“—¥¶¿Ì', N'Done', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_STATUS', N'1', N'Â∑≤Â§ÑÁêÜ', N'Done', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—¥¶¿Ì', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤Â§ÑÁêÜ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'1';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'2')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_STATUS', N'2', N'“—πÿ±’', N'Closed', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_STATUS', N'2', N'Â∑≤ÂÖ≥Èó≠', N'Closed', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—πÿ±’', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ÂÖ≥Èó≠', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'2';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'3')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_STATUS', N'3', N'“—◊™Ωª', N'Transferred', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_STATUS', N'3', N'Â∑≤ËΩ¨‰∫§', N'Transferred', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—◊™Ωª', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ËΩ¨‰∫§', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'3';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'4')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_STATUS', N'4', N'“—≥∑ªÿ', N'Revoked', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_STATUS', N'4', N'Â∑≤Êí§Âõû', N'Revoked', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—≥∑ªÿ', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤Êí§Âõû', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_STATUS' AND ItemCode=N'4';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'LOW')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_PRIORITY', N'LOW', N'µÕ', N'Low', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_PRIORITY', N'LOW', N'‰Ωé', N'Low', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µÕ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰Ωé', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'LOW';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'NORMAL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_PRIORITY', N'NORMAL', N'∆’Õ®', N'Normal', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_PRIORITY', N'NORMAL', N'ÊôÆÈÄö', N'Normal', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆’Õ®', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊôÆÈÄö', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'NORMAL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'HIGH')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_PRIORITY', N'HIGH', N'∏ﬂ', N'High', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_PRIORITY', N'HIGH', N'È´ò', N'High', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∏ﬂ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'È´ò', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'HIGH';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'URGENT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_PRIORITY', N'URGENT', N'ΩÙº±', N'Urgent', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_PRIORITY', N'URGENT', N'Á¥ßÊÄ•', N'Urgent', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ΩÙº±', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Á¥ßÊÄ•', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_PRIORITY' AND ItemCode=N'URGENT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'CREATE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'CREATE', N'¥¥Ω®', N'Create', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'CREATE', N'ÂàõÂª∫', N'Create', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥¥Ω®', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂàõÂª∫', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'CREATE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'CLAIM')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'CLAIM', N'¡Ï»°', N'Claim', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'CLAIM', N'È¢ÜÂèñ', N'Claim', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¡Ï»°', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'È¢ÜÂèñ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'CLAIM';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'TRANSFER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'TRANSFER', N'◊™Ωª', N'Transfer', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'TRANSFER', N'ËΩ¨‰∫§', N'Transfer', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'◊™Ωª', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ËΩ¨‰∫§', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'TRANSFER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'RETURN')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'RETURN', N'ÕÀªÿ', N'Return', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'RETURN', N'ÈÄÄÂõû', N'Return', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÕÀªÿ', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÄÄÂõû', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'RETURN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'FINISH')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'FINISH', N'ÕÍ≥…', N'Finish', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'FINISH', N'ÂÆåÊàê', N'Finish', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÕÍ≥…', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÆåÊàê', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'FINISH';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'CLOSE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'CLOSE', N'πÿ±’', N'Close', NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'CLOSE', N'ÂÖ≥Èó≠', N'Close', NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'πÿ±’', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ≥Èó≠', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'CLOSE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'REVOKE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'REVOKE', N'≥∑ªÿ', N'Revoke', NULL, 7, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'REVOKE', N'Êí§Âõû', N'Revoke', NULL, 7, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≥∑ªÿ', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êí§Âõû', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'REVOKE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'REMIND')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'REMIND', N'¥ﬂ∞Ï', N'Remind', NULL, 8, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'REMIND', N'ÂÇ¨Âäû', N'Remind', NULL, 8, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥ﬂ∞Ï', DispSeq=8, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÇ¨Âäû', DispSeq=8, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'REMIND';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'COSIGN')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TODO_ACTION', N'COSIGN', N'º”«©', N'Cosign', NULL, 9, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TODO_ACTION', N'COSIGN', N'Âä†Á≠æ', N'Cosign', NULL, 9, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'º”«©', DispSeq=9, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âä†Á≠æ', DispSeq=9, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TODO_ACTION' AND ItemCode=N'COSIGN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'PENDING')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('GROUP_STATUS', N'PENDING', N'¥˝¥¶¿Ì', N'Pending', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('GROUP_STATUS', N'PENDING', N'ÂæÖÂ§ÑÁêÜ', N'Pending', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝¥¶¿Ì', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÂ§ÑÁêÜ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'PENDING';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'PARTIAL')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('GROUP_STATUS', N'PARTIAL', N'≤ø∑÷ÕÍ≥…', N'Partial', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('GROUP_STATUS', N'PARTIAL', N'ÈÉ®ÂàÜÂÆåÊàê', N'Partial', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤ø∑÷ÕÍ≥…', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÉ®ÂàÜÂÆåÊàê', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'PARTIAL';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'DONE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('GROUP_STATUS', N'DONE', N'»´≤øÕÍ≥…', N'Done', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('GROUP_STATUS', N'DONE', N'ÂÖ®ÈÉ®ÂÆåÊàê', N'Done', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'»´≤øÕÍ≥…', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ®ÈÉ®ÂÆåÊàê', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'DONE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'CANCELLED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('GROUP_STATUS', N'CANCELLED', N'“—»°œ˚', N'Cancelled', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('GROUP_STATUS', N'CANCELLED', N'Â∑≤ÂèñÊ∂à', N'Cancelled', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—»°œ˚', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ÂèñÊ∂à', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='GROUP_STATUS' AND ItemCode=N'CANCELLED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CANDIDATE_STATUS' AND ItemCode=N'WAITING')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CANDIDATE_STATUS', N'WAITING', N'¥˝¡Ï»°', N'Waiting', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CANDIDATE_STATUS', N'WAITING', N'ÂæÖÈ¢ÜÂèñ', N'Waiting', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥˝¡Ï»°', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂæÖÈ¢ÜÂèñ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CANDIDATE_STATUS' AND ItemCode=N'WAITING';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CANDIDATE_STATUS' AND ItemCode=N'CLAIMED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CANDIDATE_STATUS', N'CLAIMED', N'“—¡Ï»°', N'Claimed', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CANDIDATE_STATUS', N'CLAIMED', N'Â∑≤È¢ÜÂèñ', N'Claimed', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—¡Ï»°', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤È¢ÜÂèñ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CANDIDATE_STATUS' AND ItemCode=N'CLAIMED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='CANDIDATE_STATUS' AND ItemCode=N'EXPIRED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('CANDIDATE_STATUS', N'EXPIRED', N'“—π˝∆⁄', N'Expired', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('CANDIDATE_STATUS', N'EXPIRED', N'Â∑≤ËøáÊúü', N'Expired', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“—π˝∆⁄', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∑≤ËøáÊúü', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='CANDIDATE_STATUS' AND ItemCode=N'EXPIRED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'RAISE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_ACTION', N'RAISE', N'∑¢≤º ¬º˛', N'Raise', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_ACTION', N'RAISE', N'ÂèëÂ∏É‰∫ã‰ª∂', N'Raise', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∑¢≤º ¬º˛', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂèëÂ∏É‰∫ã‰ª∂', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'RAISE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'RESOLVE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_ACTION', N'RESOLVE', N'Ω‚ŒˆΩ” ’', N'Resolve', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_ACTION', N'RESOLVE', N'Ëß£ÊûêÊé•Êî∂', N'Resolve', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ω‚ŒˆΩ” ’', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ëß£ÊûêÊé•Êî∂', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'RESOLVE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'DELIVER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_ACTION', N'DELIVER', N'Õ∂µ›', N'Deliver', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_ACTION', N'DELIVER', N'ÊäïÈÄí', N'Deliver', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Õ∂µ›', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊäïÈÄí', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'DELIVER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'HANDLE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('EVENT_ACTION', N'HANDLE', N'¥¶¿Ì', N'Handle', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('EVENT_ACTION', N'HANDLE', N'Â§ÑÁêÜ', N'Handle', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥¶¿Ì', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â§ÑÁêÜ', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='EVENT_ACTION' AND ItemCode=N'HANDLE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'DUTY')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOLVE_TYPE', N'DUTY', N'∞¥÷∞‘', N'Duty', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOLVE_TYPE', N'DUTY', N'ÊåâËÅåË¥£', N'Duty', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥÷∞‘', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåâËÅåË¥£', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'DUTY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'POSITION')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOLVE_TYPE', N'POSITION', N'∞¥∏⁄Œª', N'Position', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOLVE_TYPE', N'POSITION', N'ÊåâÂ≤ó‰Ωç', N'Position', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥∏⁄Œª', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåâÂ≤ó‰Ωç', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'POSITION';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'MANAGER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOLVE_TYPE', N'MANAGER', N'∞¥…œº∂', N'Manager', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOLVE_TYPE', N'MANAGER', N'Êåâ‰∏äÁ∫ß', N'Manager', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥…œº∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êåâ‰∏äÁ∫ß', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'MANAGER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'DELEGATE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('RESOLVE_TYPE', N'DELEGATE', N'∞¥ŒØÕ–', N'Delegate', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('RESOLVE_TYPE', N'DELEGATE', N'ÊåâÂßîÊâò', N'Delegate', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥ŒØÕ–', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåâÂßîÊâò', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='RESOLVE_TYPE' AND ItemCode=N'DELEGATE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUB_TYPE' AND ItemCode=N'RESOURCE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUB_TYPE', N'RESOURCE', N'◊ ‘¥∂©‘ƒ', N'Resource', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUB_TYPE', N'RESOURCE', N'ËµÑÊ∫êËÆ¢ÈòÖ', N'Resource', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'◊ ‘¥∂©‘ƒ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ËµÑÊ∫êËÆ¢ÈòÖ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUB_TYPE' AND ItemCode=N'RESOURCE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUB_TYPE' AND ItemCode=N'EVENT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUB_TYPE', N'EVENT', N' ¬º˛∂©‘ƒ', N'Event', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUB_TYPE', N'EVENT', N'‰∫ã‰ª∂ËÆ¢ÈòÖ', N'Event', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N' ¬º˛∂©‘ƒ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∫ã‰ª∂ËÆ¢ÈòÖ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUB_TYPE' AND ItemCode=N'EVENT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='SUB_TYPE' AND ItemCode=N'MIXED')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('SUB_TYPE', N'MIXED', N'ªÏ∫œ∂©‘ƒ', N'Mixed', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('SUB_TYPE', N'MIXED', N'Ê∑∑ÂêàËÆ¢ÈòÖ', N'Mixed', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ªÏ∫œ∂©‘ƒ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ê∑∑ÂêàËÆ¢ÈòÖ', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='SUB_TYPE' AND ItemCode=N'MIXED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'DUTY')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TARGET_RESOLVE', N'DUTY', N'∞¥÷∞‘', N'By Duty', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TARGET_RESOLVE', N'DUTY', N'ÊåâËÅåË¥£', N'By Duty', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥÷∞‘', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåâËÅåË¥£', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'DUTY';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'POSITION')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TARGET_RESOLVE', N'POSITION', N'∞¥∏⁄Œª', N'By Position', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TARGET_RESOLVE', N'POSITION', N'ÊåâÂ≤ó‰Ωç', N'By Position', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∞¥∏⁄Œª', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåâÂ≤ó‰Ωç', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'POSITION';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'DEPT_MANAGER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TARGET_RESOLVE', N'DEPT_MANAGER', N'≤ø√≈∏∫‘»À', N'Dept Leader', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TARGET_RESOLVE', N'DEPT_MANAGER', N'ÈÉ®Èó®Ë¥üË¥£‰∫∫', N'Dept Leader', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤ø√≈∏∫‘»À', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÈÉ®Èó®Ë¥üË¥£‰∫∫', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'DEPT_MANAGER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'OWNER_MANAGER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TARGET_RESOLVE', N'OWNER_MANAGER', N'∂‘œÛÀ˘”–»À…œº∂', N'Owner Mgr', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TARGET_RESOLVE', N'OWNER_MANAGER', N'ÂØπË±°ÊâÄÊúâ‰∫∫‰∏äÁ∫ß', N'Owner Mgr', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∂‘œÛÀ˘”–»À…œº∂', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂØπË±°ÊâÄÊúâ‰∫∫‰∏äÁ∫ß', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'OWNER_MANAGER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'FIXED_USER')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('TARGET_RESOLVE', N'FIXED_USER', N'÷∏∂®”√ªß', N'Fixed User', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('TARGET_RESOLVE', N'FIXED_USER', N'ÊåáÂÆöÁî®Êà∑', N'Fixed User', NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'÷∏∂®”√ªß', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊåáÂÆöÁî®Êà∑', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='TARGET_RESOLVE' AND ItemCode=N'FIXED_USER';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'ƒ–')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'Áî∑')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_SEX', N'ƒ–', N'ƒ–', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_SEX', N'Áî∑', N'Áî∑', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ƒ–', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'ƒ–';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Áî∑', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'Áî∑';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'≈Æ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'Â•≥')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_SEX', N'≈Æ', N'≈Æ', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_SEX', N'Â•≥', N'Â•≥', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≈Æ', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'≈Æ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â•≥', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_SEX' AND ItemCode=N'Â•≥';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'‘±º∂')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'ÂëòÁ∫ß')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'‘±º∂', N'‘±º∂', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'ÂëòÁ∫ß', N'ÂëòÁ∫ß', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‘±º∂', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'‘±º∂';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂëòÁ∫ß', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'ÂëòÁ∫ß';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'÷˜∞Ï')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'‰∏ªÂäû')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'÷˜∞Ï', N'÷˜∞Ï', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'‰∏ªÂäû', N'‰∏ªÂäû', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'÷˜∞Ï', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'÷˜∞Ï';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏ªÂäû', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'‰∏ªÂäû';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'÷˜π‹')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'‰∏ªÁÆ°')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'÷˜π‹', N'÷˜π‹', NULL, NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'‰∏ªÁÆ°', N'‰∏ªÁÆ°', NULL, NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'÷˜π‹', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'÷˜π‹';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏ªÁÆ°', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'‰∏ªÁÆ°';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'∏ﬂº∂÷˜π‹')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'È´òÁ∫ß‰∏ªÁÆ°')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'∏ﬂº∂÷˜π‹', N'∏ﬂº∂÷˜π‹', NULL, NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'È´òÁ∫ß‰∏ªÁÆ°', N'È´òÁ∫ß‰∏ªÁÆ°', NULL, NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∏ﬂº∂÷˜π‹', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'∏ﬂº∂÷˜π‹';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'È´òÁ∫ß‰∏ªÁÆ°', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'È´òÁ∫ß‰∏ªÁÆ°';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'æ≠¿Ì')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'ÁªèÁêÜ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'æ≠¿Ì', N'æ≠¿Ì', NULL, NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'ÁªèÁêÜ', N'ÁªèÁêÜ', NULL, NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'æ≠¿Ì', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'æ≠¿Ì';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÁªèÁêÜ', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'ÁªèÁêÜ';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'∆‰À¸')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'ÂÖ∂ÂÆÉ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_PER_GRADE', N'∆‰À¸', N'∆‰À¸', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_PER_GRADE', N'ÂÖ∂ÂÆÉ', N'ÂÖ∂ÂÆÉ', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆‰À¸', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'∆‰À¸';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ∂ÂÆÉ', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_PER_GRADE' AND ItemCode=N'ÂÖ∂ÂÆÉ';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'Ω°øµ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ÂÅ•Â∫∑')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_HEALTH', N'Ω°øµ', N'Ω°øµ', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_HEALTH', N'ÂÅ•Â∫∑', N'ÂÅ•Â∫∑', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ω°øµ', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'Ω°øµ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÅ•Â∫∑', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ÂÅ•Â∫∑';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'¡º∫√')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ËâØÂ•Ω')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_HEALTH', N'¡º∫√', N'¡º∫√', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_HEALTH', N'ËâØÂ•Ω', N'ËâØÂ•Ω', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¡º∫√', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'¡º∫√';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ËâØÂ•Ω', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ËâØÂ•Ω';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'“ª∞„')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'‰∏ÄËà¨')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_HEALTH', N'“ª∞„', N'“ª∞„', NULL, NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_HEALTH', N'‰∏ÄËà¨', N'‰∏ÄËà¨', NULL, NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'“ª∞„', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'“ª∞„';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏ÄËà¨', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'‰∏ÄËà¨';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'¬˝–‘≤°')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ÊÖ¢ÊÄßÁóÖ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_HEALTH', N'¬˝–‘≤°', N'¬˝–‘≤°', NULL, NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_HEALTH', N'ÊÖ¢ÊÄßÁóÖ', N'ÊÖ¢ÊÄßÁóÖ', NULL, NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¬˝–‘≤°', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'¬˝–‘≤°';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÊÖ¢ÊÄßÁóÖ', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ÊÖ¢ÊÄßÁóÖ';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'∆‰À¸')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ÂÖ∂ÂÆÉ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_HEALTH', N'∆‰À¸', N'∆‰À¸', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_HEALTH', N'ÂÖ∂ÂÆÉ', N'ÂÖ∂ÂÆÉ', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆‰À¸', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'∆‰À¸';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ∂ÂÆÉ', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_HEALTH' AND ItemCode=N'ÂÖ∂ÂÆÉ';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'–°—ß')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Â∞èÂ≠¶')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'–°—ß', N'–°—ß', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'Â∞èÂ≠¶', N'Â∞èÂ≠¶', NULL, NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'–°—ß', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'–°—ß';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â∞èÂ≠¶', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Â∞èÂ≠¶';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'≥ı÷–')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Âàù‰∏≠')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'≥ı÷–', N'≥ı÷–', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'Âàù‰∏≠', N'Âàù‰∏≠', NULL, NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≥ı÷–', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'≥ı÷–';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âàù‰∏≠', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Âàù‰∏≠';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'∏ﬂ÷–')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'È´ò‰∏≠')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'∏ﬂ÷–', N'∏ﬂ÷–', NULL, NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'È´ò‰∏≠', N'È´ò‰∏≠', NULL, NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∏ﬂ÷–', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'∏ﬂ÷–';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'È´ò‰∏≠', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'È´ò‰∏≠';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'÷–◊®')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'‰∏≠‰∏ì')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'÷–◊®', N'÷–◊®', NULL, NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'‰∏≠‰∏ì', N'‰∏≠‰∏ì', NULL, NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'÷–◊®', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'÷–◊®';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∏≠‰∏ì', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'‰∏≠‰∏ì';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'¥Û◊®')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Â§ß‰∏ì')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'¥Û◊®', N'¥Û◊®', NULL, NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'Â§ß‰∏ì', N'Â§ß‰∏ì', NULL, NULL, 5, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥Û◊®', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'¥Û◊®';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â§ß‰∏ì', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Â§ß‰∏ì';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'±æø∆')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Êú¨Áßë')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'±æø∆', N'±æø∆', NULL, NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'Êú¨Áßë', N'Êú¨Áßë', NULL, NULL, 6, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'±æø∆', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'±æø∆';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Êú¨Áßë', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Êú¨Áßë';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'À∂ ø')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Á°ïÂ£´')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'À∂ ø', N'À∂ ø', NULL, NULL, 7, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'Á°ïÂ£´', N'Á°ïÂ£´', NULL, NULL, 7, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'À∂ ø', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'À∂ ø';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Á°ïÂ£´', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'Á°ïÂ£´';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'≤© ø')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'ÂçöÂ£´')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'≤© ø', N'≤© ø', NULL, NULL, 8, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'ÂçöÂ£´', N'ÂçöÂ£´', NULL, NULL, 8, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤© ø', DispSeq=8, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'≤© ø';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂçöÂ£´', DispSeq=8, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'ÂçöÂ£´';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'∆‰À¸')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'ÂÖ∂ÂÆÉ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('MEMBER_EDU_LEVEL', N'∆‰À¸', N'∆‰À¸', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('MEMBER_EDU_LEVEL', N'ÂÖ∂ÂÆÉ', N'ÂÖ∂ÂÆÉ', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆‰À¸', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'∆‰À¸';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ∂ÂÆÉ', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='MEMBER_EDU_LEVEL' AND ItemCode=N'ÂÖ∂ÂÆÉ';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'CREATE_TODO')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('FLOW_ACTION', N'CREATE_TODO', N'…˙≥…¥˝∞Ï', N'Create Todo', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('FLOW_ACTION', N'CREATE_TODO', N'ÁîüÊàêÂæÖÂäû', N'Create Todo', NULL, 1, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'…˙≥…¥˝∞Ï', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÁîüÊàêÂæÖÂäû', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'CREATE_TODO';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'SEND_NOTICE')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('FLOW_ACTION', N'SEND_NOTICE', N'∑¢ÀÕÕ®÷™', N'Send Notice', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('FLOW_ACTION', N'SEND_NOTICE', N'ÂèëÈÄÅÈÄöÁü•', N'Send Notice', NULL, 2, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∑¢ÀÕÕ®÷™', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂèëÈÄÅÈÄöÁü•', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'SEND_NOTICE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'TRIGGER_EVENT')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('FLOW_ACTION', N'TRIGGER_EVENT', N'¥•∑¢œ¬“ª ¬º˛', N'Trigger Event', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('FLOW_ACTION', N'TRIGGER_EVENT', N'Ëß¶Âèë‰∏ã‰∏Ä‰∫ã‰ª∂', N'Trigger Event', NULL, 3, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'¥•∑¢œ¬“ª ¬º˛', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ëß¶Âèë‰∏ã‰∏Ä‰∫ã‰ª∂', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'TRIGGER_EVENT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'CALL_API')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('FLOW_ACTION', N'CALL_API', N'µ˜”√Ω”ø⁄', N'Call API', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('FLOW_ACTION', N'CALL_API', N'Ë∞ÉÁî®Êé•Âè£', N'Call API', NULL, 4, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µ˜”√Ω”ø⁄', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ë∞ÉÁî®Êé•Âè£', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now
     WHERE DictTypeCode='FLOW_ACTION' AND ItemCode=N'CALL_API';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ƒÍºŸ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'Âπ¥ÂÅá')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'ƒÍºŸ', N'ƒÍºŸ', NULL, NULL, 10, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'Âπ¥ÂÅá', N'Âπ¥ÂÅá', NULL, NULL, 10, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ƒÍºŸ', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ƒÍºŸ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Âπ¥ÂÅá', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'Âπ¥ÂÅá';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N' ¬ºŸ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'‰∫ãÂÅá')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N' ¬ºŸ', N' ¬ºŸ', NULL, NULL, 20, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'‰∫ãÂÅá', N'‰∫ãÂÅá', NULL, NULL, 20, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N' ¬ºŸ', DispSeq=20, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N' ¬ºŸ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∫ãÂÅá', DispSeq=20, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'‰∫ãÂÅá';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'≤°ºŸ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ÁóÖÂÅá')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'≤°ºŸ', N'≤°ºŸ', NULL, NULL, 30, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'ÁóÖÂÅá', N'ÁóÖÂÅá', NULL, NULL, 30, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤°ºŸ', DispSeq=30, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'≤°ºŸ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÁóÖÂÅá', DispSeq=30, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ÁóÖÂÅá';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'µ˜–›')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'Ë∞É‰ºë')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'µ˜–›', N'µ˜–›', NULL, NULL, 40, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'Ë∞É‰ºë', N'Ë∞É‰ºë', NULL, NULL, 40, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'µ˜–›', DispSeq=40, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'µ˜–›';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Ë∞É‰ºë', DispSeq=40, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'Ë∞É‰ºë';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ªÈºŸ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'Â©öÂÅá')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'ªÈºŸ', N'ªÈºŸ', NULL, NULL, 50, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'Â©öÂÅá', N'Â©öÂÅá', NULL, NULL, 50, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ªÈºŸ', DispSeq=50, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ªÈºŸ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'Â©öÂÅá', DispSeq=50, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'Â©öÂÅá';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'≤˙ºŸ')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'‰∫ßÂÅá')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'≤˙ºŸ', N'≤˙ºŸ', NULL, NULL, 60, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'‰∫ßÂÅá', N'‰∫ßÂÅá', NULL, NULL, 60, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'≤˙ºŸ', DispSeq=60, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'≤˙ºŸ';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'‰∫ßÂÅá', DispSeq=60, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'‰∫ßÂÅá';
 
-IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'∆‰À˚')
+IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_DictItem WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ÂÖ∂‰ªñ')
     INSERT INTO dbo.Tbl_E_DictItem (DictTypeCode, ItemCode, ItemName, ItemNameEn, ParentItemCode, DispSeq, ExtJson, IsSystem, Remark, BStatus, IsDeleted, CreateDate, AmendDate)
-    VALUES ('HR_LEAVE_TYPE', N'∆‰À˚', N'∆‰À˚', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
+    VALUES ('HR_LEAVE_TYPE', N'ÂÖ∂‰ªñ', N'ÂÖ∂‰ªñ', NULL, NULL, 99, NULL, 1, NULL, '1', 0, @Now, @Now);
 ELSE
-    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'∆‰À˚', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
-    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'∆‰À˚';
+    UPDATE dbo.Tbl_E_DictItem SET ItemName=N'ÂÖ∂‰ªñ', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now
+    WHERE DictTypeCode='HR_LEAVE_TYPE' AND ItemCode=N'ÂÖ∂‰ªñ';
 
-PRINT N'20-Seed_Foundation ÕÍ≥…°£';
+PRINT N'20-Seed_Foundation ÂÆåÊàê„ÄÇ';
+GO
+
+/* ---------- ËÑöÊú¨ÊâßË°åÂè∞Ë¥¶ ----------
+   ‰ªìÂ∫ìÂéüÂÖàÊ≤°Êúâ‰ªª‰ΩïËøÅÁßªÊú∫Âà∂ÔºöÊñá‰ª∂ÂêçÊòØÂîØ‰∏ÄÁöÑÈ°∫Â∫è‰æùÊçÆÔºåËÄåÁºñÂè∑Â∑≤ÁªèÂú®Á¢∞Êíû
+   Ôºà20-Seed_Foundation / 20-Seed_README ÂêåÂè∑ÔºâÔºå‰πüÊ≤°ÊúâÂäûÊ≥ïÈóÆ‰∏Ä‰∏™Êï∞ÊçÆÂ∫ì„Äå‰Ω†Ë∑ëËøáÂì™‰∫õËÑöÊú¨„Äç„ÄÇ
+   ËøôÊÆµËá™Âª∫Ë°® + ËÆ∞ÂΩïÔºåÂπÇÁ≠âÔºåÂèØÂú®‰ªªÊÑèËÑöÊú¨ÂçïÁã¨ÊâßË°å„ÄÇ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'20-Seed_Foundation.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'20-Seed_Foundation.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'20-Seed_Foundation.sql');
 GO

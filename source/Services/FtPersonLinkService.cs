@@ -18,19 +18,22 @@ public sealed class FtPersonLinkService
     private readonly FtMatchService _match;
     private readonly FtDutyAccess _duty;
     private readonly FtOpLogService _log;
+    private readonly FtClanService _clans;
 
     public FtPersonLinkService(
         FrameworkDbContext db,
         EventPublisherService publisher,
         FtMatchService match,
         FtDutyAccess duty,
-        FtOpLogService log)
+        FtOpLogService log,
+        FtClanService clans)
     {
         _db = db;
         _publisher = publisher;
         _match = match;
         _duty = duty;
         _log = log;
+        _clans = clans;
     }
 
     public async Task<(IReadOnlyList<FtLinkListRowVm> page, int total, int pages, int pageOut)> GetIndexPageAsync(
@@ -214,7 +217,10 @@ public sealed class FtPersonLinkService
             AmendDate = now,
             OperatorName = FtText.ClipReq(op, 30)
         };
-        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        // 草稿归档会把「建人物 → 建链接」串成一件事，此时外层已开事务，这里不再另开一个，
+        // 否则一个逻辑操作被劈成两个事务，中间失败就会留下半成品。
+        var ownsTx = _db.Database.CurrentTransaction == null;
+        var tx = ownsTx ? await _db.Database.BeginTransactionAsync(ct) : null;
         _db.FtPersonLinks.Add(row);
         await _db.SaveChangesAsync(ct);
         var pub = await _publisher.PublishAsync(new EventPublishRequest
@@ -231,10 +237,10 @@ public sealed class FtPersonLinkService
         }, ct);
         if (!pub.Success)
         {
-            await tx.RollbackAsync(ct);
+            if (ownsTx) await tx!.RollbackAsync(ct);
             throw new InvalidOperationException("链入申请发布失败：" + pub.Message);
         }
-        await tx.CommitAsync(ct);
+        if (ownsTx) await tx!.CommitAsync(ct);
         return (row.DataId, "已提交链入申请（待审）。请把二维码发给超管或分支管扫码审批；通过前不会挂入主谱。");
     }
 
@@ -266,36 +272,70 @@ public sealed class FtPersonLinkService
         };
     }
 
+    /// <summary>
+    /// 查看链入申请（二维码页 / 扫码审批页）的归属校验。
+    /// 申请人自己可看；管理岗只能看本族的单据——否则枚举 id 就能读到任意族两侧人物的姓名、父母、生日。
+    /// </summary>
     public async Task EnsureApplicantCanViewQrAsync(int linkId, int userId, CancellationToken ct)
     {
         var row = await _db.FtPersonLinks.AsNoTracking()
             .FirstOrDefaultAsync(x => x.DataId == linkId && !x.IsDeleted, ct)
             ?? throw new InvalidOperationException("申请单不存在。");
         if (row.ApplyUserId == userId) return;
-        if (await _duty.IsBranchAdminAsync(userId, ct)) return;
+        if (await _duty.IsBranchAdminAsync(userId, ct) && await SameClanAsLinkAsync(row, userId, ct)) return;
         throw new InvalidOperationException("无权查看该申请二维码。");
     }
 
+    /// <summary>申请单两侧人物是否都在调用者所属家族内。任一侧不同族即拒绝。</summary>
+    private async Task<bool> SameClanAsLinkAsync(FtPersonLink row, int userId, CancellationToken ct)
+    {
+        var src = await _db.FtPersons.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.DataId == row.SourcePersonId && !x.IsDeleted, ct);
+        var tgt = await _db.FtPersons.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.DataId == row.TargetMainPersonId && !x.IsDeleted, ct);
+        if (src == null || tgt == null) return false;
+        return await _clans.UserSharesClanAsync(userId, src, ct)
+            && await _clans.UserSharesClanAsync(userId, tgt, ct);
+    }
+
+    /// <summary>
+    /// 审批链入。授权判据全部在这里，不依赖视图层的 ViewBag.CanApprove：
+    /// 必须是管理岗，且申请单两侧人物都在审批人所属家族内。
+    /// 状态判断与人物读取放在事务内，配合 rowversion 拦住两名管理员并发审批同一单。
+    /// </summary>
     public async Task<(bool Ok, string Msg)> ApproveAsync(int id, bool pass, int userId, string op, string? remark, CancellationToken ct)
     {
-        var row = await _db.FtPersonLinks.FirstOrDefaultAsync(x => x.DataId == id && !x.IsDeleted, ct);
-        if (row == null) return (false, "单据不存在。");
-        if (row.LinkStatus != "PENDING") return (false, "该单已处理。");
-        if (row.ApplyUserId == userId)
-        {
-            // 仅「系统只有一名超管」时允许该超管自审；分支管不得自审自己的申请
-            var isSuper = await _duty.IsSuperAsync(userId, ct);
-            if (!isSuper || !await _duty.AllowSelfApproveAsync(ct))
-                return (false, "不能审批自己的链入申请。");
-        }
-
-        var src = await _db.FtPersons.FirstOrDefaultAsync(x => x.DataId == row.SourcePersonId && !x.IsDeleted, ct);
-        var tgt = await _db.FtPersons.FirstOrDefaultAsync(x => x.DataId == row.TargetMainPersonId && !x.IsDeleted, ct);
-        if (src == null || tgt == null) return (false, "人物不存在。");
+        if (!await _duty.IsBranchAdminAsync(userId, ct))
+            return (false, "仅族谱管理员、支链管理员或超管可审批链入申请。");
 
         await using var tx = await _db.Database.BeginTransactionAsync(ct);
         try
         {
+            var row = await _db.FtPersonLinks.FirstOrDefaultAsync(x => x.DataId == id && !x.IsDeleted, ct);
+            if (row == null) { await tx.RollbackAsync(ct); return (false, "单据不存在。"); }
+            if (row.LinkStatus != "PENDING") { await tx.RollbackAsync(ct); return (false, "该单已处理。"); }
+            if (row.ApplyUserId == userId)
+            {
+                // 仅「系统只有一名超管」时允许该超管自审；分支管不得自审自己的申请
+                var isSuper = await _duty.IsSuperAsync(userId, ct);
+                if (!isSuper || !await _duty.AllowSelfApproveAsync(ct))
+                {
+                    await tx.RollbackAsync(ct);
+                    return (false, "不能审批自己的链入申请。");
+                }
+            }
+
+            var src = await _db.FtPersons.FirstOrDefaultAsync(x => x.DataId == row.SourcePersonId && !x.IsDeleted, ct);
+            var tgt = await _db.FtPersons.FirstOrDefaultAsync(x => x.DataId == row.TargetMainPersonId && !x.IsDeleted, ct);
+            if (src == null || tgt == null) { await tx.RollbackAsync(ct); return (false, "人物不存在。"); }
+
+            if (!await _clans.UserSharesClanAsync(userId, src, ct)
+                || !await _clans.UserSharesClanAsync(userId, tgt, ct))
+            {
+                await tx.RollbackAsync(ct);
+                return (false, "该申请不属于您所在的家族，无权审批。");
+            }
+
             row.AuditSuperAdminId = userId;
             row.Remark = remark;
             row.AmendDate = DateTime.Now;
@@ -348,6 +388,11 @@ public sealed class FtPersonLinkService
                 await _log.WriteAsync("SELF_APPROVE", ObjectType, row.DataId.ToString(), userId, op, "仅一名超管自审", null, null, ct);
             await tx.CommitAsync(ct);
             return (true, pass ? "已通过。" : "已驳回。");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            await tx.RollbackAsync(ct);
+            return (false, "该单已被他人处理，请刷新后再看。");
         }
         catch
         {
@@ -411,6 +456,11 @@ public sealed class FtPersonLinkService
     private async Task AttachAncestorsIfNoneAsync(FtPerson src, FtPerson tgt, CancellationToken ct)
     {
         // 链入时若主谱目标向上缺父，把源侧已有父链逐代补挂（不覆盖目标已有父亲）
+        // guard++ < 40 只是跳数上限，不是环检测：这里对每条要落的边先做一次可达性判定。
+        var graph = await _db.FtPersons.AsNoTracking()
+            .Where(x => !x.IsDeleted)
+            .ToDictionaryAsync(x => x.DataId, ct);
+
         var t = tgt;
         var srcFatherId = src.FatherPersonId;
         var guard = 0;
@@ -426,9 +476,12 @@ public sealed class FtPersonLinkService
                 if (mapped != null) attach = mapped;
             }
 
+            if (FtTreeService.WouldCycle(graph, t.DataId, attach.DataId)) break;
+
             attach.InMainGenealogy = true;
             attach.KeyLocked = true;
             t.FatherPersonId = attach.DataId;
+            if (graph.TryGetValue(t.DataId, out var snap)) snap.FatherPersonId = attach.DataId;
 
             srcFatherId = srcFather.FatherPersonId;
             t = attach;

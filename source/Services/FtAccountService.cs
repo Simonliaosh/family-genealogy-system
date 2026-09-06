@@ -107,16 +107,29 @@ public sealed class FtAccountService
         });
     }
 
+    /// <summary>API 端登录名/身份证口令校验。</summary>
+    /// <remarks>
+    /// 两处修正：
+    /// ① 失败一律返回同一句文案——原先「身份证未注册。」与「密码不正确。」可区分，
+    ///    使匿名接口成为任意身份证号是否已注册本系统的免费枚举器；
+    /// ② 口令错误时走 <see cref="LoginAttempts.MarkFailure"/> 累加错误计数并在超阈值时锁定，
+    ///    与 MVC 登录路径一致——原先 API 路径完全不计数，可无限次爆破。
+    /// </remarks>
     public async Task<(bool Ok, string Msg, EUser? User)> TryPasswordLoginByIdCardAsync(string idCard, string password, CancellationToken ct)
     {
+        const string fail = "登录名或密码不正确。";
         var user = await FindUserByIdCardAsync(idCard, ct);
-        if (user == null) return (false, "身份证未注册。", null);
-        if (user.IsDeleted || !user.IsEnabled || user.IsLocked)
-            return (false, "账号不可用。", null);
+        if (user == null) return (false, fail, null);
         var tracked = await _db.EUsers.FirstOrDefaultAsync(x => x.DataId == user.DataId, ct);
-        if (tracked == null) return (false, "账号不可用。", null);
+        if (tracked == null || !LoginAttempts.IsUsable(tracked)) return (false, fail, null);
         if (!PasswordHasher.Verify(password ?? "", tracked.PwdHash, tracked.PasswordAlgo))
-            return (false, "密码不正确。", null);
+        {
+            LoginAttempts.MarkFailure(tracked);
+            await _db.SaveChangesAsync(ct);
+            return (false, fail, null);
+        }
+        LoginAttempts.MarkSuccess(tracked);
+        await _db.SaveChangesAsync(ct);
         return (true, "", tracked);
     }
 
@@ -241,14 +254,34 @@ public sealed class FtConflictService
         _duty = duty;
     }
 
+    /// <summary>
+    /// 冲突单分页。冲突表没有 ClanId 列，按「源人物是否在调用者所属家族内」收敛；
+    /// 过滤/排序/分页一并下推到数据库，不再整表加载。
+    /// </summary>
     public async Task<(IReadOnlyList<FtConflictListRowVm> page, int total, int pages, int pageOut)> GetIndexPageAsync(
-        string? status1, int page, int pageSize, CancellationToken ct)
+        int userId, string? status1, int page, int pageSize, CancellationToken ct)
     {
-        var rows = await _db.FtMatchConflicts.AsNoTracking().Where(x => !x.IsDeleted).ToListAsync(ct);
+        var q = _db.FtMatchConflicts.AsNoTracking().Where(x => !x.IsDeleted);
+
+        if (!await _duty.IsSuperAsync(userId, ct))
+        {
+            var clanId = await _db.FtUserClans.AsNoTracking()
+                .Where(u => !u.IsDeleted && u.UserId == userId && u.BStatus == "1")
+                .Select(u => (int?)u.ClanId)
+                .FirstOrDefaultAsync(ct);
+            if (clanId == null)
+                return (Array.Empty<FtConflictListRowVm>(), 0, 0, 1);
+            var clanPersonIds = _db.FtPersons.AsNoTracking()
+                .Where(pp => !pp.IsDeleted && pp.ClanId == clanId)
+                .Select(pp => (int?)pp.DataId);
+            q = q.Where(x => clanPersonIds.Contains(x.SourcePersonId));
+        }
+
         if (!string.IsNullOrWhiteSpace(status1))
-            rows = rows.Where(x => string.Equals(x.ResolveStatus, status1, StringComparison.OrdinalIgnoreCase)).ToList();
-        rows = rows.OrderByDescending(x => x.CreateDate).ToList();
-        var (slice, total, pages, p) = FtPaging.Page(rows, page, pageSize);
+            q = q.Where(x => x.ResolveStatus == status1);
+        q = q.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.DataId);
+
+        var (slice, total, pages, p) = await FtPaging.PageAsync(q, page, pageSize, ct);
         var vm = slice.Select(x => new FtConflictListRowVm
         {
             DataId = x.DataId,

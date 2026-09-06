@@ -246,7 +246,14 @@ public sealed class FtTreeService
             .ToList();
     }
 
-    /// <summary>可见集内把唯一可确定的父/母姓名写成 ID 边。未入主谱者不得补挂到主谱父母。</summary>
+    /// <summary>
+    /// 可见集内把唯一可确定的父/母姓名写成 ID 边。未入主谱者不得补挂到主谱父母。
+    /// </summary>
+    /// <remarks>
+    /// 这是全应用唯一一条批量改父边的路径，原先<strong>不做环检测</strong>——
+    /// 而它的同类函数 <c>FtPersonService.TryAttachParentsByNameAsync</c> 是做的。
+    /// 现在每次落边前都在内存图上先验一次可达性，避免写出 A→B→C→A。
+    /// </remarks>
     public async Task<int> HealParentEdgesAsync(IReadOnlySet<int>? allowIds, CancellationToken ct)
     {
         var all = await _db.FtPersons.Where(x => !x.IsDeleted && x.SameAsPersonId == null).ToListAsync(ct);
@@ -257,6 +264,7 @@ public sealed class FtTreeService
             .GroupBy(x => FtText.NormName(x.FullName), StringComparer.OrdinalIgnoreCase)
             .Where(g => g.Key.Length > 0)
             .ToDictionary(g => g.Key, g => g.ToList(), StringComparer.OrdinalIgnoreCase);
+        var byId = all.ToDictionary(x => x.DataId);
 
         var n = 0;
         foreach (var c in all)
@@ -267,7 +275,7 @@ public sealed class FtTreeService
                 if (fn.Length > 0 && byName.TryGetValue(fn, out var cands))
                 {
                     var pick = PickUniqueParent(cands, c.DataId, c.InMainGenealogy);
-                    if (pick != null)
+                    if (pick != null && !WouldCycle(byId, c.DataId, pick.DataId))
                     {
                         c.FatherPersonId = pick.DataId;
                         c.AmendDate = DateTime.Now;
@@ -281,7 +289,7 @@ public sealed class FtTreeService
                 if (mn.Length > 0 && byName.TryGetValue(mn, out var cands))
                 {
                     var pick = PickUniqueParent(cands, c.DataId, c.InMainGenealogy);
-                    if (pick != null)
+                    if (pick != null && !WouldCycle(byId, c.DataId, pick.DataId))
                     {
                         c.MotherPersonId = pick.DataId;
                         c.AmendDate = DateTime.Now;
@@ -292,6 +300,26 @@ public sealed class FtTreeService
         }
         if (n > 0) await _db.SaveChangesAsync(ct);
         return n;
+    }
+
+    /// <summary>把 <paramref name="parentId"/> 挂成 <paramref name="childId"/> 的父母是否会成环。</summary>
+    /// <remarks>沿当前内存图从候选父母向上追溯：若能走回子女本人，这条边就是环。</remarks>
+    internal static bool WouldCycle(IReadOnlyDictionary<int, FtPerson> byId, int childId, int parentId)
+    {
+        if (childId == parentId) return true;
+        var seen = new HashSet<int>();
+        var stack = new Stack<int>();
+        stack.Push(parentId);
+        while (stack.Count > 0)
+        {
+            var id = stack.Pop();
+            if (id == childId) return true;
+            if (!seen.Add(id)) continue;
+            if (!byId.TryGetValue(id, out var p)) continue;
+            if (p.FatherPersonId is int f) stack.Push(f);
+            if (p.MotherPersonId is int m) stack.Push(m);
+        }
+        return false;
     }
 
     private static FtPerson? PickUniqueParent(List<FtPerson> cands, int childId, bool childInMain)

@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: 构建与单元测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 还原
+        run: dotnet restore FamilyTree.sln
+
+      - name: 构建（警告即错误）
+        run: dotnet build FamilyTree.sln -c Release --no-restore -warnaserror
+
+      - name: 单元测试
+        run: dotnet test FamilyTree.sln -c Release --no-build --verbosity normal
+
+  sql-scripts:
+    name: SQL 脚本可执行性
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: 'Y'
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_SA_PASSWORD || 'Ci-Local-P@ssw0rd!' }}
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # 这个任务正是本仓库最需要的一条防线：起一个空库，按 10 → 50 的编号顺序
+      # 把 32 个脚本跑一遍。种子口令重置、库名 EFrame↔FamilyTree 劈叉、
+      # 损坏的 30-Seed_FamilyTree.sql——这三类问题第一天就会被它抓到。
+      - name: 按编号顺序执行全部脚本
+        env:
+          SA_PASSWORD: ${{ secrets.CI_SA_PASSWORD || 'Ci-Local-P@ssw0rd!' }}
+          ADMIN_PASSWORD: ${{ secrets.CI_SEED_ADMIN_PASSWORD || 'Ci-Seed-P@ssw0rd!' }}
+        run: |
+          set -euo pipefail
+          SQLCMD=/opt/mssql-tools18/bin/sqlcmd
+          docker exec "$(docker ps -qf ancestor=mcr.microsoft.com/mssql/server:2022-latest)" true 2>/dev/null || true
+          for f in scripts/*.sql; do
+            echo "==> $f"
+            $SQLCMD -C -S localhost -U sa -P "$SA_PASSWORD" \
+              -v AdminPassword="$ADMIN_PASSWORD" \
+              -v ClanCode="DEFAULT" PurgeMemberUsers=0 IncludeOrphanPersons=0 PurgeGenerationWords=0 \
+              -b -i "$f"
+          done
+
+      - name: 重跑一遍验证幂等
+        env:
+          SA_PASSWORD: ${{ secrets.CI_SA_PASSWORD || 'Ci-Local-P@ssw0rd!' }}
+          ADMIN_PASSWORD: ${{ secrets.CI_SEED_ADMIN_PASSWORD || 'Ci-Seed-P@ssw0rd!' }}
+        run: |
+          set -euo pipefail
+          SQLCMD=/opt/mssql-tools18/bin/sqlcmd
+          for f in scripts/*.sql; do
+            $SQLCMD -C -S localhost -U sa -P "$SA_PASSWORD" \
+              -v AdminPassword="$ADMIN_PASSWORD" \
+              -v ClanCode="DEFAULT" PurgeMemberUsers=0 IncludeOrphanPersons=0 PurgeGenerationWords=0 \
+              -b -i "$f"
+          done
+          $SQLCMD -C -S localhost -U sa -P "$SA_PASSWORD" -d FamilyTree \
+            -Q "SELECT ScriptName, RunCount FROM dbo.SchemaScriptLog ORDER BY ScriptName"
+
+      - name: 检查 SQL 脚本编码为 UTF-8 BOM
+        run: |
+          set -euo pipefail
+          bad=0
+          for f in scripts/*.sql; do
+            if [ "$(head -c 3 "$f" | xxd -p)" != "efbbbf" ]; then
+              echo "缺少 UTF-8 BOM（SSMS 会按机器 ANSI 代码页回退，中文必乱码）: $f"
+              bad=1
+            fi
+          done
+          exit $bad

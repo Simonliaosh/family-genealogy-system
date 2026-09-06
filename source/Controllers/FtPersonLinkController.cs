@@ -240,6 +240,17 @@ public class FtLinkAuditController : Controller
     {
         if (!CanView()) return Forbid();
         var uid = FtClaims.UserId(User) ?? 0;
+        // 与 ApplyQr 用同一条归属校验：申请人本人或本族管理岗，否则枚举 id 即可读两侧人物档案
+        try
+        {
+            await _service.EnsureApplicantCanViewQrAsync(id, uid, ct);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ViewBag.Err = ex.Message;
+            return View(model: null);
+        }
+
         var vm = await _service.BuildScanAsync(id, ct);
         if (vm == null)
         {
@@ -289,7 +300,8 @@ public class FtConflictController : Controller
     public async Task<IActionResult> Index(string? status1, int? intPage, int? pageShowNum, CancellationToken ct)
     {
         if (!CanView()) return Forbid();
-        var (rows, total, pages, p) = await _service.GetIndexPageAsync(status1, intPage.GetValueOrDefault(1), pageShowNum.GetValueOrDefault(16), ct);
+        var uid = FtClaims.UserId(User) ?? 0;
+        var (rows, total, pages, p) = await _service.GetIndexPageAsync(uid, status1, intPage.GetValueOrDefault(1), pageShowNum.GetValueOrDefault(16), ct);
         ViewBag.CanUpdate = FunctionLimitUi.CanUpdate(HttpContext.Items["PubFunctionLimit"] as string, false);
         ViewBag.Status1 = status1 ?? "";
         ViewBag.IntPage = p;

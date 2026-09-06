@@ -1,15 +1,23 @@
 const api = require('../../utils/request');
+const page = require('../../utils/page');
 
 Page({
-  data: { todos: [], links: [] },
+  data: Object.assign({ todos: [], links: [] }, page.loadState),
+
   onShow() {
-    if (!wx.getStorageSync('ft_token')) {
-      wx.reLaunch({ url: '/pages/login/login' });
-      return;
-    }
-    api.get('/api/FtMessage').then(res => {
-      const d = res.data || {};
-      this.setData({ todos: d.todos || [], links: d.links || [] });
-    }).catch(err => wx.showToast({ title: err.message, icon: 'none' }));
-  }
+    if (!page.requireLogin()) return;
+    this.load();
+  },
+
+  onPullDownRefresh() { this.load({ silent: true }); },
+
+  load(opts) {
+    return page.load(this, () =>
+      api.get('/api/FtMessage').then(res => {
+        const d = res.data || {};
+        this.setData({ todos: d.todos || [], links: d.links || [] });
+      }), opts).catch(() => {});
+  },
+
+  onRetry() { this.load(); }
 });

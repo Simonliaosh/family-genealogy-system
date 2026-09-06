@@ -51,7 +51,7 @@ public sealed class FtSchemaFilter : IAsyncActionFilter
                 var tokenOk = await DatabaseSchemaHelper.TableExistsAsync(db, "FamilyTree_ApiToken", context.HttpContext.RequestAborted);
                 if (!tokenOk)
                 {
-                    context.Result = new JsonResult(new { ok = false, message = "请补执行 docs/04-数据结构.sql 中的 FamilyTree_ApiToken 段。" })
+                    context.Result = new JsonResult(new { ok = false, message = "请补执行 scripts/29-CreateTbl_FamilyTree_Core.sql（含 FamilyTree_ApiToken 表）。" })
                     {
                         StatusCode = 503
                     };
@@ -64,7 +64,7 @@ public sealed class FtSchemaFilter : IAsyncActionFilter
 
         if (cad.ControllerName.EndsWith("Api", StringComparison.OrdinalIgnoreCase))
         {
-            context.Result = new JsonResult(new { ok = false, message = "族谱数据表尚未创建，请先执行 docs/04-数据结构.sql。" })
+            context.Result = new JsonResult(new { ok = false, message = "族谱数据表尚未创建，请先执行 scripts/29-CreateTbl_FamilyTree_Core.sql。" })
             {
                 StatusCode = 503
             };

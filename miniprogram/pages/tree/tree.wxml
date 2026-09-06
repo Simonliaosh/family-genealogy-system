@@ -10,8 +10,17 @@
     <view class="row"><text>当前根</text><text>{{rootNames[rootIndex]}}</text></view>
   </picker>
 </view>
-<view class="card" wx:if="{{!bound && scope==='mine'}}">请先完成「本人」录入。</view>
-<view class="card" wx:for="{{lines}}" wx:key="key">
-  <view style="padding-left: {{item.depth * 24}}rpx;">{{item.name}} <text class="muted" wx:if="{{item.birth}}">{{item.birth}}</text></view>
+<view class="card muted" wx:if="{{loading}}">加载中…</view>
+
+<view class="card" wx:elif="{{loadError}}">
+  <view class="muted">加载失败：{{loadError}}</view>
+  <button class="btn btn-ghost" bindtap="onRetry" style="margin-top:16rpx;">重试</button>
 </view>
-<view class="card muted" wx:if="{{lines.length===0}}">暂无节点。</view>
+
+<block wx:else>
+  <view class="card" wx:if="{{!bound && scope==='mine'}}">请先完成「本人」录入。</view>
+  <view class="card" wx:for="{{lines}}" wx:key="key">
+    <view style="padding-left: {{item.depth * 24}}rpx;">{{item.name}} <text class="muted" wx:if="{{item.birth}}">{{item.birth}}</text></view>
+  </view>
+  <view class="card muted" wx:if="{{lines.length===0}}">暂无节点。</view>
+</block>

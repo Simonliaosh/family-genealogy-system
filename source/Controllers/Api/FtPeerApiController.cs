@@ -1,8 +1,10 @@
 using FamilyTree.Filters;
 using FamilyTree.Helpers;
 using FamilyTree.Services;
+using FamilyTree.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FamilyTree.Controllers.Api;
 
@@ -10,6 +12,8 @@ namespace FamilyTree.Controllers.Api;
 [IgnoreAntiforgeryToken]
 [ApiController]
 [Route("api/FtPeer")]
+// 三个端点全部匿名可达（邀请码信息、核销邀请、按令牌拉子女），加限流挡住码枚举
+[EnableRateLimiting(RateLimitPolicies.AnonymousApi)]
 public class FtPeerApiController : ControllerBase
 {
     private readonly FtPeerService _peers;

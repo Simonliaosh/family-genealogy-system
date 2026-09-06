@@ -66,4 +66,12 @@ public class FtPersonDraft
     [Column("Operator")]
     [StringLength(30)]
     public string OperatorName { get; set; } = "";
+
+    /// <summary>
+    /// 乐观并发令牌。没有它 EF 发的是无条件 UPDATE ... WHERE DataID=@id，后写静默覆盖先写。
+    /// 对应 scripts/29-CreateTbl_FamilyTree_Core.sql 里的 rowversion 列。
+    /// </summary>
+    [Timestamp]
+    [Column("RowVersion")]
+    public byte[]? RowVersion { get; set; }
 }

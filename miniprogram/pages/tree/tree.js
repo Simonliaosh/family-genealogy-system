@@ -1,4 +1,5 @@
 const api = require('../../utils/request');
+const page = require('../../utils/page');
 
 function flatten(node, depth, acc) {
   if (!node) return acc;
@@ -13,7 +14,7 @@ function flatten(node, depth, acc) {
 }
 
 Page({
-  data: {
+  data: Object.assign({
     mode: 'down',
     scope: 'main',
     roots: [],
@@ -21,38 +22,44 @@ Page({
     rootIndex: 0,
     lines: [],
     bound: true
-  },
+  }, page.loadState),
+
   onShow() {
-    if (!wx.getStorageSync('ft_token')) {
-      wx.reLaunch({ url: '/pages/login/login' });
-      return;
-    }
-    this.loadRoots().then(() => this.loadTree());
+    if (!page.requireLogin()) return;
+    this.reload();
   },
+
+  onPullDownRefresh() { this.reload({ silent: true }); },
+
+  reload(opts) {
+    return page.load(this, () =>
+      this.loadRoots().then(() => this.loadTree()), opts).catch(() => {});
+  },
+
+  onRetry() { this.reload(); },
+
   loadRoots() {
     return api.get('/api/FtTree/Roots').then(res => {
       const roots = res.data || [];
       this.setData({ roots, rootNames: roots.map(x => x.name) });
-    }).catch(err => wx.showToast({ title: err.message, icon: 'none' }));
+    });
   },
   loadTree() {
     const mode = this.data.mode;
     if (this.data.scope === 'mine') {
-      api.get('/api/FtTree/Mine', { mode }).then(res => {
+      return api.get('/api/FtTree/Mine', { mode }).then(res => {
         const d = res.data || {};
         if (d.bound === false) {
           this.setData({ bound: false, lines: [] });
           return;
         }
         this.applyPack(d);
-      }).catch(err => wx.showToast({ title: err.message, icon: 'none' }));
-      return;
+      });
     }
     const root = this.data.roots[this.data.rootIndex];
     const q = { mode };
     if (root) q.rootId = root.id;
-    api.get('/api/FtTree/Main', q).then(res => this.applyPack(res.data || {}))
-      .catch(err => wx.showToast({ title: err.message, icon: 'none' }));
+    return api.get('/api/FtTree/Main', q).then(res => this.applyPack(res.data || {}));
   },
   applyPack(d) {
     let lines = [];
@@ -65,10 +72,16 @@ Page({
     }
     this.setData({ bound: true, lines });
   },
-  setMode(e) { this.setData({ mode: e.currentTarget.dataset.m }); this.loadTree(); },
-  setScope(e) { this.setData({ scope: e.currentTarget.dataset.s }); this.loadTree(); },
+  setMode(e) {
+    this.setData({ mode: e.currentTarget.dataset.m });
+    page.load(this, () => this.loadTree()).catch(() => {});
+  },
+  setScope(e) {
+    this.setData({ scope: e.currentTarget.dataset.s });
+    page.load(this, () => this.loadTree()).catch(() => {});
+  },
   onRoot(e) {
     this.setData({ rootIndex: parseInt(e.detail.value, 10) });
-    this.loadTree();
+    page.load(this, () => this.loadTree()).catch(() => {});
   }
 });

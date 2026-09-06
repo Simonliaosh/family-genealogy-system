@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using FamilyTree.Helpers;
 using FamilyTree.Models;
 using FamilyTree.Models.ViewModels;
@@ -33,6 +34,17 @@ public sealed class FtClanService
             .Where(x => !x.IsDeleted && x.UserId == userId && x.BStatus == "1")
             .Select(x => (int?)x.ClanId)
             .FirstOrDefaultAsync(ct);
+    }
+
+    /// <summary>
+    /// 调用者与目标人物是否属于同一家族。超管放行（纠错/解链等全局路径依赖它）。
+    /// 未加入任何家族、或人物尚未回填 ClanId 时一律不同族——与 VisiblePersonsAsync 的列表口径保持一致。
+    /// </summary>
+    public async Task<bool> UserSharesClanAsync(int userId, FtPerson person, CancellationToken ct)
+    {
+        if (await _duty.IsSuperAsync(userId, ct)) return true;
+        var clanId = await GetUserClanIdAsync(userId, ct);
+        return clanId != null && person.ClanId == clanId;
     }
 
     public async Task<FtClan?> GetUserClanAsync(int userId, CancellationToken ct)
@@ -176,25 +188,37 @@ public sealed class FtClanService
             AmendDate = now,
             OperatorName = FtText.ClipReq(op, 30)
         };
-        _db.FtClans.Add(clan);
-        await _db.SaveChangesAsync(ct);
-
-        await AttachUserAsync(userId, clan.DataId, op, now, ct);
-        await StampOwnedPersonsAsync(userId, clan.DataId, ct);
-        await SetClanAdminPostAsync(userId, true, op, ct);
-
-        if (invite != null)
+        // 建族是 6 次独立提交串起来的：插族 → 入族 → 盖 ClanId → 授管理员岗 → 核销邀请码 → 写日志。
+        // 第 4 步失败会建出一个「创建者不是管理员」的族（UI 上无法补救），第 5 步失败则一次性邀请码仍可用。
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        try
         {
-            invite.InviteStatus = "USED";
-            invite.UsedByUserId = userId;
-            invite.UsedClanId = clan.DataId;
-            invite.AmendDate = now;
+            _db.FtClans.Add(clan);
             await _db.SaveChangesAsync(ct);
-        }
 
-        await _log.WriteAsync("CLAN_CREATE", "Clan", clan.DataId.ToString(), userId, op,
-            name + "/" + code + (invite != null ? "/inv=" + invite.InviteCode : "/super"), null, null, ct);
-        return (true, "家族已创建。请分享「加入家族」二维码邀请亲友加入。", clan);
+            await AttachUserAsync(userId, clan.DataId, op, now, ct);
+            await StampOwnedPersonsAsync(userId, clan.DataId, ct);
+            await SetClanAdminPostAsync(userId, true, op, ct);
+
+            if (invite != null)
+            {
+                invite.InviteStatus = "USED";
+                invite.UsedByUserId = userId;
+                invite.UsedClanId = clan.DataId;
+                invite.AmendDate = now;
+                await _db.SaveChangesAsync(ct);
+            }
+
+            await _log.WriteAsync("CLAN_CREATE", "Clan", clan.DataId.ToString(), userId, op,
+                name + "/" + code + (invite != null ? "/inv=" + invite.InviteCode : "/super"), null, null, ct);
+            await tx.CommitAsync(ct);
+            return (true, "家族已创建。请分享「加入家族」二维码邀请亲友加入。", clan);
+        }
+        catch
+        {
+            await tx.RollbackAsync(ct);
+            throw;
+        }
     }
 
     /// <summary>凭家族 ID 加入；一人只能一个家族。</summary>
@@ -208,10 +232,20 @@ public sealed class FtClanService
         var clan = await GetByCodeAsync(clanCode, ct);
         if (clan == null) return (false, "家族 ID 无效。");
 
-        await AttachUserAsync(userId, clan.DataId, op, DateTime.Now, ct);
-        await StampOwnedPersonsAsync(userId, clan.DataId, ct);
-        await _log.WriteAsync("CLAN_JOIN", "Clan", clan.DataId.ToString(), userId, op, clan.ClanCode, null, null, ct);
-        return (true, "已加入家族「" + clan.ClanName + "」。");
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        try
+        {
+            await AttachUserAsync(userId, clan.DataId, op, DateTime.Now, ct);
+            await StampOwnedPersonsAsync(userId, clan.DataId, ct);
+            await _log.WriteAsync("CLAN_JOIN", "Clan", clan.DataId.ToString(), userId, op, clan.ClanCode, null, null, ct);
+            await tx.CommitAsync(ct);
+            return (true, "已加入家族「" + clan.ClanName + "」。");
+        }
+        catch
+        {
+            await tx.RollbackAsync(ct);
+            throw;
+        }
     }
 
     public async Task<HashSet<int>> GetClanPersonIdsAsync(int clanId, CancellationToken ct)
@@ -397,7 +431,9 @@ public sealed class FtClanService
     {
         for (var i = 0; i < 20; i++)
         {
-            var code = Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
+            // 原先是 Guid.ToString("N")[..8] —— 只有 32 bit，而这是「加入家族并读取全树」的唯一凭据，
+            // 永不过期、不可轮换、无限流。改用 CSPRNG 并加长。
+            var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(8));
             var exists = await _db.FtClans.AsNoTracking().AnyAsync(x => !x.IsDeleted && x.ClanCode == code, ct);
             if (!exists) return code;
         }
@@ -408,7 +444,8 @@ public sealed class FtClanService
     {
         for (var i = 0; i < 20; i++)
         {
-            var code = Guid.NewGuid().ToString("N")[..10].ToUpperInvariant();
+            // 授予「创建新族并成为族管理员」的凭据，原为截断到 40 bit 的 GUID
+            var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(12));
             var exists = await _db.FtClanCreateInvites.AsNoTracking()
                 .AnyAsync(x => !x.IsDeleted && x.InviteCode == code, ct);
             if (!exists) return code;

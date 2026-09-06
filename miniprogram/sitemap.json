@@ -1,4 +1,7 @@
 {
-  "desc": "家族族谱成员小程序",
-  "rules": [{ "action": "allow", "page": "*" }]
+  "desc": "私密家族应用：只放行登录落地页，个人档案与草稿编辑页不得被微信索引。原先是 {\"action\":\"allow\",\"page\":\"*\"}，会把 pages/profile 一并索引。",
+  "rules": [
+    { "action": "allow", "page": "pages/login/login" },
+    { "action": "disallow", "page": "*" }
+  ]
 }

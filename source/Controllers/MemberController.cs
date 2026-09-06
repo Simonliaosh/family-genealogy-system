@@ -354,7 +354,7 @@ public class MemberController : Controller
         if (!await CanViewClanTreeAsync(uid.Value, self, ct))
             return View("ClanTreeDenied");
 
-        await _persons.ClearInMainOnPendingLinkSourcesAsync(ct);
+        // 不在 GET 上写库：清理待审占位改由 /FtTree/Maintain 显式触发
         var clanId = await _clans.GetUserClanIdAsync(uid.Value, ct);
         int? rootClan = clanId;
         if (!clanId.HasValue)
@@ -424,13 +424,15 @@ public class MemberController : Controller
         return self.IsCertified;
     }
 
-    private static string SafeReturn(string? returnUrl)
+    /// <summary>
+    /// 本地跳转地址白名单。手写的「以 / 开头且不以 // 开头」比 <c>Url.IsLocalUrl</c> 弱：
+    /// 它会放行 <c>/\evil.com</c>，随后被 <c>LocalRedirect</c> 二次校验时抛出未处理的 500。
+    /// </summary>
+    private string SafeReturn(string? returnUrl)
     {
         var u = (returnUrl ?? "").Trim();
         if (u.Length == 0) return "/Member/Go";
-        if (u.StartsWith('/') && !u.StartsWith("//", StringComparison.Ordinal))
-            return u;
-        return "/Member/Go";
+        return Url.IsLocalUrl(u) ? u : "/Member/Go";
     }
 
     private string CertifyAbsoluteUrl(string? code) =>

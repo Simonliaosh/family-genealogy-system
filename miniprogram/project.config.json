@@ -1,8 +1,8 @@
 {
-  "description": "家族族谱成员小程序。用微信开发者工具打开本目录；AppId 填入后同步改 appsettings FamilyTree:WeChat。",
+  "description": "家族族谱成员小程序。用微信开发者工具打开本目录；AppId 填入后同步改 appsettings 的 FamilyTree:WeChat。",
   "packOptions": { "ignore": [] },
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": true,
     "minified": true
   },

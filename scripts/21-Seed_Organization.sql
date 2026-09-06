@@ -1,12 +1,16 @@
+ï»¿/* åº“åç»Ÿä¸€ä¸º FamilyTreeï¼šæœ¬è„šæœ¬åŸå…ˆæ²¡æœ‰ USEï¼Œä¼šè½åœ¨æ‰§è¡Œå·¥å…·å½“æ—¶é€‰ä¸­çš„åº“ä¸Šã€‚ */
+USE [FamilyTree];
+GO
+
 /*
 ==============================================================================
-  EFrame ÖÖ×Ó 02 - ×éÖ¯¼Ü¹¹£¨²¿ÃÅ/¸ÚÎ»/Ö°Ôğ/¸ÚÎ»Ö°Ôğ£©
+  EFrame ç§å­ 02 - ç»„ç»‡æ¶æ„ï¼ˆéƒ¨é—¨/å²—ä½/èŒè´£/å²—ä½èŒè´£ï¼‰
 ==============================================================================
-  À´Ô´£ºEFrame.xls + EFrame ¼Ü¹¹¶ÔÆë£¨ÃİµÈ MERGE / IF NOT EXISTS£©
-  Ç°ÖÃ£ºdocs/EFrame_CreateTables.sql¡¢docs/EFrame_v2_supplement.sql
-  ÒÀÀµ£º20-Seed_Foundation.sql
-  Ë³Ğò£ºµÚ 2 ²½
-  ±àÂë£ºANSI (GBK)
+  æ¥æºï¼šEFrame.xls + EFrame æ¶æ„å¯¹é½ï¼ˆå¹‚ç­‰ MERGE / IF NOT EXISTSï¼‰
+  å‰ç½®ï¼šdocs/EFrame_CreateTables.sqlã€docs/EFrame_v2_supplement.sql
+  ä¾èµ–ï¼š20-Seed_Foundation.sql
+  é¡ºåºï¼šç¬¬ 2 æ­¥
+  ç¼–ç ï¼šANSI (GBK)
 ==============================================================================
 */
 SET NOCOUNT ON;
@@ -16,90 +20,90 @@ GO
 DECLARE @Now DATETIME = GETDATE();
 DECLARE @Op VARCHAR(30) = 'SEED-EFRAME';
 
-/* ----- ²¿ÃÅ£¨ÏÈÖ÷ºó×Ó£© ----- */
+/* ----- éƒ¨é—¨ï¼ˆå…ˆä¸»åå­ï¼‰ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'CF001')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, DeptEName, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF001', N'ÑİÊ¾²¿ÃÅ', NULL, 1, N'/1/', NULL, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF001', N'æ¼”ç¤ºéƒ¨é—¨', NULL, 1, N'/1/', NULL, 1, '1', 0, @Now, @Now, @Op);
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'CF002')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, DeptEName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'CF002', N'ÑĞ·¢×é', NULL, p.DataID, 2, N'/1/1/', NULL, 2, '1', 0, @Now, @Now, @Op
+    SELECT N'CF002', N'ç ”å‘ç»„', NULL, p.DataID, 2, N'/1/1/', NULL, 2, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'CF001';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'HR001')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, DeptEName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'HR001', N'ÈËÁ¦×ÊÔ´²¿', NULL, p.DataID, 2, N'/1/1/2/', NULL, 5, '1', 0, @Now, @Now, @Op
+    SELECT N'HR001', N'äººåŠ›èµ„æºéƒ¨', NULL, p.DataID, 2, N'/1/1/2/', NULL, 5, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'CF001';
 
-/* ----- ¸ÚÎ» ----- */
+/* ----- å²—ä½ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'CF001')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PostEName, PositionType, DataScope, DispSeq, DDescription, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF001', N'ÑİÊ¾¸ÚÎ»', NULL, NULL, 'ALL', 1, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF001', N'æ¼”ç¤ºå²—ä½', NULL, NULL, 'ALL', 1, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÑİÊ¾¸ÚÎ»', DataScope='ALL', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'æ¼”ç¤ºå²—ä½', DataScope='ALL', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'CF001';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'CF_ADMIN')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PostEName, PositionType, DataScope, DispSeq, DDescription, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_ADMIN', N'¿ò¼Ü¹ÜÀíÔ±¸ÚÎ»', NULL, NULL, 'ALL', 1, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_ADMIN', N'æ¡†æ¶ç®¡ç†å‘˜å²—ä½', NULL, NULL, 'ALL', 1, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'¿ò¼Ü¹ÜÀíÔ±¸ÚÎ»', DataScope='ALL', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'æ¡†æ¶ç®¡ç†å‘˜å²—ä½', DataScope='ALL', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'CF_ADMIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'CF_STAFF')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PostEName, PositionType, DataScope, DispSeq, DDescription, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_STAFF', N'ÆÕÍ¨Ô±¹¤¸ÚÎ»', NULL, NULL, 'DEPT', 2, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_STAFF', N'æ™®é€šå‘˜å·¥å²—ä½', NULL, NULL, 'DEPT', 2, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÆÕÍ¨Ô±¹¤¸ÚÎ»', DataScope='DEPT', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'æ™®é€šå‘˜å·¥å²—ä½', DataScope='DEPT', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'CF_STAFF';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'HR_MGR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PostEName, PositionType, DataScope, DispSeq, DDescription, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'HR_MGR', N'ÈËÊÂÖ÷¹Ü¸ÚÎ»', NULL, NULL, 'DEPT', 10, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'HR_MGR', N'äººäº‹ä¸»ç®¡å²—ä½', NULL, NULL, 'DEPT', 10, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÈËÊÂÖ÷¹Ü¸ÚÎ»', DataScope='DEPT', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'äººäº‹ä¸»ç®¡å²—ä½', DataScope='DEPT', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'HR_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'HR_EMP')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PostEName, PositionType, DataScope, DispSeq, DDescription, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'HR_EMP', N'ÈËÊÂÔ±¹¤¸ÚÎ»', NULL, NULL, 'DEPT', 11, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'HR_EMP', N'äººäº‹å‘˜å·¥å²—ä½', NULL, NULL, 'DEPT', 11, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÈËÊÂÔ±¹¤¸ÚÎ»', DataScope='DEPT', DispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'äººäº‹å‘˜å·¥å²—ä½', DataScope='DEPT', DispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'HR_EMP';
 
-/* ----- Ö°Ôğ ----- */
+/* ----- èŒè´£ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'CF_ADMIN')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyEName, DutyCategory, DutyDispSeq, DDescription, DutyFlow, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_ADMIN', N'¿ò¼Ü¹ÜÀíÔ±Ö°Ôğ', NULL, 'ADMIN', 1, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_ADMIN', N'æ¡†æ¶ç®¡ç†å‘˜èŒè´£', NULL, 'ADMIN', 1, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'¿ò¼Ü¹ÜÀíÔ±Ö°Ôğ', DutyCategory='ADMIN', DutyDispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'æ¡†æ¶ç®¡ç†å‘˜èŒè´£', DutyCategory='ADMIN', DutyDispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'CF_ADMIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'CF_VIEWER')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyEName, DutyCategory, DutyDispSeq, DDescription, DutyFlow, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_VIEWER', N'Ö»¶Á²éÑ¯Ö°Ôğ', NULL, 'SERVICE', 2, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_VIEWER', N'åªè¯»æŸ¥è¯¢èŒè´£', NULL, 'SERVICE', 2, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'Ö»¶Á²éÑ¯Ö°Ôğ', DutyCategory='SERVICE', DutyDispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'åªè¯»æŸ¥è¯¢èŒè´£', DutyCategory='SERVICE', DutyDispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'CF_VIEWER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'CF_HR_MGR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyEName, DutyCategory, DutyDispSeq, DDescription, DutyFlow, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_HR_MGR', N'ÈËÊÂÉóÅúÖ°Ôğ', NULL, 'APPROVAL', 10, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_HR_MGR', N'äººäº‹å®¡æ‰¹èŒè´£', NULL, 'APPROVAL', 10, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ÈËÊÂÉóÅúÖ°Ôğ', DutyCategory='APPROVAL', DutyDispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'äººäº‹å®¡æ‰¹èŒè´£', DutyCategory='APPROVAL', DutyDispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'CF_HR_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'CF_HR_EMP')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyEName, DutyCategory, DutyDispSeq, DDescription, DutyFlow, Remark, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'CF_HR_EMP', N'ÈËÊÂÔ±¹¤Ö°Ôğ', NULL, 'SERVICE', 11, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
+    VALUES (N'CF_HR_EMP', N'äººäº‹å‘˜å·¥èŒè´£', NULL, 'SERVICE', 11, NULL, NULL, NULL, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ÈËÊÂÔ±¹¤Ö°Ôğ', DutyCategory='SERVICE', DutyDispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'äººäº‹å‘˜å·¥èŒè´£', DutyCategory='SERVICE', DutyDispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'CF_HR_EMP';
 
-/* ----- ¸ÚÎ»Ö°Ôğ ----- */
+/* ----- å²—ä½èŒè´£ ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_PositionDuty pd
@@ -171,5 +175,26 @@ IF NOT EXISTS (
     FROM dbo.Tbl_E_Position p CROSS JOIN dbo.Tbl_E_Duty d
     WHERE p.PostCode=N'HR_EMP' AND d.DutyCode=N'CF_HR_EMP';
 
-PRINT N'21-Seed_Organization Íê³É¡£';
+PRINT N'21-Seed_Organization å®Œæˆã€‚';
+GO
+
+/* ---------- è„šæœ¬æ‰§è¡Œå°è´¦ ----------
+   ä»“åº“åŸå…ˆæ²¡æœ‰ä»»ä½•è¿ç§»æœºåˆ¶ï¼šæ–‡ä»¶åæ˜¯å”¯ä¸€çš„é¡ºåºä¾æ®ï¼Œè€Œç¼–å·å·²ç»åœ¨ç¢°æ’
+   ï¼ˆ20-Seed_Foundation / 20-Seed_README åŒå·ï¼‰ï¼Œä¹Ÿæ²¡æœ‰åŠæ³•é—®ä¸€ä¸ªæ•°æ®åº“ã€Œä½ è·‘è¿‡å“ªäº›è„šæœ¬ã€ã€‚
+   è¿™æ®µè‡ªå»ºè¡¨ + è®°å½•ï¼Œå¹‚ç­‰ï¼Œå¯åœ¨ä»»æ„è„šæœ¬å•ç‹¬æ‰§è¡Œã€‚ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'21-Seed_Organization.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'21-Seed_Organization.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'21-Seed_Organization.sql');
 GO

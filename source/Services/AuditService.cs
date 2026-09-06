@@ -1,3 +1,5 @@
+using FamilyTree.Helpers;
+
 namespace FamilyTree.Services;
 
 /// <summary>审计日志：当前写入应用日志，可替换为数据库/外部系统。</summary>
@@ -22,8 +24,8 @@ public sealed class AuditService
         _logger.LogInformation(
             "审计-登录 {Outcome} 用户={UserKey} 显示名={DisplayName} IP={Ip} UA={UserAgent} 说明={Detail}",
             success ? "成功" : "失败",
-            userKey,
-            displayName,
+            FtText.MaskLoginId(userKey),
+            FtText.MaskLoginId(displayName),
             ip ?? "-",
             Truncate(userAgent, 120),
             detail ?? "-");

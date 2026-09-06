@@ -4,12 +4,17 @@ obj/
 Debug/
 Release/
 
-# 其他目录（备份/内部文档/数据库/临时）
+# 其他目录（备份/数据库/临时）
 bk/
-docs/
 base/
 db/
 tmp/
+
+# 内部文档目录整体忽略，但建库脚本必须进仓库——
+# 原先 docs/ 被整目录忽略，11 张核心表的 CREATE TABLE 只存在于 docs/04-数据结构.sql，
+# 结果是任何人 clone 之后都建不出数据库。这些定义已迁到 scripts/29-CreateTbl_FamilyTree_Core.sql。
+docs/
+!docs/*.sql
 
 # 基本需求（内部需求文档+大压缩包，整体不上传）
 基本需求/
@@ -32,3 +37,19 @@ appsettings.Production.json
 
 # 临时文件
 *.tmp
+
+# Python 字节码（仓库里曾经跟踪过一个 .pyc）
+__pycache__/
+*.pyc
+*.pyo
+
+# 测试与构建产物
+[Tt]est[Rr]esults/
+*.trx
+.DS_Store
+
+# DataProtection 密钥环：明文 XML，绝不能进仓库，发布/备份流程也要显式排除
+Keys/
+
+# 微信开发者工具的个人本地设置（urlCheck 等开关不应对所有克隆者生效）
+miniprogram/project.private.config.json

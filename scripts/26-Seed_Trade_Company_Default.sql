@@ -1,14 +1,18 @@
+ï»¿/* åº“åç»Ÿä¸€ä¸º FamilyTreeï¼šæœ¬è„šæœ¬åŸå…ˆæ²¡æœ‰ USEï¼Œä¼šè½åœ¨æ‰§è¡Œå·¥å…·å½“æ—¶é€‰ä¸­çš„åº“ä¸Šã€‚ */
+USE [FamilyTree];
+GO
+
 /*
 ==============================================================================
-  EFrame ÖÖ×Ó 07 - Ã³Ò×¹«Ë¾Ä¬ÈÏ×éÖ¯/Ö°Ôğ/ÊÂ¼ş/¶©ÔÄÄ£°å
+  EFrame ç§å­ 07 - è´¸æ˜“å…¬å¸é»˜è®¤ç»„ç»‡/èŒè´£/äº‹ä»¶/è®¢é˜…æ¨¡æ¿
 ==============================================================================
-  ÃüÃû¹æÔò£º
-    ²¿ÃÅ TRADE001~008 | ¸ÚÎ» POST_* | Ö°Ôğ TRADE_* | ÊÂ¼ş TRADE.{SO|PO|PAY|OUT|IN}.*
-    ×ÊÔ´ RES.TRADE.* | ²Ëµ¥×é TRD | Ó¦ÓÃ TRADE
-  Ç°ÖÃ£º20~24 ÖÖ×Ó£¨»òÖÁÉÙ 20 Foundation + 23 ¿ò¼Ü²Ëµ¥£©
-  Ë³Ğò£ºµÚ 7 ²½£¨ÔÚ 25 Dashboard Ö®ºóÒà¿É£©
-  ±àÂë£ºANSI (GBK)
-  ËµÃ÷£ºÃİµÈ¿ÉÖØ¸´Ö´ĞĞ£»ÑİÊ¾ÕËºÅÃÜÂë¾ùÎª 123456
+  å‘½åè§„åˆ™ï¼š
+    éƒ¨é—¨ TRADE001~008 | å²—ä½ POST_* | èŒè´£ TRADE_* | äº‹ä»¶ TRADE.{SO|PO|PAY|OUT|IN}.*
+    èµ„æº RES.TRADE.* | èœå•ç»„ TRD | åº”ç”¨ TRADE
+  å‰ç½®ï¼š20~24 ç§å­ï¼ˆæˆ–è‡³å°‘ 20 Foundation + 23 æ¡†æ¶èœå•ï¼‰
+  é¡ºåºï¼šç¬¬ 7 æ­¥ï¼ˆåœ¨ 25 Dashboard ä¹‹åäº¦å¯ï¼‰
+  ç¼–ç ï¼šANSI (GBK)
+  è¯´æ˜ï¼šå¹‚ç­‰å¯é‡å¤æ‰§è¡Œï¼›æ¼”ç¤ºè´¦å·å£ä»¤ç”± sqlcmd -v AdminPassword ä¼ å…¥ï¼Œä¸”ä»…åœ¨é¦–æ¬¡æ’å…¥æ—¶è®¾ç½®
 ==============================================================================
 */
 SET NOCOUNT ON;
@@ -17,276 +21,288 @@ GO
 
 DECLARE @Now DATETIME = GETDATE();
 DECLARE @Op VARCHAR(30) = 'SEED-TRADE';
-DECLARE @Pwd NVARCHAR(200) = N'49ba59abbe56e057';
+/* æ¼”ç¤ºè´¦å·å£ä»¤ä¸å†™åœ¨è„šæœ¬é‡Œï¼Œç”¨ sqlcmd å˜é‡ä¼ å…¥ï¼š
+       sqlcmd -S <server> -d <db> -v AdminPassword="ä½ çš„å¼ºå£ä»¤" -i 26-Seed_Trade_Company_Default.sql
+   ï¼ˆSSMS éœ€å…ˆæ‰“å¼€ SQLCMD æ¨¡å¼ã€‚ï¼‰å­˜ MD5_16 å…¼å®¹æ ¼å¼ï¼Œé¦–æ¬¡ç™»å½•é€æ˜å‡çº§ä¸º PBKDF2ã€‚ */
+DECLARE @AdminPwdPlain VARCHAR(200) = '$(AdminPassword)';
+/* é SQLCMD æ¨¡å¼ï¼ˆæ™®é€š SSMS æŸ¥è¯¢çª—å£ï¼‰ä¸‹ $(AdminPassword) ä¸ä¼šè¢«æ›¿æ¢ï¼Œ
+   ä¼šåŸæ ·ç•™ä¸‹å­—é¢é‡â€”â€”å¿…é¡»ä¸€å¹¶æ‹¦æ‰ï¼Œå¦åˆ™ä¼šé™é»˜æŠŠè¿™ä¸²å­—é¢é‡å½“å£ä»¤ç§è¿›å»ã€‚ */
+IF LTRIM(RTRIM(@AdminPwdPlain)) = '' OR @AdminPwdPlain = '$' + '(AdminPassword)'
+BEGIN
+    RAISERROR(N'è¯·ç”¨ -v AdminPassword="..." ä¼ å…¥æ¼”ç¤ºè´¦å·åˆå§‹å£ä»¤åå†æ‰§è¡Œæœ¬è„šæœ¬ã€‚', 16, 1);
+    SET NOEXEC ON;
+END
+DECLARE @Pwd NVARCHAR(200) =
+    LOWER(SUBSTRING(sys.fn_VarBinToHexStr(HASHBYTES('MD5', @AdminPwdPlain)), 11, 16));
 
-/* ----- Ó¦ÓÃÄ£¿é TRADE ----- */
+/* ----- åº”ç”¨æ¨¡å— TRADE ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_AppModule WHERE AppCode='TRADE')
     INSERT INTO dbo.Tbl_E_AppModule (AppCode, AppName, AppType, BaseUrl, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'Ã³Ò×¹ÜÀí', 'BUSINESS', N'/TradeHome/Index', 5, '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'è´¸æ˜“ç®¡ç†', 'BUSINESS', N'/TradeHome/Index', 5, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_AppModule SET AppName=N'Ã³Ò×¹ÜÀí', AppType='BUSINESS', BaseUrl=N'/TradeHome/Index', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_AppModule SET AppName=N'è´¸æ˜“ç®¡ç†', AppType='BUSINESS', BaseUrl=N'/TradeHome/Index', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_MenuGroup WHERE MenuGroupCode='TRD')
     INSERT INTO dbo.Tbl_E_MenuGroup (MenuGroupCode, AppCode, MenuGroupName, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRD', 'TRADE', N'Ã³Ò×¹ÜÀí', 22, '1', 0, @Now, @Now, @Op);
+    VALUES ('TRD', 'TRADE', N'è´¸æ˜“ç®¡ç†', 22, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_MenuGroup SET AppCode='TRADE', MenuGroupName=N'Ã³Ò×¹ÜÀí', DispSeq=22, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_MenuGroup SET AppCode='TRADE', MenuGroupName=N'è´¸æ˜“ç®¡ç†', DispSeq=22, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE MenuGroupCode='TRD';
 
-/* ----- ²¿ÃÅ£¨ÏÈ¸ùºó×Ó£© ----- */
+/* ----- éƒ¨é—¨ï¼ˆå…ˆæ ¹åå­ï¼‰ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE001')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE001', N'Ä³Ä³Ã³Ò×ÓĞÏŞ¹«Ë¾', 1, N'/1/', 'COMPANY', 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE001', N'æŸæŸè´¸æ˜“æœ‰é™å…¬å¸', 1, N'/1/', 'COMPANY', 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'Ä³Ä³Ã³Ò×ÓĞÏŞ¹«Ë¾', DeptLevel=1, DeptPath=N'/1/', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'æŸæŸè´¸æ˜“æœ‰é™å…¬å¸', DeptLevel=1, DeptPath=N'/1/', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE001';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE002')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE002', N'×Ü¾­Àí°ì¹«ÊÒ', p.DataID, 2, N'/1/1/', 'DEPT', 2, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE002', N'æ€»ç»ç†åŠå…¬å®¤', p.DataID, 2, N'/1/1/', 'DEPT', 2, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'×Ü¾­Àí°ì¹«ÊÒ', DeptLevel=2, DeptPath=N'/1/1/', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'æ€»ç»ç†åŠå…¬å®¤', DeptLevel=2, DeptPath=N'/1/1/', DispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE002';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE003')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE003', N'ÏúÊÛ²¿', p.DataID, 2, N'/1/2/', 'DEPT', 3, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE003', N'é”€å”®éƒ¨', p.DataID, 2, N'/1/2/', 'DEPT', 3, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'ÏúÊÛ²¿', DeptLevel=2, DeptPath=N'/1/2/', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'é”€å”®éƒ¨', DeptLevel=2, DeptPath=N'/1/2/', DispSeq=3, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE003';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE004')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE004', N'²É¹º²¿', p.DataID, 2, N'/1/3/', 'DEPT', 4, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE004', N'é‡‡è´­éƒ¨', p.DataID, 2, N'/1/3/', 'DEPT', 4, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'²É¹º²¿', DeptLevel=2, DeptPath=N'/1/3/', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'é‡‡è´­éƒ¨', DeptLevel=2, DeptPath=N'/1/3/', DispSeq=4, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE004';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE005')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE005', N'²Ö´¢ÎïÁ÷²¿', p.DataID, 2, N'/1/4/', 'DEPT', 5, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE005', N'ä»“å‚¨ç‰©æµéƒ¨', p.DataID, 2, N'/1/4/', 'DEPT', 5, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'²Ö´¢ÎïÁ÷²¿', DeptLevel=2, DeptPath=N'/1/4/', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'ä»“å‚¨ç‰©æµéƒ¨', DeptLevel=2, DeptPath=N'/1/4/', DispSeq=5, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE005';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE006')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE006', N'²ÆÎñ²¿', p.DataID, 2, N'/1/5/', 'DEPT', 6, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE006', N'è´¢åŠ¡éƒ¨', p.DataID, 2, N'/1/5/', 'DEPT', 6, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'²ÆÎñ²¿', DeptLevel=2, DeptPath=N'/1/5/', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'è´¢åŠ¡éƒ¨', DeptLevel=2, DeptPath=N'/1/5/', DispSeq=6, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE006';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE007')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE007', N'ÈËÊÂĞĞÕş²¿', p.DataID, 2, N'/1/6/', 'DEPT', 7, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE007', N'äººäº‹è¡Œæ”¿éƒ¨', p.DataID, 2, N'/1/6/', 'DEPT', 7, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'ÈËÊÂĞĞÕş²¿', DeptLevel=2, DeptPath=N'/1/6/', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'äººäº‹è¡Œæ”¿éƒ¨', DeptLevel=2, DeptPath=N'/1/6/', DispSeq=7, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE007';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Department WHERE DeptCode=N'TRADE008')
     INSERT INTO dbo.Tbl_E_Department (DeptCode, DeptCName, ParentDeptID, DeptLevel, DeptPath, DeptType, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    SELECT N'TRADE008', N'ĞÅÏ¢¼¼Êõ²¿', p.DataID, 2, N'/1/7/', 'DEPT', 8, '1', 0, @Now, @Now, @Op
+    SELECT N'TRADE008', N'ä¿¡æ¯æŠ€æœ¯éƒ¨', p.DataID, 2, N'/1/7/', 'DEPT', 8, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Department p WHERE p.DeptCode=N'TRADE001';
 ELSE
-    UPDATE dbo.Tbl_E_Department SET DeptCName=N'ĞÅÏ¢¼¼Êõ²¿', DeptLevel=2, DeptPath=N'/1/7/', DispSeq=8, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Department SET DeptCName=N'ä¿¡æ¯æŠ€æœ¯éƒ¨', DeptLevel=2, DeptPath=N'/1/7/', DispSeq=8, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DeptCode=N'TRADE008';
 
-/* ----- ¸ÚÎ» ----- */
+/* ----- å²—ä½ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_CEO')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_CEO', N'×Ü¾­Àí', N'MANAGER', N'ALL', 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_CEO', N'æ€»ç»ç†', N'MANAGER', N'ALL', 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'×Ü¾­Àí', PositionType=N'MANAGER', DataScope=N'ALL', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'æ€»ç»ç†', PositionType=N'MANAGER', DataScope=N'ALL', DispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_CEO';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_SALES_MGR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_SALES_MGR', N'ÏúÊÛ¾­Àí', N'MANAGER', N'DEPT', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_SALES_MGR', N'é”€å”®ç»ç†', N'MANAGER', N'DEPT', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÏúÊÛ¾­Àí', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'é”€å”®ç»ç†', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_SALES_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_SALES')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_SALES', N'ÏúÊÛÔ±', N'SALES', N'DEPT', 11, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_SALES', N'é”€å”®å‘˜', N'SALES', N'DEPT', 11, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÏúÊÛÔ±', PositionType=N'SALES', DataScope=N'DEPT', DispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'é”€å”®å‘˜', PositionType=N'SALES', DataScope=N'DEPT', DispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_SALES';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_PUR_MGR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_PUR_MGR', N'²É¹º¾­Àí', N'MANAGER', N'DEPT', 20, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_PUR_MGR', N'é‡‡è´­ç»ç†', N'MANAGER', N'DEPT', 20, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'²É¹º¾­Àí', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=20, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'é‡‡è´­ç»ç†', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=20, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_PUR_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_PUR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_PUR', N'²É¹ºÔ±', N'SERVICE', N'DEPT', 21, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_PUR', N'é‡‡è´­å‘˜', N'SERVICE', N'DEPT', 21, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'²É¹ºÔ±', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=21, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'é‡‡è´­å‘˜', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=21, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_PUR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_WH_MGR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_WH_MGR', N'²Ö´¢Ö÷¹Ü', N'MANAGER', N'DEPT', 30, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_WH_MGR', N'ä»“å‚¨ä¸»ç®¡', N'MANAGER', N'DEPT', 30, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'²Ö´¢Ö÷¹Ü', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=30, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'ä»“å‚¨ä¸»ç®¡', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=30, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_WH_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_WH')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_WH', N'²Ö¹ÜÔ±', N'SERVICE', N'DEPT', 31, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_WH', N'ä»“ç®¡å‘˜', N'SERVICE', N'DEPT', 31, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'²Ö¹ÜÔ±', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=31, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'ä»“ç®¡å‘˜', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=31, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_WH';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_FIN_MGR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_FIN_MGR', N'²ÆÎñ¾­Àí', N'FINANCE', N'DEPT', 40, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_FIN_MGR', N'è´¢åŠ¡ç»ç†', N'FINANCE', N'DEPT', 40, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'²ÆÎñ¾­Àí', PositionType=N'FINANCE', DataScope=N'DEPT', DispSeq=40, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'è´¢åŠ¡ç»ç†', PositionType=N'FINANCE', DataScope=N'DEPT', DispSeq=40, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_FIN_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_FIN')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_FIN', N'»á¼Æ', N'FINANCE', N'DEPT', 41, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_FIN', N'ä¼šè®¡', N'FINANCE', N'DEPT', 41, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'»á¼Æ', PositionType=N'FINANCE', DataScope=N'DEPT', DispSeq=41, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'ä¼šè®¡', PositionType=N'FINANCE', DataScope=N'DEPT', DispSeq=41, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_FIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_HR_MGR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_HR_MGR', N'ÈËÊÂÖ÷¹Ü', N'MANAGER', N'DEPT', 50, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_HR_MGR', N'äººäº‹ä¸»ç®¡', N'MANAGER', N'DEPT', 50, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÈËÊÂÖ÷¹Ü', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=50, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'äººäº‹ä¸»ç®¡', PositionType=N'MANAGER', DataScope=N'DEPT', DispSeq=50, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_HR_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_HR')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_HR', N'ÈËÊÂ×¨Ô±', N'SERVICE', N'DEPT', 51, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_HR', N'äººäº‹ä¸“å‘˜', N'SERVICE', N'DEPT', 51, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÈËÊÂ×¨Ô±', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=51, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'äººäº‹ä¸“å‘˜', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=51, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_HR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_ADMIN')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_ADMIN', N'ÏµÍ³¹ÜÀíÔ±', N'ADMIN', N'ALL', 90, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_ADMIN', N'ç³»ç»Ÿç®¡ç†å‘˜', N'ADMIN', N'ALL', 90, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÏµÍ³¹ÜÀíÔ±', PositionType=N'ADMIN', DataScope=N'ALL', DispSeq=90, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'ç³»ç»Ÿç®¡ç†å‘˜', PositionType=N'ADMIN', DataScope=N'ALL', DispSeq=90, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_ADMIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Position WHERE PostCode=N'POST_STAFF')
     INSERT INTO dbo.Tbl_E_Position (PostCode, PostCName, PositionType, DataScope, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'POST_STAFF', N'ÆÕÍ¨Ö°Ô±', N'SERVICE', N'DEPT', 99, '1', 0, @Now, @Now, @Op);
+    VALUES (N'POST_STAFF', N'æ™®é€šèŒå‘˜', N'SERVICE', N'DEPT', 99, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Position SET PostCName=N'ÆÕÍ¨Ö°Ô±', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Position SET PostCName=N'æ™®é€šèŒå‘˜', PositionType=N'SERVICE', DataScope=N'DEPT', DispSeq=99, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE PostCode=N'POST_STAFF';
 
-/* ----- Ö°Ôğ ----- */
+/* ----- èŒè´£ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_ADMIN')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_ADMIN', N'Ã³Ò×ÏµÍ³¹ÜÀíÔ±', N'ADMIN', 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_ADMIN', N'è´¸æ˜“ç³»ç»Ÿç®¡ç†å‘˜', N'ADMIN', 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'Ã³Ò×ÏµÍ³¹ÜÀíÔ±', DutyCategory=N'ADMIN', DutyDispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'è´¸æ˜“ç³»ç»Ÿç®¡ç†å‘˜', DutyCategory=N'ADMIN', DutyDispSeq=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_ADMIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_VIEWER')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_VIEWER', N'Ã³Ò×Ö»¶Á²éÑ¯', N'VIEW', 2, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_VIEWER', N'è´¸æ˜“åªè¯»æŸ¥è¯¢', N'VIEW', 2, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'Ã³Ò×Ö»¶Á²éÑ¯', DutyCategory=N'VIEW', DutyDispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'è´¸æ˜“åªè¯»æŸ¥è¯¢', DutyCategory=N'VIEW', DutyDispSeq=2, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_VIEWER';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_CEO')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_CEO', N'×Ü¾­ÀíÉóÅú', N'APPROVAL', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_CEO', N'æ€»ç»ç†å®¡æ‰¹', N'APPROVAL', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'×Ü¾­ÀíÉóÅú', DutyCategory=N'APPROVAL', DutyDispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'æ€»ç»ç†å®¡æ‰¹', DutyCategory=N'APPROVAL', DutyDispSeq=10, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_CEO';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES_MGR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_SALES_MGR', N'ÏúÊÛÉóÅú', N'APPROVAL', 11, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_SALES_MGR', N'é”€å”®å®¡æ‰¹', N'APPROVAL', 11, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ÏúÊÛÉóÅú', DutyCategory=N'APPROVAL', DutyDispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'é”€å”®å®¡æ‰¹', DutyCategory=N'APPROVAL', DutyDispSeq=11, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_SALES_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_SALES', N'ÏúÊÛÒµÎñ', N'SERVICE', 12, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_SALES', N'é”€å”®ä¸šåŠ¡', N'SERVICE', 12, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ÏúÊÛÒµÎñ', DutyCategory=N'SERVICE', DutyDispSeq=12, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'é”€å”®ä¸šåŠ¡', DutyCategory=N'SERVICE', DutyDispSeq=12, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_SALES';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR_MGR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_PUR_MGR', N'²É¹ºÉóÅú', N'APPROVAL', 21, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_PUR_MGR', N'é‡‡è´­å®¡æ‰¹', N'APPROVAL', 21, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'²É¹ºÉóÅú', DutyCategory=N'APPROVAL', DutyDispSeq=21, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'é‡‡è´­å®¡æ‰¹', DutyCategory=N'APPROVAL', DutyDispSeq=21, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_PUR_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_PUR', N'²É¹ºÒµÎñ', N'SERVICE', 22, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_PUR', N'é‡‡è´­ä¸šåŠ¡', N'SERVICE', 22, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'²É¹ºÒµÎñ', DutyCategory=N'SERVICE', DutyDispSeq=22, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'é‡‡è´­ä¸šåŠ¡', DutyCategory=N'SERVICE', DutyDispSeq=22, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_PUR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_WH_MGR', N'²Ö´¢ÉóÅú', N'APPROVAL', 31, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_WH_MGR', N'ä»“å‚¨å®¡æ‰¹', N'APPROVAL', 31, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'²Ö´¢ÉóÅú', DutyCategory=N'APPROVAL', DutyDispSeq=31, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ä»“å‚¨å®¡æ‰¹', DutyCategory=N'APPROVAL', DutyDispSeq=31, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_WH_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_WH', N'²Ö´¢ÒµÎñ', N'SERVICE', 32, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_WH', N'ä»“å‚¨ä¸šåŠ¡', N'SERVICE', 32, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'²Ö´¢ÒµÎñ', DutyCategory=N'SERVICE', DutyDispSeq=32, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ä»“å‚¨ä¸šåŠ¡', DutyCategory=N'SERVICE', DutyDispSeq=32, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_WH';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN_MGR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_FIN_MGR', N'²ÆÎñÉóÅú', N'APPROVAL', 41, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_FIN_MGR', N'è´¢åŠ¡å®¡æ‰¹', N'APPROVAL', 41, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'²ÆÎñÉóÅú', DutyCategory=N'APPROVAL', DutyDispSeq=41, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'è´¢åŠ¡å®¡æ‰¹', DutyCategory=N'APPROVAL', DutyDispSeq=41, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_FIN_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_FIN', N'²ÆÎñÒµÎñ', N'SERVICE', 42, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_FIN', N'è´¢åŠ¡ä¸šåŠ¡', N'SERVICE', 42, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'²ÆÎñÒµÎñ', DutyCategory=N'SERVICE', DutyDispSeq=42, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'è´¢åŠ¡ä¸šåŠ¡', DutyCategory=N'SERVICE', DutyDispSeq=42, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_FIN';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_HR_MGR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_HR_MGR', N'ÈËÊÂÉóÅú', N'APPROVAL', 51, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_HR_MGR', N'äººäº‹å®¡æ‰¹', N'APPROVAL', 51, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ÈËÊÂÉóÅú', DutyCategory=N'APPROVAL', DutyDispSeq=51, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'äººäº‹å®¡æ‰¹', DutyCategory=N'APPROVAL', DutyDispSeq=51, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_HR_MGR';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_HR')
     INSERT INTO dbo.Tbl_E_Duty (DutyCode, DutyCName, DutyCategory, DutyDispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'TRADE_HR', N'ÈËÊÂÒµÎñ', N'SERVICE', 52, '1', 0, @Now, @Now, @Op);
+    VALUES (N'TRADE_HR', N'äººäº‹ä¸šåŠ¡', N'SERVICE', 52, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'ÈËÊÂÒµÎñ', DutyCategory=N'SERVICE', DutyDispSeq=52, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Duty SET DutyCName=N'äººäº‹ä¸šåŠ¡', DutyCategory=N'SERVICE', DutyDispSeq=52, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE DutyCode=N'TRADE_HR';
 
-/* ----- ¸ÚÎ»Ö°Ôğ ----- */
+/* ----- å²—ä½èŒè´£ ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_PositionDuty pd
@@ -488,72 +504,72 @@ IF NOT EXISTS (
     FROM dbo.Tbl_E_Position p CROSS JOIN dbo.Tbl_E_Duty d
     WHERE p.PostCode=N'POST_STAFF' AND d.DutyCode=N'TRADE_VIEWER';
 
-/* ----- ÑİÊ¾ÓÃ»§£¨ÃÜÂë 123456£© ----- */
+/* ----- æ¼”ç¤ºç”¨æˆ·ï¼ˆå£ä»¤å–è‡ª -v AdminPasswordï¼Œä»…é¦–æ¬¡æ’å…¥æ—¶è®¾ç½®ï¼‰ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'tradeadmin')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'tradeadmin', N'ÏµÍ³¹ÜÀíÔ±', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'tradeadmin', N'ç³»ç»Ÿç®¡ç†å‘˜', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÏµÍ³¹ÜÀíÔ±', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'ç³»ç»Ÿç®¡ç†å‘˜', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'tradeadmin';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'tradeceo')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'tradeceo', N'ÕÅ×Ü', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'tradeceo', N'å¼ æ€»', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÕÅ×Ü', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'å¼ æ€»', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'tradeceo';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'salesmgr')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'salesmgr', N'ÀîÏúÊÛ¾­Àí', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'salesmgr', N'æé”€å”®ç»ç†', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÀîÏúÊÛ¾­Àí', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'æé”€å”®ç»ç†', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'salesmgr';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'sales01')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'sales01', N'ÍõÏúÊÛ', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'sales01', N'ç‹é”€å”®', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÍõÏúÊÛ', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'ç‹é”€å”®', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'sales01';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'purmgr')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'purmgr', N'ÕÔ²É¹º¾­Àí', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'purmgr', N'èµµé‡‡è´­ç»ç†', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÕÔ²É¹º¾­Àí', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'èµµé‡‡è´­ç»ç†', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'purmgr';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'pur01')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'pur01', N'Ç®²É¹º', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'pur01', N'é’±é‡‡è´­', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'Ç®²É¹º', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'é’±é‡‡è´­', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'pur01';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'whmgr')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'whmgr', N'Ëï²Ö´¢Ö÷¹Ü', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'whmgr', N'å­™ä»“å‚¨ä¸»ç®¡', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'Ëï²Ö´¢Ö÷¹Ü', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'å­™ä»“å‚¨ä¸»ç®¡', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'whmgr';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'finmgr')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'finmgr', N'ÖÜ²ÆÎñ¾­Àí', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'finmgr', N'å‘¨è´¢åŠ¡ç»ç†', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÖÜ²ÆÎñ¾­Àí', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'å‘¨è´¢åŠ¡ç»ç†', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'finmgr';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_Users WHERE LoginId=N'hrmgr')
     INSERT INTO dbo.Tbl_E_Users (LoginId, RealName, PwdHash, PasswordAlgo, PasswordVersion, UserType, LoginCount, MaxLoginCount, PwdErrorCount, MaxPwdErrorCount, IsLocked, IsEnabled, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'hrmgr', N'ÎâÈËÊÂÖ÷¹Ü', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
+    VALUES (N'hrmgr', N'å´äººäº‹ä¸»ç®¡', @Pwd, 'MD5_16', 1, 'EMPLOYEE', 0, 99999, 0, 5, 0, 1, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_Users SET RealName=N'ÎâÈËÊÂÖ÷¹Ü', PwdHash=@Pwd, PasswordAlgo='MD5_16', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_Users SET RealName=N'å´äººäº‹ä¸»ç®¡', IsEnabled=1, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE LoginId=N'hrmgr';
 
-/* ----- ÓÃ»§ÈÎ¸Ú ----- */
+/* ----- ç”¨æˆ·ä»»å²— ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_UserPosition up
@@ -672,22 +688,22 @@ IF NOT EXISTS (
     INNER JOIN dbo.Tbl_E_Position p ON p.PostCode=N'POST_HR_MGR'
     WHERE u.LoginId=N'hrmgr';
 
-/* ----- Ã³Ò×²Ëµ¥×ÊÔ´ ----- */
+/* ----- è´¸æ˜“èœå•èµ„æº ----- */
 IF OBJECT_ID('tempdb..#TradeRes') IS NOT NULL DROP TABLE #TradeRes;
 CREATE TABLE #TradeRes (ResourceID VARCHAR(50) NOT NULL PRIMARY KEY, ResourceName NVARCHAR(100) NOT NULL, MenuPath NVARCHAR(300) NOT NULL, DispSeq INT NOT NULL);
 INSERT INTO #TradeRes VALUES
-(N'RES.TRADE.Home', N'Ã³Ò×¹¤×÷Ì¨', N'/TradeHome/Index', 10),
-(N'RES.TRADE.SO.List', N'ÏúÊÛ¶©µ¥', N'/TradeSO/Index', 20),
-(N'RES.TRADE.SO.Create', N'ĞÂ½¨ÏúÊÛ¶©µ¥', N'/TradeSO/Create', 21),
-(N'RES.TRADE.SO.Approval', N'ÏúÊÛ¶©µ¥ÉóÅú', N'/TradeSO/Approval', 22),
-(N'RES.TRADE.PO.List', N'²É¹ºÉêÇë', N'/TradePO/Index', 30),
-(N'RES.TRADE.PO.Create', N'ĞÂ½¨²É¹ºÉêÇë', N'/TradePO/Create', 31),
-(N'RES.TRADE.PO.Approval', N'²É¹ºÉêÇëÉóÅú', N'/TradePO/Approval', 32),
-(N'RES.TRADE.PAY.List', N'¸¶¿îÉêÇë', N'/TradePay/Index', 40),
-(N'RES.TRADE.PAY.Approval', N'¸¶¿îÉóÅú', N'/TradePay/Approval', 41),
-(N'RES.TRADE.WH.Out', N'³ö¿â¹ÜÀí', N'/TradeWH/Out', 50),
-(N'RES.TRADE.WH.In', N'Èë¿â¹ÜÀí', N'/TradeWH/In', 51),
-(N'RES.TRADE.MyTodo', N'ÎÒµÄ´ı°ì', N'/ETodoTask/Index', 60);
+(N'RES.TRADE.Home', N'è´¸æ˜“å·¥ä½œå°', N'/TradeHome/Index', 10),
+(N'RES.TRADE.SO.List', N'é”€å”®è®¢å•', N'/TradeSO/Index', 20),
+(N'RES.TRADE.SO.Create', N'æ–°å»ºé”€å”®è®¢å•', N'/TradeSO/Create', 21),
+(N'RES.TRADE.SO.Approval', N'é”€å”®è®¢å•å®¡æ‰¹', N'/TradeSO/Approval', 22),
+(N'RES.TRADE.PO.List', N'é‡‡è´­ç”³è¯·', N'/TradePO/Index', 30),
+(N'RES.TRADE.PO.Create', N'æ–°å»ºé‡‡è´­ç”³è¯·', N'/TradePO/Create', 31),
+(N'RES.TRADE.PO.Approval', N'é‡‡è´­ç”³è¯·å®¡æ‰¹', N'/TradePO/Approval', 32),
+(N'RES.TRADE.PAY.List', N'ä»˜æ¬¾ç”³è¯·', N'/TradePay/Index', 40),
+(N'RES.TRADE.PAY.Approval', N'ä»˜æ¬¾å®¡æ‰¹', N'/TradePay/Approval', 41),
+(N'RES.TRADE.WH.Out', N'å‡ºåº“ç®¡ç†', N'/TradeWH/Out', 50),
+(N'RES.TRADE.WH.In', N'å…¥åº“ç®¡ç†', N'/TradeWH/In', 51),
+(N'RES.TRADE.MyTodo', N'æˆ‘çš„å¾…åŠ', N'/ETodoTask/Index', 60);
 
 MERGE dbo.Tbl_E_Resource AS t
 USING (SELECT 'TRADE' AS AppCode, 'TRD' AS MenuGroupCode, s.* FROM #TradeRes s) AS s
@@ -700,7 +716,7 @@ WHEN MATCHED THEN
 DROP TABLE #TradeRes;
 
 
-/* ----- ×ÊÔ´¶©ÔÄ ----- */
+/* ----- èµ„æºè®¢é˜… ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_Subscription s
@@ -1214,193 +1230,193 @@ IF NOT EXISTS (
     SELECT d.DataID, 'FRAME', 'RESOURCE', N'RES.DASH.Board', 1, N'110000', 50, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Duty d WHERE d.DutyCode=N'TRADE_VIEWER';
 
-/* ----- ÊÂ¼şÅäÖÃ ----- */
+/* ----- äº‹ä»¶é…ç½® ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.SO.SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.SO.SUBMIT', N'ÏúÊÛ¶©µ¥Ìá½»', N'TASK', N'/TradeSO/Approval', 'TRD', 'ASYNC', 1, N'¡¾´ı°ì¡¿ÏúÊÛ¶©µ¥´ıÉó', 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.SO.SUBMIT', N'é”€å”®è®¢å•æäº¤', N'TASK', N'/TradeSO/Approval', 'TRD', 'ASYNC', 1, N'ã€å¾…åŠã€‘é”€å”®è®¢å•å¾…å®¡', 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'ÏúÊÛ¶©µ¥Ìá½»', EventType=N'TASK', PageUrl=N'/TradeSO/Approval', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'¡¾´ı°ì¡¿ÏúÊÛ¶©µ¥´ıÉó', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'é”€å”®è®¢å•æäº¤', EventType=N'TASK', PageUrl=N'/TradeSO/Approval', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'ã€å¾…åŠã€‘é”€å”®è®¢å•å¾…å®¡', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.SO.SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.SO.APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.SO.APPROVED', N'ÏúÊÛ¶©µ¥Í¨¹ı', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.SO.APPROVED', N'é”€å”®è®¢å•é€šè¿‡', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'ÏúÊÛ¶©µ¥Í¨¹ı', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'é”€å”®è®¢å•é€šè¿‡', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.SO.APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.SO.REJECTED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.SO.REJECTED', N'ÏúÊÛ¶©µ¥²µ»Ø', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.SO.REJECTED', N'é”€å”®è®¢å•é©³å›', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'ÏúÊÛ¶©µ¥²µ»Ø', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'é”€å”®è®¢å•é©³å›', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.SO.REJECTED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.PO.SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.PO.SUBMIT', N'²É¹ºÉêÇëÌá½»', N'TASK', N'/TradePO/Approval', 'TRD', 'ASYNC', 1, N'¡¾´ı°ì¡¿²É¹ºÉêÇë´ıÉó', 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.PO.SUBMIT', N'é‡‡è´­ç”³è¯·æäº¤', N'TASK', N'/TradePO/Approval', 'TRD', 'ASYNC', 1, N'ã€å¾…åŠã€‘é‡‡è´­ç”³è¯·å¾…å®¡', 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'²É¹ºÉêÇëÌá½»', EventType=N'TASK', PageUrl=N'/TradePO/Approval', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'¡¾´ı°ì¡¿²É¹ºÉêÇë´ıÉó', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'é‡‡è´­ç”³è¯·æäº¤', EventType=N'TASK', PageUrl=N'/TradePO/Approval', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'ã€å¾…åŠã€‘é‡‡è´­ç”³è¯·å¾…å®¡', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.PO.SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.PO.APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.PO.APPROVED', N'²É¹ºÉêÇëÍ¨¹ı', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.PO.APPROVED', N'é‡‡è´­ç”³è¯·é€šè¿‡', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'²É¹ºÉêÇëÍ¨¹ı', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'é‡‡è´­ç”³è¯·é€šè¿‡', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.PO.APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.PO.REJECTED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.PO.REJECTED', N'²É¹ºÉêÇë²µ»Ø', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.PO.REJECTED', N'é‡‡è´­ç”³è¯·é©³å›', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'²É¹ºÉêÇë²µ»Ø', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'é‡‡è´­ç”³è¯·é©³å›', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.PO.REJECTED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.PAY.SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.PAY.SUBMIT', N'¸¶¿îÉêÇëÌá½»', N'TASK', N'/TradePay/Approval', 'TRD', 'ASYNC', 1, N'¡¾´ı°ì¡¿¸¶¿î´ıÉó', 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.PAY.SUBMIT', N'ä»˜æ¬¾ç”³è¯·æäº¤', N'TASK', N'/TradePay/Approval', 'TRD', 'ASYNC', 1, N'ã€å¾…åŠã€‘ä»˜æ¬¾å¾…å®¡', 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'¸¶¿îÉêÇëÌá½»', EventType=N'TASK', PageUrl=N'/TradePay/Approval', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'¡¾´ı°ì¡¿¸¶¿î´ıÉó', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'ä»˜æ¬¾ç”³è¯·æäº¤', EventType=N'TASK', PageUrl=N'/TradePay/Approval', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'ã€å¾…åŠã€‘ä»˜æ¬¾å¾…å®¡', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.PAY.SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.PAY.APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.PAY.APPROVED', N'¸¶¿îÒÑÍ¨¹ı', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.PAY.APPROVED', N'ä»˜æ¬¾å·²é€šè¿‡', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'¸¶¿îÒÑÍ¨¹ı', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'ä»˜æ¬¾å·²é€šè¿‡', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.PAY.APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.PAY.REJECTED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.PAY.REJECTED', N'¸¶¿îÒÑ²µ»Ø', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.PAY.REJECTED', N'ä»˜æ¬¾å·²é©³å›', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'¸¶¿îÒÑ²µ»Ø', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'ä»˜æ¬¾å·²é©³å›', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.PAY.REJECTED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.OUT.SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.OUT.SUBMIT', N'³ö¿âµ¥Ìá½»', N'TASK', N'/TradeWH/Out', 'TRD', 'ASYNC', 1, N'¡¾´ı°ì¡¿³ö¿â´ıÈ·ÈÏ', 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.OUT.SUBMIT', N'å‡ºåº“å•æäº¤', N'TASK', N'/TradeWH/Out', 'TRD', 'ASYNC', 1, N'ã€å¾…åŠã€‘å‡ºåº“å¾…ç¡®è®¤', 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'³ö¿âµ¥Ìá½»', EventType=N'TASK', PageUrl=N'/TradeWH/Out', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'¡¾´ı°ì¡¿³ö¿â´ıÈ·ÈÏ', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'å‡ºåº“å•æäº¤', EventType=N'TASK', PageUrl=N'/TradeWH/Out', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'ã€å¾…åŠã€‘å‡ºåº“å¾…ç¡®è®¤', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.OUT.SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.OUT.APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.OUT.APPROVED', N'³ö¿âÒÑÍê³É', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.OUT.APPROVED', N'å‡ºåº“å·²å®Œæˆ', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'³ö¿âÒÑÍê³É', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'å‡ºåº“å·²å®Œæˆ', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.OUT.APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.IN.SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.IN.SUBMIT', N'Èë¿âµ¥Ìá½»', N'TASK', N'/TradeWH/In', 'TRD', 'ASYNC', 1, N'¡¾´ı°ì¡¿Èë¿â´ıÈ·ÈÏ', 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.IN.SUBMIT', N'å…¥åº“å•æäº¤', N'TASK', N'/TradeWH/In', 'TRD', 'ASYNC', 1, N'ã€å¾…åŠã€‘å…¥åº“å¾…ç¡®è®¤', 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'Èë¿âµ¥Ìá½»', EventType=N'TASK', PageUrl=N'/TradeWH/In', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'¡¾´ı°ì¡¿Èë¿â´ıÈ·ÈÏ', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'å…¥åº“å•æäº¤', EventType=N'TASK', PageUrl=N'/TradeWH/In', MenuGroupCode='TRD', IsGenerateTodo=1, TodoTitle=N'ã€å¾…åŠã€‘å…¥åº“å¾…ç¡®è®¤', BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.IN.SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventConfig WHERE AppCode='TRADE' AND EventCode=N'TRADE.IN.APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventConfig (AppCode, EventCode, EventName, EventType, PageUrl, MenuGroupCode, ExecType, IsGenerateTodo, TodoTitle, HandleMode, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES ('TRADE', N'TRADE.IN.APPROVED', N'Èë¿âÒÑÍê³É', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
+    VALUES ('TRADE', N'TRADE.IN.APPROVED', N'å…¥åº“å·²å®Œæˆ', N'NOTICE', NULL, 'TRD', 'ASYNC', 0, NULL, 'SINGLE', '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'Èë¿âÒÑÍê³É', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventConfig SET EventName=N'å…¥åº“å·²å®Œæˆ', EventType=N'NOTICE', PageUrl=NULL, MenuGroupCode='TRD', IsGenerateTodo=0, TodoTitle=NULL, BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE AppCode='TRADE' AND EventCode=N'TRADE.IN.APPROVED';
 
-/* ----- Á÷×ª¹æÔò ----- */
+/* ----- æµè½¬è§„åˆ™ ----- */
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_SO_SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_SO_SUBMIT', N'ÏúÊÛÌá½»-¾­Àí´ı°ì', 'TRADE', N'TRADE.SO.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_SO_SUBMIT', N'é”€å”®æäº¤-ç»ç†å¾…åŠ', 'TRADE', N'TRADE.SO.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'ÏúÊÛÌá½»-¾­Àí´ı°ì', CurrentEvent=N'TRADE.SO.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'é”€å”®æäº¤-ç»ç†å¾…åŠ', CurrentEvent=N'TRADE.SO.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_SO_SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_SO_APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_SO_APPROVED', N'ÏúÊÛÍ¨¹ı-Í¨ÖªÏúÊÛ', 'TRADE', N'TRADE.SO.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_SO_APPROVED', N'é”€å”®é€šè¿‡-é€šçŸ¥é”€å”®', 'TRADE', N'TRADE.SO.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'ÏúÊÛÍ¨¹ı-Í¨ÖªÏúÊÛ', CurrentEvent=N'TRADE.SO.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'é”€å”®é€šè¿‡-é€šçŸ¥é”€å”®', CurrentEvent=N'TRADE.SO.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_SO_APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_SO_REJECTED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_SO_REJECTED', N'ÏúÊÛ²µ»Ø-Í¨ÖªÏúÊÛ', 'TRADE', N'TRADE.SO.REJECTED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_SO_REJECTED', N'é”€å”®é©³å›-é€šçŸ¥é”€å”®', 'TRADE', N'TRADE.SO.REJECTED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'ÏúÊÛ²µ»Ø-Í¨ÖªÏúÊÛ', CurrentEvent=N'TRADE.SO.REJECTED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'é”€å”®é©³å›-é€šçŸ¥é”€å”®', CurrentEvent=N'TRADE.SO.REJECTED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_SALES'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_SO_REJECTED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_PO_SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_PO_SUBMIT', N'²É¹ºÌá½»-¾­Àí´ı°ì', 'TRADE', N'TRADE.PO.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_PO_SUBMIT', N'é‡‡è´­æäº¤-ç»ç†å¾…åŠ', 'TRADE', N'TRADE.PO.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'²É¹ºÌá½»-¾­Àí´ı°ì', CurrentEvent=N'TRADE.PO.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'é‡‡è´­æäº¤-ç»ç†å¾…åŠ', CurrentEvent=N'TRADE.PO.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_PO_SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_PO_APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_PO_APPROVED', N'²É¹ºÍ¨¹ı-Í¨Öª²É¹º', 'TRADE', N'TRADE.PO.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_PO_APPROVED', N'é‡‡è´­é€šè¿‡-é€šçŸ¥é‡‡è´­', 'TRADE', N'TRADE.PO.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'²É¹ºÍ¨¹ı-Í¨Öª²É¹º', CurrentEvent=N'TRADE.PO.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'é‡‡è´­é€šè¿‡-é€šçŸ¥é‡‡è´­', CurrentEvent=N'TRADE.PO.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_PO_APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_PO_REJECTED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_PO_REJECTED', N'²É¹º²µ»Ø-Í¨Öª²É¹º', 'TRADE', N'TRADE.PO.REJECTED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_PO_REJECTED', N'é‡‡è´­é©³å›-é€šçŸ¥é‡‡è´­', 'TRADE', N'TRADE.PO.REJECTED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'²É¹º²µ»Ø-Í¨Öª²É¹º', CurrentEvent=N'TRADE.PO.REJECTED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'é‡‡è´­é©³å›-é€šçŸ¥é‡‡è´­', CurrentEvent=N'TRADE.PO.REJECTED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_PUR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_PO_REJECTED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_PAY_SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_PAY_SUBMIT', N'¸¶¿îÌá½»-²ÆÎñ´ı°ì', 'TRADE', N'TRADE.PAY.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_PAY_SUBMIT', N'ä»˜æ¬¾æäº¤-è´¢åŠ¡å¾…åŠ', 'TRADE', N'TRADE.PAY.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'¸¶¿îÌá½»-²ÆÎñ´ı°ì', CurrentEvent=N'TRADE.PAY.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'ä»˜æ¬¾æäº¤-è´¢åŠ¡å¾…åŠ', CurrentEvent=N'TRADE.PAY.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_PAY_SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_PAY_APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_PAY_APPROVED', N'¸¶¿îÍ¨¹ı-Í¨Öª²ÆÎñ', 'TRADE', N'TRADE.PAY.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_PAY_APPROVED', N'ä»˜æ¬¾é€šè¿‡-é€šçŸ¥è´¢åŠ¡', 'TRADE', N'TRADE.PAY.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'¸¶¿îÍ¨¹ı-Í¨Öª²ÆÎñ', CurrentEvent=N'TRADE.PAY.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'ä»˜æ¬¾é€šè¿‡-é€šçŸ¥è´¢åŠ¡', CurrentEvent=N'TRADE.PAY.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_PAY_APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_PAY_REJECTED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_PAY_REJECTED', N'¸¶¿î²µ»Ø-Í¨Öª²ÆÎñ', 'TRADE', N'TRADE.PAY.REJECTED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_PAY_REJECTED', N'ä»˜æ¬¾é©³å›-é€šçŸ¥è´¢åŠ¡', 'TRADE', N'TRADE.PAY.REJECTED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'¸¶¿î²µ»Ø-Í¨Öª²ÆÎñ', CurrentEvent=N'TRADE.PAY.REJECTED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'ä»˜æ¬¾é©³å›-é€šçŸ¥è´¢åŠ¡', CurrentEvent=N'TRADE.PAY.REJECTED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_FIN'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_PAY_REJECTED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_OUT_SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_OUT_SUBMIT', N'³ö¿âÌá½»-²Ö´¢´ı°ì', 'TRADE', N'TRADE.OUT.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_OUT_SUBMIT', N'å‡ºåº“æäº¤-ä»“å‚¨å¾…åŠ', 'TRADE', N'TRADE.OUT.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'³ö¿âÌá½»-²Ö´¢´ı°ì', CurrentEvent=N'TRADE.OUT.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'å‡ºåº“æäº¤-ä»“å‚¨å¾…åŠ', CurrentEvent=N'TRADE.OUT.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_OUT_SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_OUT_APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_OUT_APPROVED', N'³ö¿âÍê³É-Í¨Öª²Ö´¢', 'TRADE', N'TRADE.OUT.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_OUT_APPROVED', N'å‡ºåº“å®Œæˆ-é€šçŸ¥ä»“å‚¨', 'TRADE', N'TRADE.OUT.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'³ö¿âÍê³É-Í¨Öª²Ö´¢', CurrentEvent=N'TRADE.OUT.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'å‡ºåº“å®Œæˆ-é€šçŸ¥ä»“å‚¨', CurrentEvent=N'TRADE.OUT.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_OUT_APPROVED';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_IN_SUBMIT' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_IN_SUBMIT', N'Èë¿âÌá½»-²Ö´¢´ı°ì', 'TRADE', N'TRADE.IN.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_IN_SUBMIT', N'å…¥åº“æäº¤-ä»“å‚¨å¾…åŠ', 'TRADE', N'TRADE.IN.SUBMIT', N'CREATE_TODO', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'Èë¿âÌá½»-²Ö´¢´ı°ì', CurrentEvent=N'TRADE.IN.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'å…¥åº“æäº¤-ä»“å‚¨å¾…åŠ', CurrentEvent=N'TRADE.IN.SUBMIT', ActionType=N'CREATE_TODO', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH_MGR'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_IN_SUBMIT';
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Tbl_E_EventFlowRule WHERE RuleCode=N'FLOW_TRADE_IN_APPROVED' AND IsDeleted=0)
     INSERT INTO dbo.Tbl_E_EventFlowRule (RuleCode, RuleName, AppCode, CurrentEvent, ActionType, TargetResolveType, TargetDutyID, HandleMode, DispSeq, BStatus, IsDeleted, CreateDate, AmendDate, Operator)
-    VALUES (N'FLOW_TRADE_IN_APPROVED', N'Èë¿âÍê³É-Í¨Öª²Ö´¢', 'TRADE', N'TRADE.IN.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
+    VALUES (N'FLOW_TRADE_IN_APPROVED', N'å…¥åº“å®Œæˆ-é€šçŸ¥ä»“å‚¨', 'TRADE', N'TRADE.IN.APPROVED', N'SEND_NOTICE', N'DUTY', (SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), 'SINGLE', 10, '1', 0, @Now, @Now, @Op);
 ELSE
-    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'Èë¿âÍê³É-Í¨Öª²Ö´¢', CurrentEvent=N'TRADE.IN.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
+    UPDATE dbo.Tbl_E_EventFlowRule SET RuleName=N'å…¥åº“å®Œæˆ-é€šçŸ¥ä»“å‚¨', CurrentEvent=N'TRADE.IN.APPROVED', ActionType=N'SEND_NOTICE', TargetDutyID=(SELECT DataID FROM dbo.Tbl_E_Duty WHERE DutyCode=N'TRADE_WH'), BStatus='1', IsDeleted=0, AmendDate=@Now, Operator=@Op
     WHERE RuleCode=N'FLOW_TRADE_IN_APPROVED';
 
-/* ----- ÊÂ¼ş¶©ÔÄ ----- */
+/* ----- äº‹ä»¶è®¢é˜… ----- */
 
 IF NOT EXISTS (
     SELECT 1 FROM dbo.Tbl_E_Subscription s
@@ -1530,5 +1546,26 @@ IF NOT EXISTS (
     SELECT d.DataID, 'TRADE', 'EVENT', N'TRADE.PAY.SUBMIT', 1, 50, '1', 0, @Now, @Now, @Op
     FROM dbo.Tbl_E_Duty d WHERE d.DutyCode=N'TRADE_CEO';
 
-PRINT N'26-Seed_Trade_Company_Default Íê³É¡£';
+PRINT N'26-Seed_Trade_Company_Default å®Œæˆã€‚';
+GO
+
+/* ---------- è„šæœ¬æ‰§è¡Œå°è´¦ ----------
+   ä»“åº“åŸå…ˆæ²¡æœ‰ä»»ä½•è¿ç§»æœºåˆ¶ï¼šæ–‡ä»¶åæ˜¯å”¯ä¸€çš„é¡ºåºä¾æ®ï¼Œè€Œç¼–å·å·²ç»åœ¨ç¢°æ’
+   ï¼ˆ20-Seed_Foundation / 20-Seed_README åŒå·ï¼‰ï¼Œä¹Ÿæ²¡æœ‰åŠæ³•é—®ä¸€ä¸ªæ•°æ®åº“ã€Œä½ è·‘è¿‡å“ªäº›è„šæœ¬ã€ã€‚
+   è¿™æ®µè‡ªå»ºè¡¨ + è®°å½•ï¼Œå¹‚ç­‰ï¼Œå¯åœ¨ä»»æ„è„šæœ¬å•ç‹¬æ‰§è¡Œã€‚ */
+IF OBJECT_ID(N'dbo.SchemaScriptLog', N'U') IS NULL
+    CREATE TABLE dbo.SchemaScriptLog (
+        ScriptName   NVARCHAR(200) NOT NULL,
+        AppliedAt    DATETIME      NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedAt DEFAULT (GETDATE()),
+        AppliedBy    NVARCHAR(128) NOT NULL CONSTRAINT DF_SchemaScriptLog_AppliedBy DEFAULT (SUSER_SNAME()),
+        RunCount     INT           NOT NULL CONSTRAINT DF_SchemaScriptLog_RunCount DEFAULT (1),
+        CONSTRAINT PK_SchemaScriptLog PRIMARY KEY CLUSTERED (ScriptName)
+    );
+GO
+IF EXISTS (SELECT 1 FROM dbo.SchemaScriptLog WHERE ScriptName = N'26-Seed_Trade_Company_Default.sql')
+    UPDATE dbo.SchemaScriptLog
+       SET AppliedAt = GETDATE(), AppliedBy = SUSER_SNAME(), RunCount = RunCount + 1
+     WHERE ScriptName = N'26-Seed_Trade_Company_Default.sql';
+ELSE
+    INSERT INTO dbo.SchemaScriptLog (ScriptName) VALUES (N'26-Seed_Trade_Company_Default.sql');
 GO
